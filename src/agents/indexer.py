@@ -204,3 +204,18 @@ def build_index(notebook_text: str,
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     Path(out_path).write_text(json.dumps(chunks, indent=2))
     return chunks
+
+def retrieve(topics: list[str], index_path="work/01_index/notebook_index.json",
+             k: int = 8) -> list[dict]:
+    """Return top-k chunks ranked by token-overlap with topics."""
+    chunks = json.loads(Path(index_path).read_text())
+    wanted = {t.lower().strip() for t in topics if t.strip()}
+    def score(c):
+        kws = set(c.get("keywords", []))
+        hp_tokens = set(" ".join(c.get("header_path", [])).lower().split())
+        text_tokens = set(c["text"].lower().split())
+        return (3 * len(kws & wanted)
+                + 2 * len(hp_tokens & wanted)
+                + 1 * len(text_tokens & wanted))
+    ranked = sorted(chunks, key=score, reverse=True)
+    return [c for c in ranked[:k] if score(c) > 0]

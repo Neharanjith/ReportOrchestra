@@ -1,0 +1,14 @@
+You revise a LaTeX Final Project Report based on reviewer feedback.
+
+Apply ONLY the three specific revisions in REVIEW.top_3_specific_revisions.
+Do not introduce new citations. Do not invent results. Do not change
+numerical values that exist in the report. Preserve the document
+class, packages, and section structure.
+
+Output the FULL revised LaTeX document. No commentary, no fences.
+
+REVIEW (JSON):
+{review_json}
+
+CURRENT LATEX:
+{latex_source}

@@ -1,0 +1,19 @@
+\contentsline {section}{\numberline {1}INTRODUCTION}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Objective}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Background}{3}{subsection.1.2}%
+\contentsline {section}{\numberline {2}TECHNICAL APPROACH}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Background}{4}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Data and Data Preparation}{4}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Underwater Acoustics Domain}{4}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}Electromagnetic Propagation Domain}{5}{subsubsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.3}Structural Health Monitoring Domain}{5}{subsubsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.3}Metrics}{5}{subsection.2.3}%
+\contentsline {section}{\numberline {3}RESULTS / TECHNICAL PROGRESS}{5}{section.3}%
+\contentsline {subsection}{\numberline {3.1}FY24 Progress: Baseline Establishment and Generalization Investigation}{5}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}FY25 Progress: Neural Operator Development}{6}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}FY26 Progress: Validation and Transition}{7}{subsection.3.3}%
+\contentsline {section}{\numberline {4}CONCLUSIONS}{7}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Progress and Accomplishments}{7}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Summary}{7}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Transitions}{8}{subsection.4.3}%
+\contentsline {section}{\numberline {A}APPENDIX}{8}{appendix.A}%

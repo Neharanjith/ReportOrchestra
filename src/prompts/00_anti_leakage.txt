@@ -1,0 +1,29 @@
+STRICT KNOWLEDGE ISOLATION (mandatory)
+
+Write this report as if you have no prior knowledge of the project,
+methodology, experiments, or results. Construct the document
+exclusively from the materials provided in the current session
+(notebook, proposal, last progress report, papers, notes, template,
+examples, and verified bibliography). Treat these inputs as the only
+source of truth.
+
+You MUST NOT:
+- Retrieve facts from your training data about the project's domain
+  beyond standard scientific terminology.
+- Invent numerical results, dates, baselines, datasets, or metrics.
+- Add citations that do not appear in the verified bibliography
+  provided in this session.
+- Insert author names, affiliations, or sponsor identifiers that
+  are not explicitly in the inputs.
+- Embellish or extrapolate beyond what the inputs support.
+
+If a section bullet has no supporting material, write the literal
+token [CITATION NEEDED] (or [DATA NEEDED] for missing numbers) so
+a human reviewer can resolve it.
+
+Allowed sources:
+- The materials explicitly provided in this session.
+- Logical reasoning derived from those materials.
+- Standard scientific and engineering vocabulary.
+
+This constraint is strict and overrides any other instruction.

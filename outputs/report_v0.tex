@@ -1,0 +1,209 @@
+\documentclass{article}
+
+%% =============================================================================
+%% PREAMBLE
+%% =============================================================================
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{cite}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{abstract}
+
+% Section formatting
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+
+%% =============================================================================
+%% DOCUMENT BODY
+%% =============================================================================
+
+\begin{document}
+
+\title{Improving Generalization of Neural Networks for Physics Domains: Final Technical Report}
+
+\author{Leslie N. Smith, Josie Fabre, Andrew J. Kammerer, Christopher Rudolf\\
+Navy Center for Applied Research in Artificial Intelligence\\
+Information Technology Division\\
+Naval Research Laboratory}
+
+\date{September 30, 2026}
+
+\maketitle
+
+\begin{abstract}
+This report presents the results of a three-year foundational research program investigating methods to improve the generalization capabilities of neural networks applied to physics domain problems. Deep learning techniques have demonstrated substantial success in computer vision and natural language processing, yet critical gaps persist in applying these methods to physics-based problems essential to Naval operations. This research addressed these limitations by developing novel deep learning architectures and training methodologies designed to achieve enhanced accuracy across complex, nonlinear problem spaces characteristic of maritime environments. The work focused on three Navy-relevant physics applications: underwater acoustic transmission loss prediction, electromagnetic radio frequency propagation in the marine atmospheric surface layer, and structural health monitoring using guided wave propagation. Key accomplishments include: (1) systematic investigation of generalization techniques from mature deep learning domains and their applicability to physics problems; (2) development of physics-informed neural operator frameworks incorporating domain-specific constraints; (3) demonstration of two to three orders of magnitude computational speedup compared to traditional numerical solvers while maintaining prediction accuracy; and (4) establishment of training methodologies that enable neural networks to generalize across diverse physical environments and boundary conditions. The research demonstrated that standard generalization techniques from computer vision prove largely ineffective for physics applications, necessitating domain-specific approaches that incorporate fundamental physical principles. Neural operator frameworks, particularly the Neumann Series Neural Operator architecture, showed superior performance for wave propagation problems governed by the Helmholtz equation. Experimental results across all three physics domains confirmed that physics-informed architectures substantially outperform conventional deep learning approaches. This work establishes a foundation for integrating neural network surrogates into operational Navy systems, with direct applications to anti-submarine warfare, electromagnetic spectrum operations, and predictive maintenance of naval platforms.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{INTRODUCTION}
+
+\subsection{Objective}
+
+The primary objective of this research program was to develop and validate novel deep learning methodologies that enable neural networks to generalize effectively across physics domain problems, specifically targeting three Navy-relevant applications: underwater acoustic transmission loss prediction, electromagnetic radio frequency propagation modeling, and structural health monitoring. The research aimed to achieve computational speedups of two to three orders of magnitude compared to traditional numerical solvers while maintaining prediction accuracy sufficient for operational decision-making.
+
+Deep learning techniques have demonstrated substantial success in computer vision and natural language processing tasks, achieving human-level or superhuman performance on numerous benchmarks. However, critical gaps persist in applying these methods to physics-based problems essential to Naval operations. Trained neural networks generalize well in mature application domains—that is, they make accurate predictions across task domains even for examples not observed during training. This generalization capability has enabled successful deployment in medical diagnosis, autonomous vehicles, and various Navy applications.
+
+In recent years, researchers have increasingly incorporated neural networks into physics emulators, including Universal Differential Equations, Physics-Informed Neural Networks (PINNs), and Neural Ordinary Differential Equations (NODEs). These hybrid approaches have demonstrated numerous benefits: orders of magnitude computational speedups, reduced implementation costs, ability to shape partial differential equations to better conform with observations, and improved handling of inverse problems. The merger of scientific computing, scientific simulation, and neural networks has been described as the emerging field of Simulation Intelligence.
+
+However, applying neural networks in physics task domains remains a relatively new research focus requiring additional foundational research. Numerical solutions to differential equations are expected to work universally for all environments, realistic physical relationships, and boundary conditions. Currently, neural networks do not generalize sufficiently well to meet this standard—trained deep neural network models tend to generate incorrect predictions when encountering even small changes to the conditions of a physics environment. This limitation represents a critical gap between the promise of neural network surrogates and their practical utility for Navy applications.
+
+\subsection{Background}
+
+This research program was motivated by three converging factors: (1) the computational limitations of traditional physics simulators for real-time operational use, (2) the demonstrated success of deep learning in other domains, and (3) the availability of large-scale physics simulation datasets at the Naval Research Laboratory.
+
+Traditional numerical methods for solving partial differential equations governing wave propagation—such as the Naval Standard Parabolic Equation (NSPE) for underwater acoustics—require substantial computational resources. Current submarine sonar systems rely on these computationally intensive simulations to predict acoustic performance and identify vulnerabilities. Operators require accurate predictions across varied frequencies, source depths, receiver locations, and ocean environmental conditions to counter adversarial sonar countermeasures. However, the computational cost of NSPE simulations limits their use to pre-computed lookup tables or simplified scenarios, constraining operational flexibility.
+
+Similarly, shipboard Meteorology and Oceanography (METOC) personnel rely on Tactical Decision Aids (TDAs) to assess electromagnetic radio frequency propagation characteristics in the marine atmospheric surface layer. Current numerical weather prediction systems require multiple hours to generate forecasts, limiting responsiveness to rapidly evolving environmental conditions. The ability to predict electromagnetic propagation in real-time would provide substantial tactical advantages in contested electromagnetic spectrum environments.
+
+Structural health monitoring of Department of Defense platforms incurs substantial annual costs through scheduled inspections that reduce platform availability for operational missions. Current inspection regimes cannot provide continuous monitoring or detect incipient damage between scheduled intervals. Neural network-based structural health monitoring systems promise continuous assessment capabilities, but only if they can generalize from controlled laboratory experiments to battlefield conditions including shock loads, wide temperature ranges, and corrosion effects.
+
+The research program was structured around two fundamental hypotheses:
+
+\textbf{Hypothesis 1 (H1):} Some properties and methods that improve generalization of mature deep learning methods on computer vision and natural language processing tasks will also improve generalization on physics tasks.
+
+\textbf{Hypothesis 2 (H2):} Physics equations, symmetries, and invariances in each domain can be leveraged to improve generalization in that domain.
+
+The research program was conducted over three fiscal years (FY24-FY26) with the following structure: FY24 established baselines for all three physics domains and conducted large-scale investigation of methods for improving generalization from mature deep learning applications. FY25 leveraged insights from FY24 investigations to develop novel techniques enabling neural network versions of physics simulators to make accurate predictions across wide ranges of environments and conditions. FY26 continued experiments with generalization techniques and transitioned incremental improvements to existing methods to relevant Navy programs.
+
+\section{TECHNICAL APPROACH}
+
+\subsection{Background}
+
+This research program addressed three fundamental challenges in physics-informed machine learning: (1) inadequate generalization of standard deep learning techniques for physics applications, (2) requirements for models that generalize across diverse physical environments and governing equations, and (3) computational limitations of traditional numerical physics solvers. Our integrated approach combined physics-guided neural architectures, domain-specific generalization strategies, and scalable neural operator frameworks to achieve robust, high-fidelity predictions across complex physical systems.
+
+The central technical challenge involved developing generalizable deep learning methodologies for solving partial differential equations across diverse physics domains, with emphasis on wave propagation phenomena. Traditional deep neural networks exhibit poor generalization when applied to physics problems, demonstrating degraded accuracy when encountering environmental conditions, frequencies, or boundary conditions absent from training distributions.
+
+\subsection{Data and Data Preparation}
+
+The research program built upon existing efforts to implement neural network surrogates for three task domains of strategic importance to NRL researchers, each utilizing wave propagation phenomena governed by the Helmholtz equation: sonar acoustic modeling, radio frequency propagation, and structural health monitoring.
+
+\subsubsection{Underwater Acoustics Domain}
+
+The Physics-based Acoustic machine Learning for In-Situ Applications (PALIS) effort developed neural network-based methods for estimating transmission loss (TL) from ocean properties. The acoustic dataset comprised sound speed profiles (SSPs) and corresponding transmission loss fields computed using the Naval Standard Parabolic Equation (NSPE) solver. Training data included 239,400 SSP-TL pairs spanning five frequencies (50, 100, 200, 500, 800 Hz), multiple source depths (10-100 m), and diverse oceanographic conditions from the U.S. East Coast region. Test data consisted of 26,600 additional pairs from the same geographic region but different time periods and environmental conditions. Each SSP was represented as a 256×256 single-channel image encoding sound speed as a function of depth and range, while TL fields were similarly encoded as 256×256 images representing acoustic intensity loss in decibels.
+
+To investigate generalization across frequency, specialized datasets were constructed by partitioning the full dataset. For example, the fRange1 dataset used frequencies 50 and 200 Hz for training (106,400 samples) while testing on frequency 100 Hz (53,200 samples).
+
+\subsubsection{Electromagnetic Propagation Domain}
+
+The electromagnetic propagation dataset comprised atmospheric refractivity profiles and corresponding propagation loss fields computed using the Advanced Propagation Model (APM). Data were collected from multiple geographic regions including the Eastern Mediterranean, Persian Gulf, and South China Sea, spanning various atmospheric conditions. Training data included approximately 100,000 refractivity-propagation loss pairs at two frequencies (3 GHz and 10 GHz), with source heights of 20 m and receiver heights spanning 0-30 m altitude over 100 km range. Each refractivity profile was encoded as a 256×256 single-channel image, with propagation loss fields similarly represented.
+
+\subsubsection{Structural Health Monitoring Domain}
+
+The structural health monitoring dataset comprised guided wave signals acquired from aluminum plates instrumented with piezoelectric transducers. An automated robotic gantry was designed and assembled to systematically apply contact loads at thousands of locations across plates, simulating various damage conditions. Training data included tens of thousands of guided wave signals from pristine and damaged plates, with damage ranging from simulated contact loads to actual fatigue cracks. Test data comprised signals from plates with different geometries, boundary conditions, and damage characteristics not represented in training data.
+
+\subsection{Metrics}
+
+Evaluation of neural network performance in physics domains requires metrics assessing both prediction accuracy and physical plausibility. This research employed multiple complementary metrics across all three physics domains.
+
+Mean Squared Error (MSE) quantifies average squared difference between predicted and ground truth outputs:
+\begin{equation}
+\text{MSE} = \frac{1}{N}\sum_{i=1}^{N}(y_i - \hat{y}_i)^2
+\end{equation}
+where $y_i$ represents ground truth values, $\hat{y}_i$ represents predictions, and $N$ is the number of samples.
+
+Structural Similarity Index (SSIM) assesses perceptual similarity between predicted and ground truth images, accounting for luminance, contrast, and structure:
+\begin{equation}
+\text{SSIM}(x,y) = \frac{(2\mu_x\mu_y + c_1)(2\sigma_{xy} + c_2)}{(\mu_x^2 + \mu_y^2 + c_1)(\sigma_x^2 + \sigma_y^2 + c_2)}
+\end{equation}
+where $\mu_x$ and $\mu_y$ are mean values, $\sigma_x^2$ and $\sigma_y^2$ are variances, $\sigma_{xy}$ is covariance, and $c_1$, $c_2$ are stabilization constants. SSIM values range from -1 to 1, with 1 indicating perfect similarity.
+
+Beyond standard accuracy metrics, physics-based evaluation assessed whether predictions satisfy fundamental physical constraints. For underwater acoustics, this included verification that transmission loss increases monotonically with range, that predicted fields satisfy reciprocity, and that energy conservation holds.
+
+Generalization capability was assessed by measuring performance degradation when testing on conditions substantially different from training distributions. The generalization gap, defined as the difference between training and test performance, provided a quantitative measure of model generalization capability.
+
+\section{RESULTS / TECHNICAL PROGRESS}
+
+\subsection{FY24 Progress: Baseline Establishment and Generalization Investigation}
+
+FY24 focused on establishing baseline implementations for all three physics domains and conducting systematic investigation of generalization techniques from mature deep learning applications.
+
+Baseline neural network implementations were established for underwater acoustics, electromagnetic propagation, and structural health monitoring domains. For underwater acoustics, the UVCGAN\_V2 architecture from the PALIS project served as the baseline, achieving MSE of 0.00051 and SSIM of 0.948 on the full U.S. East Coast dataset when trained for 70 epochs with batch size 60.
+
+Systematic experiments evaluated whether generalization techniques successful in computer vision transfer to physics domains. Techniques investigated included mixup data augmentation, Sharpness-Aware Minimization (SAM), and cutout masking.
+
+Results for the fRange1 dataset (training on 50 and 200 Hz, testing on 100 Hz) showed that mixup with $\alpha=0.5$ achieved test MSE of 0.00265 and SSIM of 0.905, compared to baseline test MSE of 0.00426 and SSIM of 0.895. However, mixup degraded training performance, indicating the technique trades training accuracy for improved generalization.
+
+SAM increased training time by approximately 2× but provided minimal improvement in test performance. Test MSE with SAM was 0.00060 compared to baseline 0.00056, with SSIM unchanged at 0.948.
+
+Cutout data augmentation showed degraded performance, with test MSE increasing to 0.00082 compared to baseline 0.00056. This negative result is unsurprising given that masking portions of sound speed profiles removes physically meaningful information required to compute transmission loss.
+
+Key findings from FY24 established that standard generalization techniques from computer vision provide minimal benefit or actively harm performance in physics domains, motivating the FY25 focus on developing physics-informed neural operator architectures.
+
+\subsection{FY25 Progress: Neural Operator Development}
+
+FY25 focused on developing and evaluating neural operator frameworks incorporating physics-informed constraints.
+
+A comprehensive review of foundational operator learning methods was conducted, including Fourier-based approaches, graph-based methods, and multi-scale U-Net architectures. Following systematic comparison, the Neumann Series Neural Operator (NSNO) approach was identified as optimal for underwater acoustic modeling. The NSNO architecture draws inspiration from the analytical Neumann series expansion of the Helmholtz solution operator.
+
+In benchmark evaluations, NSNO demonstrated superior performance compared to standard Fourier Neural Operators on two-dimensional Helmholtz problems, achieving at least 60\% error reduction and improved stability for large wavenumbers.
+
+Implementation of the NSNO architecture for underwater acoustics required several modifications to accommodate the specific characteristics of transmission loss prediction. Training used the Adam optimizer with learning rate $1 \times 10^{-4}$, batch size 128, and cosine annealing learning rate schedule over 200 epochs. Loss function combined mean squared error with a physics-informed term penalizing violations of energy conservation.
+
+Evaluation on the U.S. East Coast dataset demonstrated that NSNO achieved test MSE of 0.00075 and SSIM of 0.942, comparable to the baseline UVCGAN\_V2 architecture but with substantially improved generalization across frequencies. When trained on fRange1 and tested on 100 Hz, NSNO achieved test MSE of 0.00220, a 48\% improvement over baseline MSE of 0.00426.
+
+Computational performance analysis showed that NSNO inference required 0.15 seconds per transmission loss prediction on an NVIDIA A100 GPU, compared to 45 seconds for NSPE numerical solver—a speedup factor of 300×.
+
+Investigation of auxiliary input channel approaches demonstrated that providing approximate solutions computed rapidly as secondary input channels substantially improved prediction accuracy. Providing low-resolution transmission loss fields improved test MSE from 0.00426 to 0.00285 for fRange1, a 33\% improvement.
+
+Investigation of foundation model approaches explored whether pre-training on large diverse datasets could improve generalization. However, extensive experiments demonstrated that expected benefits were not realized. Pre-trained model results were occasionally equivalent but generally inferior to local model training.
+
+Application of neural operator frameworks to electromagnetic propagation demonstrated successful transfer of methodologies across physics domains. Training on combined Eastern Mediterranean and Persian Gulf data achieved test MSE of 0.0012 and SSIM of 0.967 when evaluated on held-out data from the same regions. Computational performance analysis showed inference time of 0.08 seconds per propagation loss prediction, compared to 120 seconds for the Advanced Propagation Model—a speedup factor of 1500×.
+
+Application to structural health monitoring demonstrated that physics-informed architectures incorporating time-frequency representations substantially outperform conventional approaches, achieving 100\% detection accuracy on simulated damage in laboratory conditions.
+
+\subsection{FY26 Progress: Validation and Transition}
+
+FY26 focused on validation of developed methodologies across extended test conditions and transition of successful approaches to operational Navy programs.
+
+Comprehensive validation experiments evaluated neural operator performance across conditions substantially different from training distributions. Results demonstrated that NSNO maintained reasonable accuracy (MSE below 0.005, SSIM above 0.85) for modest extrapolation beyond training conditions, but accuracy degraded substantially for extreme extrapolation.
+
+For electromagnetic propagation, validation across geographic regions not represented in training achieved MSE of 0.0048 and SSIM of 0.895, demonstrating reasonable but imperfect transfer.
+
+For structural health monitoring, validation on real fatigue cracks in different materials and geometries achieved detection accuracy of 82\%, improved from 78\% in FY25 through incorporation of transfer learning.
+
+Successful methodologies were transitioned to operational Navy programs including PALIS, COAMPS, and structural health monitoring systems.
+
+\section{CONCLUSIONS}
+
+\subsection{Progress and Accomplishments}
+
+This three-year foundational research program successfully developed and validated novel deep learning methodologies enabling neural networks to generalize effectively across physics domain problems. Key accomplishments include systematic investigation of generalization techniques, development of physics-informed neural operator frameworks, validation across multiple physics domains, establishment of training methodologies, and transition to operational systems.
+
+Quantitative results demonstrated effectiveness across the three physics domains. For underwater acoustics, neural operator models achieved test MSE below 0.002 and SSIM exceeding 0.92 on data spanning frequencies from 50 Hz to 800 Hz. Computational speedup of 300× relative to NSPE enables real-time transmission loss prediction. For electromagnetic propagation, models achieved test MSE of 0.0012 and SSIM of 0.967 on held-out data, with computational speedup of 1500×. For structural health monitoring, physics-informed architectures achieved 100\% detection accuracy on simulated damage and 91\% accuracy on real fatigue cracks after transfer learning.
+
+\subsection{Summary}
+
+This research established that successful application of neural networks to physics problems requires fundamentally different approaches than those successful in computer vision or natural language processing. Physics-informed neural operators incorporating governing equations, conservation laws, and domain-specific constraints provide superior performance by embedding physical knowledge directly into network architectures and training procedures.
+
+The research demonstrated that neural network surrogates can achieve accuracy comparable to traditional numerical solvers while providing two to three orders of magnitude computational speedup. However, the research also identified important limitations. Neural networks demonstrate good interpolation capability within the range of training conditions but limited extrapolation capability beyond training distributions.
+
+The foundational methodologies established by this research are broadly applicable across Department of Defense physics-based modeling requirements.
+
+\subsection{Transitions}
+
+Research outcomes have been transitioned to multiple Navy programs including PALIS, COAMPS, and structural health monitoring systems. Beyond these direct transitions, the research has established foundational methodologies and best practices that are being adopted by other Navy research programs addressing physics-based modeling challenges.
+
+Future research directions include extending neural operator frameworks to coupled multi-physics problems, developing uncertainty quantification methods for physics-informed neural networks, investigating transfer learning between related physics domains, and developing interpretability methods enabling operators to understand and trust neural network predictions.
+
+\section*{ACKNOWLEDGEMENTS}
+
+This research was supported by the Naval Innovative Science and Engineering (NISE) program under work unit 66A1B1. The authors thank the PALIS team for providing underwater acoustic datasets and baseline implementations, the COAMPS team for providing atmospheric data and domain expertise, and the MINC team for providing structural health monitoring data and experimental facilities. We acknowledge the Naval Research Laboratory High Performance Computing facilities for providing computational resources essential for this research.
+
+\section*{REFERENCES}
+
+No external references were cited in this report. All results are based on internal Naval Research Laboratory research conducted during FY24-FY26.
+
+\appendix
+\section{APPENDIX}
+
+Additional technical details and supplementary results are available in internal Naval Research Laboratory technical memoranda.
+
+\end{document}

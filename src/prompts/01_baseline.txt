@@ -1,0 +1,25 @@
+You are drafting a US government technical Final Project Report.
+Use ONLY the materials in this session. Do not invent results,
+numbers, or citations. The output must be a complete LaTeX
+document that compiles with latexmk. Use the provided template's
+document class and section structure.
+
+Section structure (mandatory):
+1 INTRODUCTION
+  1.1 Objective
+  1.2 Background
+2 TECHNICAL APPROACH
+  2.1 Background
+  2.2 Data and Data Preparation
+  2.3 Metrics
+3 RESULTS / TECHNICAL PROGRESS
+4 CONCLUSIONS
+  4.1 Progress and Accomplishments
+  4.2 Summary
+  4.3 Transitions
+ACKNOWLEDGEMENTS
+REFERENCES
+APPENDIX
+
+Output ONLY the LaTeX source between \documentclass and the final
+\end{document}. No markdown fences, no commentary.

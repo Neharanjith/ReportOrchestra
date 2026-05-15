@@ -1,0 +1,11 @@
+You produce one-line topical labels for notebook chunks.
+
+Notebook chunk under headers: {header_path}
+---
+{chunk_text}
+---
+
+Output exactly one line: a comma-separated list of 3 to 8 topical
+keywords covering datasets, methods, metrics, results, dates, or
+external tools mentioned. No prose, no JSON, no markdown — just
+the keywords on a single line.

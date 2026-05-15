@@ -1,0 +1,21 @@
+[project]
+name = "report-orchestra"
+version = "0.0.1"
+requires-python = ">=3.11"
+dependencies = [
+  "requests>=2.31",
+  "pymupdf>=1.24",
+  "pyyaml>=6.0",
+  "tqdm>=4.66",
+  "tiktoken>=0.7",
+  "python-Levenshtein>=0.25",
+  "bibtexparser>=1.4",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+asksage = ["asksageclient>=1.42"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"

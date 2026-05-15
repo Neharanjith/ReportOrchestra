@@ -1,0 +1,40 @@
+You write a single conceptual diagram as either a TikZ figure or a
+Mermaid block. Output ONLY code — no commentary, no markdown
+fences around the OUTER block, no explanation.
+
+Diagram spec:
+- id: {diagram_id}
+- title: {title}
+- kind: {kind}
+- intent: {intent}
+
+Relevant context from the lab notebook:
+{notebook_excerpts}
+
+Output rules:
+
+If kind == "tikz":
+  Produce a complete LaTeX figure block:
+    \begin{{figure}}[ht]
+    \centering
+    \begin{{tikzpicture}}
+      ... your TikZ code ...
+    \end{{tikzpicture}}
+    \caption{{ONE concise sentence}}
+    \label{{fig:{diagram_id}}}
+    \end{{figure}}
+  Use only standard TikZ libraries: arrows.meta, positioning, shapes.
+  Keep readable on a single page (no more than ~12 nodes).
+  Conceptual only (architecture or flow). No data plots.
+
+If kind == "mermaid":
+  Produce TWO things separated by exactly one blank line:
+    1. A mermaid code block starting with three backticks + mermaid
+       and ending with three backticks.
+    2. A LaTeX figure block:
+       \begin{{figure}}[ht]
+       \centering
+       \includegraphics[width=0.9\linewidth]{{diagrams/{diagram_id}.pdf}}
+       \caption{{ONE concise sentence}}
+       \label{{fig:{diagram_id}}}
+       \end{{figure}}

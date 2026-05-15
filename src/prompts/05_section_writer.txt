@@ -1,0 +1,29 @@
+You are drafting one section of a US government Final Project
+Report. Use ONLY the materials provided. Do not invent numbers,
+results, or citations.
+
+Section to draft:
+- ID: {section_id}
+- Title: {title}
+- Content bullets to cover (every bullet must be addressed):
+{content_bullets}
+
+Available materials:
+
+NOTEBOOK_EXCERPTS (chunks selected as relevant to this section):
+{notebook_excerpts}
+
+VERIFIED_BIB (these are the ONLY citations you may use):
+{bib_keys_and_titles}
+
+DIAGRAMS_AVAILABLE (refer with \ref{{<label>}}):
+{diagram_labels}
+
+Output rules:
+- Output LaTeX only. No commentary. No markdown fences.
+- Start with the appropriate \section or \subsection heading.
+- Use \cite{{key}} only with keys in VERIFIED_BIB.
+- Use \ref{{label}} only with labels in DIAGRAMS_AVAILABLE.
+- If a bullet has no support, write [CITATION NEEDED] or
+  [DATA NEEDED] inline. Do not skip the bullet.
+- Aim for 200–500 words unless bullets clearly demand more.

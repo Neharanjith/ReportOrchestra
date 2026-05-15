@@ -141,3 +141,55 @@ def verify_and_emit_bib(
                     "year": v.get("year", "")}
          for v in verified}, indent=2))
     return verified
+
+from src.tools.llm_client import call_llm
+
+_SYNTH_PATH = Path(__file__).parent.parent / "prompts" / "03_lit_synth.txt"
+
+def draft_background(outline: dict,
+                     citation_map: dict,
+                     proposal_text: str,
+                     out_path="work/03_lit_review/intro_background.tex") -> str:
+    template = _SYNTH_PATH.read_text()
+    sec_12 = next((s for s in outline["section_plan"]
+                   if s["section_id"] == "1.2"), {})
+    user = template.format(
+        outline_section=json.dumps(sec_12, indent=2),
+        citation_map=json.dumps(
+            {k: {"title": v["title"][:200], "year": v.get("year", "")}
+             for k, v in citation_map.items()}, indent=2),
+        proposal_excerpt=(proposal_text or "")[:8000],
+    )
+    tex = call_llm("lit_synth",
+                   "You write a Background section in LaTeX.",
+                   user, anti_leakage=True, temperature=0.3,
+                   max_tokens=3000)
+    Path(out_path).parent.mkdir(parents=True, exist_ok=True)
+    Path(out_path).write_text(tex)
+    return tex
+
+from src.tools.llm_client import call_llm
+
+_SYNTH_PATH = Path(__file__).parent.parent / "prompts" / "03_lit_synth.txt"
+
+def draft_background(outline: dict,
+                     citation_map: dict,
+                     proposal_text: str,
+                     out_path="work/03_lit_review/intro_background.tex") -> str:
+    template = _SYNTH_PATH.read_text()
+    sec_12 = next((s for s in outline["section_plan"]
+                   if s["section_id"] == "1.2"), {})
+    user = template.format(
+        outline_section=json.dumps(sec_12, indent=2),
+        citation_map=json.dumps(
+            {k: {"title": v["title"][:200], "year": v.get("year", "")}
+             for k, v in citation_map.items()}, indent=2),
+        proposal_excerpt=(proposal_text or "")[:8000],
+    )
+    tex = call_llm("lit_synth",
+                   "You write a Background section in LaTeX.",
+                   user, anti_leakage=True, temperature=0.3,
+                   max_tokens=3000)
+    Path(out_path).parent.mkdir(parents=True, exist_ok=True)
+    Path(out_path).write_text(tex)
+    return tex

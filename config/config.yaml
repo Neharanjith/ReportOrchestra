@@ -1,0 +1,24 @@
+models:
+  indexer:             ollama:devstral-small-2:24b
+  outline:             asksage:claude-sonnet-4-5-20250929
+  lit_search:          ollama:devstral-small-2:24b
+  lit_synth:           asksage:claude-sonnet-4-5-20250929
+  diagram:             ollama:devstral-small-2:24b
+  section_writer:      ollama:devstral-small-2:24b
+  refinement_reviewer: asksage:claude-haiku-4-5-20251001
+  refinement_revisor:  asksage:claude-sonnet-4-5-20250929
+paths:
+  inputs:  ./inputs
+  work:    ./work
+  outputs: ./outputs
+refinement:
+  max_iterations: 3
+  accept_on_tie:  true
+citation:
+  cutoff_date: "2026-04-01"
+  semantic_scholar_rate_limit: 1.0
+  min_citations: 25
+ollama:
+  base_url: "http://localhost:11434"
+asksage:
+  base_url: "https://api.genai.army.mil/server/anthropic"

@@ -39,5 +39,8 @@ def assemble(
     outp.parent.mkdir(parents=True, exist_ok=True)
     outp.write_text(tex)
     if Path(bib_path).exists():
-        shutil.copy(bib_path, outp.parent / Path(bib_path).name)
+        try:
+            shutil.copy(bib_path, outp.parent / Path(bib_path).name)
+        except shutil.SameFileError:
+            pass
     return tex

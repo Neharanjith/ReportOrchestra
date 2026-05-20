@@ -316,9 +316,34 @@ ReportOrchestra uses AskSage to access Claude models (Sonnet, Opus, Haiku) for t
 - `claude-opus-4-7-default` — Most capable (Google Vertex AI)
 - `claude-haiku-4-5-20251001` — Fastest/cheapest (Google Vertex AI)
 
+**Part C: Semantic Scholar API Key Setup (for reliable literature search)**
+
+The Semantic Scholar API has aggressive rate limits for unauthenticated users. A free API key provides a dedicated rate limit (~1 request/second sustained) and avoids 429 errors during literature discovery.
+
+1. Request a free API key at: https://www.semanticscholar.org/product/api#api-key
+   (Usually fast approval for research use)
+
+2. Test your API key works:
+   ```bash
+   curl -H "x-api-key: YOUR_API_KEY_HERE" \
+     "https://api.semanticscholar.org/graph/v1/paper/search?query=machine+learning&limit=1&fields=title,year"
+   ```
+   You should see a JSON response with paper data.
+
+3. Set the environment variable (add to `~/.bashrc` or `~/.zshrc`):
+   ```bash
+   export S2_API_KEY="your-semantic-scholar-api-key-here"
+   ```
+
+4. Reload your shell or run:
+   ```bash
+   source ~/.bashrc
+   ```
+
 ✅ **Verify:** 
 - OC successfully creates files (Ollama working)
 - The curl command returns a valid JSON response (AskSage working)
+- The Semantic Scholar curl command returns paper data (S2 API key working)
 
 ---
 
@@ -1545,33 +1570,108 @@ DO THIS:
 1. Replace src/tools/semantic_scholar.py with EXACTLY:
 
 ```python
-"""Thin Semantic Scholar API wrapper. Free tier, ~1 req/sec."""
+"""Thin Semantic Scholar API wrapper with retry logic for rate limits.
+
+Supports optional API key via S2_API_KEY environment variable.
+Get a free key at: https://www.semanticscholar.org/product/api#api-key
+"""
 from __future__ import annotations
-import time, requests
+import os
+import sys
+import time
+import requests
 
 BASE = "https://api.semanticscholar.org/graph/v1"
 _LAST = [0.0]
 FIELDS = "title,authors,year,abstract,externalIds,venue,citationCount"
 
+# API key (optional but recommended to avoid rate limits)
+API_KEY = os.environ.get("S2_API_KEY", "")
+
+# Retry configuration
+MAX_RETRIES = 3
+BACKOFF_BASE = 2  # seconds: 2, 4, 8
+
 def _throttle(rate=1.0):
     gap = 1.0 / rate
     wait = gap - (time.time() - _LAST[0])
-    if wait > 0: time.sleep(wait)
+    if wait > 0:
+        time.sleep(wait)
     _LAST[0] = time.time()
 
+def _request_with_retry(method: str, url: str, **kwargs) -> requests.Response:
+    """Make HTTP request with exponential backoff retry on 429 errors.
+    
+    If S2_API_KEY environment variable is set, includes it in the
+    x-api-key header for higher rate limits.
+    """
+    # Add API key header if available
+    headers = kwargs.pop("headers", {})
+    if API_KEY:
+        headers["x-api-key"] = API_KEY
+    kwargs["headers"] = headers
+    
+    last_exception = None
+    for attempt in range(MAX_RETRIES + 1):
+        _throttle()
+        try:
+            r = requests.request(method, url, **kwargs)
+            if r.status_code == 429:
+                if attempt < MAX_RETRIES:
+                    wait_time = BACKOFF_BASE * (2 ** attempt)
+                    print(f"  [semantic_scholar] Rate limited (429), "
+                          f"retrying in {wait_time}s... "
+                          f"(attempt {attempt + 1}/{MAX_RETRIES})",
+                          file=sys.stderr, flush=True)
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    print(f"  [semantic_scholar] Rate limited (429), "
+                          f"max retries ({MAX_RETRIES}) exhausted.",
+                          file=sys.stderr, flush=True)
+                    if not API_KEY:
+                        print(f"  [semantic_scholar] TIP: Set S2_API_KEY "
+                              f"environment variable for higher rate limits.",
+                              file=sys.stderr, flush=True)
+            r.raise_for_status()
+            return r
+        except requests.exceptions.HTTPError as e:
+            if e.response is not None and e.response.status_code == 429:
+                last_exception = e
+                continue
+            raise
+        except requests.exceptions.RequestException as e:
+            last_exception = e
+            if attempt < MAX_RETRIES:
+                wait_time = BACKOFF_BASE * (2 ** attempt)
+                print(f"  [semantic_scholar] Request failed ({e}), "
+                      f"retrying in {wait_time}s... "
+                      f"(attempt {attempt + 1}/{MAX_RETRIES})",
+                      file=sys.stderr, flush=True)
+                time.sleep(wait_time)
+            else:
+                raise
+    # If we exhausted retries due to 429, raise the last exception
+    if last_exception:
+        raise last_exception
+    raise RuntimeError("Unexpected retry loop exit")
+
 def search(query: str, limit: int = 10) -> list[dict]:
-    _throttle()
-    r = requests.get(f"{BASE}/paper/search",
-                     params={"query": query, "limit": limit,
-                             "fields": FIELDS}, timeout=30)
-    r.raise_for_status()
+    r = _request_with_retry(
+        "GET",
+        f"{BASE}/paper/search",
+        params={"query": query, "limit": limit, "fields": FIELDS},
+        timeout=30
+    )
     return r.json().get("data", [])
 
 def get_paper(paper_id: str) -> dict:
-    _throttle()
-    r = requests.get(f"{BASE}/paper/{paper_id}",
-                     params={"fields": FIELDS}, timeout=30)
-    r.raise_for_status()
+    r = _request_with_retry(
+        "GET",
+        f"{BASE}/paper/{paper_id}",
+        params={"fields": FIELDS},
+        timeout=30
+    )
     return r.json()
 ```
 
@@ -1639,20 +1739,69 @@ def test_discover_dedupes(tmp_path):
     assert {p["paperId"] for p in out} == {"p1", "p2"}
 ```
 
-5. Run: pytest tests/test_lit_discovery_offline.py -v
+5. Create tests/test_semantic_scholar_retry.py:
 
-6. Commit: git add -A && git commit -m "4.1: lit discovery + S2 wrapper"
+```python
+from unittest.mock import patch, MagicMock
+import pytest
+from src.tools.semantic_scholar import _request_with_retry
 
-ACCEPTANCE TEST: pytest shows 1 passed.
+def test_retry_on_429(capsys):
+    """Test that 429 triggers retry with console output."""
+    mock_responses = [
+        MagicMock(status_code=429, raise_for_status=MagicMock(
+            side_effect=__import__('requests').exceptions.HTTPError(
+                response=MagicMock(status_code=429)))),
+        MagicMock(status_code=200, json=lambda: {"data": []},
+                  raise_for_status=MagicMock()),
+    ]
+    with patch("src.tools.semantic_scholar.requests.request",
+               side_effect=mock_responses):
+        with patch("src.tools.semantic_scholar.time.sleep"):
+            r = _request_with_retry("GET", "http://test.com")
+    assert r.status_code == 200
+    captured = capsys.readouterr()
+    assert "Rate limited (429)" in captured.err
+    assert "retrying" in captured.err
+
+def test_max_retries_exhausted():
+    """Test that max retries raises after exhaustion."""
+    mock_response = MagicMock(status_code=429)
+    mock_response.raise_for_status.side_effect = (
+        __import__('requests').exceptions.HTTPError(
+            response=MagicMock(status_code=429)))
+    with patch("src.tools.semantic_scholar.requests.request",
+               return_value=mock_response):
+        with patch("src.tools.semantic_scholar.time.sleep"):
+            with pytest.raises(__import__('requests').exceptions.HTTPError):
+                _request_with_retry("GET", "http://test.com")
+
+def test_api_key_header_added():
+    """Test that API key is added to headers when set."""
+    mock_response = MagicMock(status_code=200, json=lambda: {"data": []})
+    mock_response.raise_for_status = MagicMock()
+    with patch("src.tools.semantic_scholar.API_KEY", "test-key-123"):
+        with patch("src.tools.semantic_scholar.requests.request",
+                   return_value=mock_response) as mock_req:
+            _request_with_retry("GET", "http://test.com")
+    call_kwargs = mock_req.call_args[1]
+    assert call_kwargs["headers"]["x-api-key"] == "test-key-123"
+```
+
+6. Run: pytest tests/test_lit_discovery_offline.py tests/test_semantic_scholar_retry.py -v
+
+7. Commit: git add -A && git commit -m "4.1: lit discovery + S2 wrapper with retry logic and API key support"
+
+ACCEPTANCE TEST: pytest shows 4 passed.
 
 WHEN DONE:
-Print: "Subtask 4.1 complete: candidate discovery"
+Print: "Subtask 4.1 complete: candidate discovery with rate-limit retry and API key support"
 STOP.
 
 IF STUCK: Print "Stuck on: <what>" and stop.
 ````
 
-✅ **Verify:** `pytest tests/test_lit_discovery_offline.py -v` shows 1 passed.
+✅ **Verify:** `pytest tests/test_lit_discovery_offline.py tests/test_semantic_scholar_retry.py -v` shows 4 passed.
 
 ---
 

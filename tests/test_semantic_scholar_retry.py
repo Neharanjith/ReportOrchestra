@@ -31,3 +31,14 @@ def test_max_retries_exhausted():
         with patch("src.tools.semantic_scholar.time.sleep"):
             with pytest.raises(__import__('requests').exceptions.HTTPError):
                 _request_with_retry("GET", "http://test.com")
+
+def test_api_key_header_added():
+    """Test that API key is added to headers when set."""
+    mock_response = MagicMock(status_code=200, json=lambda: {"data": []})
+    mock_response.raise_for_status = MagicMock()
+    with patch("src.tools.semantic_scholar.API_KEY", "test-key-123"):
+        with patch("src.tools.semantic_scholar.requests.request",
+                   return_value=mock_response) as mock_req:
+            _request_with_retry("GET", "http://test.com")
+    call_kwargs = mock_req.call_args[1]
+    assert call_kwargs["headers"]["x-api-key"] == "test-key-123"

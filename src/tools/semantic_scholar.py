@@ -1,5 +1,10 @@
-"""Thin Semantic Scholar API wrapper with retry logic for rate limits."""
+"""Thin Semantic Scholar API wrapper with retry logic for rate limits.
+
+Supports optional API key via S2_API_KEY environment variable.
+Get a free key at: https://www.semanticscholar.org/product/api#api-key
+"""
 from __future__ import annotations
+import os
 import sys
 import time
 import requests
@@ -7,6 +12,9 @@ import requests
 BASE = "https://api.semanticscholar.org/graph/v1"
 _LAST = [0.0]
 FIELDS = "title,authors,year,abstract,externalIds,venue,citationCount"
+
+# API key (optional but recommended to avoid rate limits)
+API_KEY = os.environ.get("S2_API_KEY", "")
 
 # Retry configuration
 MAX_RETRIES = 3
@@ -20,7 +28,17 @@ def _throttle(rate=1.0):
     _LAST[0] = time.time()
 
 def _request_with_retry(method: str, url: str, **kwargs) -> requests.Response:
-    """Make HTTP request with exponential backoff retry on 429 errors."""
+    """Make HTTP request with exponential backoff retry on 429 errors.
+    
+    If S2_API_KEY environment variable is set, includes it in the
+    x-api-key header for higher rate limits.
+    """
+    # Add API key header if available
+    headers = kwargs.pop("headers", {})
+    if API_KEY:
+        headers["x-api-key"] = API_KEY
+    kwargs["headers"] = headers
+    
     last_exception = None
     for attempt in range(MAX_RETRIES + 1):
         _throttle()
@@ -39,6 +57,10 @@ def _request_with_retry(method: str, url: str, **kwargs) -> requests.Response:
                     print(f"  [semantic_scholar] Rate limited (429), "
                           f"max retries ({MAX_RETRIES}) exhausted.",
                           file=sys.stderr, flush=True)
+                    if not API_KEY:
+                        print(f"  [semantic_scholar] TIP: Set S2_API_KEY "
+                              f"environment variable for higher rate limits.",
+                              file=sys.stderr, flush=True)
             r.raise_for_status()
             return r
         except requests.exceptions.HTTPError as e:

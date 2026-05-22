@@ -1,5 +1,6 @@
 You are drafting one section of a US government Final Project
-Report. Use ONLY the materials provided. Do not invent numbers,
+Report formatted for the NRL (Naval Research Laboratory) report
+template. Use ONLY the materials provided. Do not invent numbers,
 results, or citations.
 
 Section to draft:
@@ -21,7 +22,15 @@ DIAGRAMS_AVAILABLE (refer with \ref{{<label>}}):
 
 Output rules:
 - Output LaTeX only. No commentary. No markdown fences.
-- Start with the appropriate \section or \subsection heading.
+- Do NOT emit \chapter{{}} commands. The NRL template already defines
+  all chapter headings; emitting one will corrupt the document structure.
+- The highest heading level you may use is \section{{}}. Use
+  \subsection{{}} and \subsubsection{{}} as needed below that.
+- If this section maps to a chapter-level slot (section_ids 1.1, 1.2,
+  2.3, 3, 4.1, 4.2, 4.3), begin with \section{{}} subsections or prose
+  directly — do not restate the chapter title.
+- If this section maps to a section-level slot (section_ids 2.1, 2.2),
+  begin with \subsection{{}} or prose directly.
 - Use \cite{{key}} only with keys in VERIFIED_BIB.
 - Use \ref{{label}} only with labels in DIAGRAMS_AVAILABLE.
 - If a bullet has no support, write [CITATION NEEDED] or

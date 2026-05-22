@@ -1,0 +1,6 @@
+sections:
+  "1.1": "\\chapter{INTRODUCTION}"
+  "1.2": "\\chapter{BACKGROUND AND RELATED WORK}"
+executive_summary: "executivesummary"
+acknowledgments: "acknowledgments"
+bibliography_name: "References"

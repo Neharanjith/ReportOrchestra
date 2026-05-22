@@ -1,0 +1,22 @@
+# Maps outline section_ids to the NRL template heading that precedes each
+# PLACEHOLDER block. The assembler searches for the heading, then replaces
+# the first PLACEHOLDER line found after it (stopping at the next
+# \chapter or \section boundary).
+sections:
+  "1.1": "\\chapter{INTRODUCTION}"
+  "1.2": "\\chapter{BACKGROUND AND RELATED WORK}"
+  "2.1": "\\section{Problem Formulation}"
+  "2.2": "\\section{Approach}"
+  "2.3": "\\chapter{METHODOLOGY}"
+  "3":   "\\chapter{RESULTS}"
+  "4.1": "\\chapter{DISCUSSION}"
+  "4.2": "\\chapter{SUMMARY AND CONCLUSIONS}"
+  "4.3": "\\subsection{Transitions}"
+
+# LaTeX environment names used by the NRL template for special sections
+executive_summary: "executivesummary"
+acknowledgments:   "acknowledgments"
+
+# NRL template uses \bibliography{References}; verified.bib is copied
+# to this filename automatically
+bibliography_name: "References"

@@ -1,6 +1,6 @@
-You are writing section 1.2 (Background) of a US government Final
-Project Report. Use ONLY the verified bibliography below. Do not
-cite from training memory.
+You are writing section 1.2 (Background and Related Work) of a US
+government Final Project Report formatted for the NRL template. Use
+ONLY the verified bibliography below. Do not cite from training memory.
 
 Outline for this section:
 {outline_section}
@@ -12,7 +12,12 @@ Project proposal context (for framing the gap):
 {proposal_excerpt}
 
 Output:
-- LaTeX for section 1.2 only.
+- LaTeX content for section 1.2 only.
+- Do NOT emit a \chapter{{}} heading — the chapter heading
+  "\chapter{{BACKGROUND AND RELATED WORK}}" already exists in the NRL
+  template. Emitting it again would duplicate and corrupt the document.
+- Use \section{{}} for major topic clusters within this chapter, and
+  \subsection{{}} below that if needed.
 - Use \cite{{key}} for every nontrivial claim.
 - Group citations by methodology cluster from the outline.
 - End with one paragraph on the specific gap this project addresses.

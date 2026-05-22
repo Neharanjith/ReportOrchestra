@@ -1,0 +1,19 @@
+```mermaid
+graph LR
+    A[SSP] --> B[TL]
+    B --> C[SSP']
+    C --> D[TL']
+    D --> A
+    style A fill:#f9f,stroke:#333
+    style B fill:#9f9,stroke:#333
+    style C fill:#f9f,stroke:#333
+    style D fill:#9f9,stroke:#333
+    linkStyle 0,1,2,3 stroke-width:2px
+```
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.9\linewidth]{diagrams/fig_cyclical_generation.pdf}
+\caption{Cyclical generation between SSP and TL with asymmetric complexity.}
+\label{fig:fig_cyclical_generation}
+\end{figure}

@@ -44,6 +44,8 @@
 
 Seven modules: Indexer, Outline Agent, Lit Review Agent, Diagram Emitter, Section Writer, Assembler, Refinement Agent. Total ~25–45 LLM calls per report run.
 
+**NRL template-aware assembly.** The Assembler works natively with the NRL report template: instead of appending a monolithic body, it replaces `PLACEHOLDER` text blocks within the template's existing `\chapter{}` and `\section{}` structure. A `config/nrl_template_mapping.yaml` file maps each outline `section_id` to the exact chapter or section heading that precedes the corresponding placeholder. The Section Writer is constrained to produce content at `\section{}` level and below — never `\chapter{}` — since those headings already exist in the template.
+
 ---
 
 ## 2. Repository layout
@@ -55,7 +57,8 @@ report-orchestra/
 ├── pyproject.toml
 ├── config/
 │   ├── config.yaml
-│   └── distribution_statement.txt
+│   ├── distribution_statement.txt
+│   └── nrl_template_mapping.yaml    ← section_id → NRL chapter/section heading
 ├── inputs/        notebook.md, proposal.pdf, last_progress_report.pdf, papers/, notes/, template.tex, examples/
 ├── work/          01_index/, 02_outline/, 03_lit_review/, 04_diagrams/, 05_sections/, 06_draft/, 07_refined/
 ├── outputs/       report.tex, report.pdf
@@ -316,34 +319,9 @@ ReportOrchestra uses AskSage to access Claude models (Sonnet, Opus, Haiku) for t
 - `claude-opus-4-7-default` — Most capable (Google Vertex AI)
 - `claude-haiku-4-5-20251001` — Fastest/cheapest (Google Vertex AI)
 
-**Part C: Semantic Scholar API Key Setup (for reliable literature search)**
-
-The Semantic Scholar API has aggressive rate limits for unauthenticated users. A free API key provides a dedicated rate limit (~1 request/second sustained) and avoids 429 errors during literature discovery.
-
-1. Request a free API key at: https://www.semanticscholar.org/product/api#api-key
-   (Usually fast approval for research use)
-
-2. Test your API key works:
-   ```bash
-   curl -H "x-api-key: YOUR_API_KEY_HERE" \
-     "https://api.semanticscholar.org/graph/v1/paper/search?query=machine+learning&limit=1&fields=title,year"
-   ```
-   You should see a JSON response with paper data.
-
-3. Set the environment variable (add to `~/.bashrc` or `~/.zshrc`):
-   ```bash
-   export S2_API_KEY="your-semantic-scholar-api-key-here"
-   ```
-
-4. Reload your shell or run:
-   ```bash
-   source ~/.bashrc
-   ```
-
 ✅ **Verify:** 
 - OC successfully creates files (Ollama working)
 - The curl command returns a valid JSON response (AskSage working)
-- The Semantic Scholar curl command returns paper data (S2 API key working)
 
 ---
 
@@ -992,7 +970,10 @@ IF STUCK: Print "Stuck on: <what>" and stop.
 
 ````text
 ROLE: You are OpenCode in the report-orchestra repo.
-CONTEXT: Read PLAN.md §6.2.2 and §1 (architecture diagram).
+CONTEXT: Read PLAN.md §6.2.2, §1 (architecture diagram), and note that
+each section_id produced here maps to an NRL chapter/section heading per
+config/nrl_template_mapping.yaml. Do NOT change the section_id values —
+the Assembler relies on them to locate PLACEHOLDER blocks in the template.
 PRECONDITIONS: 0.x, 1.x, 2.1 complete.
 TASK: Implement the Outline Agent that produces a JSON plan and saves
 it to work/02_outline/outline.json.
@@ -1048,6 +1029,12 @@ Schema (every key required, in this exact order):
 Rules:
 - section_plan MUST contain entries with these section_ids:
   "1.1","1.2","2.1","2.2","2.3","3","4.1","4.2","4.3".
+  These IDs map to NRL chapters/sections per config/nrl_template_mapping.yaml:
+  1.1 → INTRODUCTION chapter, 1.2 → BACKGROUND AND RELATED WORK chapter,
+  2.1 → Problem Formulation section, 2.2 → Approach section,
+  2.3 → METHODOLOGY chapter, 3 → RESULTS chapter, 4.1 → DISCUSSION chapter,
+  4.2 → SUMMARY AND CONCLUSIONS chapter, 4.3 → Transitions subsection.
+  Do NOT alter these section_ids; they are consumed verbatim by the Assembler.
 - Every dataset, metric, baseline, or external tool mentioned in the
   notebook MUST appear as a citation_hint somewhere.
 - 2 to 4 entries in diagram_plan. Each kind is "tikz" or "mermaid".
@@ -1176,7 +1163,8 @@ DO THIS:
 
 ---begin---
 You are drafting one section of a US government Final Project
-Report. Use ONLY the materials provided. Do not invent numbers,
+Report formatted for the NRL (Naval Research Laboratory) report
+template. Use ONLY the materials provided. Do not invent numbers,
 results, or citations.
 
 Section to draft:
@@ -1198,7 +1186,15 @@ DIAGRAMS_AVAILABLE (refer with \ref{<label>}):
 
 Output rules:
 - Output LaTeX only. No commentary. No markdown fences.
-- Start with the appropriate \section or \subsection heading.
+- Do NOT emit \chapter{{}} commands. The NRL template already defines
+  all chapter headings; emitting one will corrupt the document structure.
+- The highest heading level you may use is \section{{}}. Use
+  \subsection{{}} and \subsubsection{{}} as needed below that.
+- If this section maps to a chapter-level slot (section_ids 1.1, 1.2,
+  2.3, 3, 4.1, 4.2, 4.3), begin with \section{{}} subsections or prose
+  directly — do not restate the chapter title.
+- If this section maps to a section-level slot (section_ids 2.1, 2.2),
+  begin with \subsection{{}} or prose directly.
 - Use \cite{{key}} only with keys in VERIFIED_BIB.
 - Use \ref{{label}} only with labels in DIAGRAMS_AVAILABLE.
 - If a bullet has no support, write [CITATION NEEDED] or
@@ -1206,8 +1202,8 @@ Output rules:
 - Aim for 200–500 words unless bullets clearly demand more.
 ---end---
 
-NOTE: The braces around `cite{{key}}` and `ref{{label}}` are doubled
-to escape Python's str.format. They become single braces at runtime.
+NOTE: The doubled braces {{}} are Python str.format escapes; they
+become single braces at runtime (e.g., \section{{Title}} → \section{Title}).
 
 2. Replace src/agents/section_writer.py with EXACTLY:
 
@@ -1252,13 +1248,19 @@ def test_format_substitutes_correctly():
     captured = {}
     def fake_call(role, system, user, **kw):
         captured["user"] = user
-        return "\\subsection{Metrics}\nDone."
+        # Section writer must use \section or lower — never \chapter
+        return "\\section{Metrics}\nAccuracy and F1 are reported."
     with patch("src.agents.section_writer.call_llm", side_effect=fake_call):
         out = write_section(spec, "Some excerpt.", bib, ["fig_a"])
     assert "Metrics" in out
     assert "Smith2020" in captured["user"]
     assert "accuracy" in captured["user"]
     assert "fig:fig_a" in captured["user"]
+    # The prompt must forbid \chapter{} — verify the instruction is present
+    assert "chapter" in captured["user"].lower()
+    assert "Do NOT emit" in captured["user"] or "NOT emit" in captured["user"]
+    # Section writer output must not contain \chapter{}
+    assert "\\chapter" not in out
 ```
 
 4. Run: pytest tests/test_section_writer_smoke.py -v
@@ -1570,13 +1572,8 @@ DO THIS:
 1. Replace src/tools/semantic_scholar.py with EXACTLY:
 
 ```python
-"""Thin Semantic Scholar API wrapper with retry logic for rate limits.
-
-Supports optional API key via S2_API_KEY environment variable.
-Get a free key at: https://www.semanticscholar.org/product/api#api-key
-"""
+"""Thin Semantic Scholar API wrapper with retry logic for rate limits."""
 from __future__ import annotations
-import os
 import sys
 import time
 import requests
@@ -1584,9 +1581,6 @@ import requests
 BASE = "https://api.semanticscholar.org/graph/v1"
 _LAST = [0.0]
 FIELDS = "title,authors,year,abstract,externalIds,venue,citationCount"
-
-# API key (optional but recommended to avoid rate limits)
-API_KEY = os.environ.get("S2_API_KEY", "")
 
 # Retry configuration
 MAX_RETRIES = 3
@@ -1600,17 +1594,7 @@ def _throttle(rate=1.0):
     _LAST[0] = time.time()
 
 def _request_with_retry(method: str, url: str, **kwargs) -> requests.Response:
-    """Make HTTP request with exponential backoff retry on 429 errors.
-    
-    If S2_API_KEY environment variable is set, includes it in the
-    x-api-key header for higher rate limits.
-    """
-    # Add API key header if available
-    headers = kwargs.pop("headers", {})
-    if API_KEY:
-        headers["x-api-key"] = API_KEY
-    kwargs["headers"] = headers
-    
+    """Make HTTP request with exponential backoff retry on 429 errors."""
     last_exception = None
     for attempt in range(MAX_RETRIES + 1):
         _throttle()
@@ -1629,10 +1613,6 @@ def _request_with_retry(method: str, url: str, **kwargs) -> requests.Response:
                     print(f"  [semantic_scholar] Rate limited (429), "
                           f"max retries ({MAX_RETRIES}) exhausted.",
                           file=sys.stderr, flush=True)
-                    if not API_KEY:
-                        print(f"  [semantic_scholar] TIP: Set S2_API_KEY "
-                              f"environment variable for higher rate limits.",
-                              file=sys.stderr, flush=True)
             r.raise_for_status()
             return r
         except requests.exceptions.HTTPError as e:
@@ -1775,33 +1755,22 @@ def test_max_retries_exhausted():
         with patch("src.tools.semantic_scholar.time.sleep"):
             with pytest.raises(__import__('requests').exceptions.HTTPError):
                 _request_with_retry("GET", "http://test.com")
-
-def test_api_key_header_added():
-    """Test that API key is added to headers when set."""
-    mock_response = MagicMock(status_code=200, json=lambda: {"data": []})
-    mock_response.raise_for_status = MagicMock()
-    with patch("src.tools.semantic_scholar.API_KEY", "test-key-123"):
-        with patch("src.tools.semantic_scholar.requests.request",
-                   return_value=mock_response) as mock_req:
-            _request_with_retry("GET", "http://test.com")
-    call_kwargs = mock_req.call_args[1]
-    assert call_kwargs["headers"]["x-api-key"] == "test-key-123"
 ```
 
 6. Run: pytest tests/test_lit_discovery_offline.py tests/test_semantic_scholar_retry.py -v
 
-7. Commit: git add -A && git commit -m "4.1: lit discovery + S2 wrapper with retry logic and API key support"
+7. Commit: git add -A && git commit -m "4.1: lit discovery + S2 wrapper with retry logic"
 
-ACCEPTANCE TEST: pytest shows 4 passed.
+ACCEPTANCE TEST: pytest shows 3 passed.
 
 WHEN DONE:
-Print: "Subtask 4.1 complete: candidate discovery with rate-limit retry and API key support"
+Print: "Subtask 4.1 complete: candidate discovery with rate-limit retry"
 STOP.
 
 IF STUCK: Print "Stuck on: <what>" and stop.
 ````
 
-✅ **Verify:** `pytest tests/test_lit_discovery_offline.py tests/test_semantic_scholar_retry.py -v` shows 4 passed.
+✅ **Verify:** `pytest tests/test_lit_discovery_offline.py tests/test_semantic_scholar_retry.py -v` shows 3 passed.
 
 ---
 
@@ -1949,9 +1918,9 @@ DO THIS:
    ---begin--- and ---end--- (do not include markers):
 
 ---begin---
-You are writing section 1.2 (Background) of a US government Final
-Project Report. Use ONLY the verified bibliography below. Do not
-cite from training memory.
+You are writing section 1.2 (Background and Related Work) of a US
+government Final Project Report formatted for the NRL template. Use
+ONLY the verified bibliography below. Do not cite from training memory.
 
 Outline for this section:
 {outline_section}
@@ -1963,7 +1932,12 @@ Project proposal context (for framing the gap):
 {proposal_excerpt}
 
 Output:
-- LaTeX for section 1.2 only.
+- LaTeX content for section 1.2 only.
+- Do NOT emit a \chapter{{}} heading — the chapter heading
+  "\chapter{{BACKGROUND AND RELATED WORK}}" already exists in the NRL
+  template. Emitting it again would duplicate and corrupt the document.
+- Use \section{{}} for major topic clusters within this chapter, and
+  \subsection{{}} below that if needed.
 - Use \cite{{key}} for every nontrivial claim.
 - Group citations by methodology cluster from the outline.
 - End with one paragraph on the specific gap this project addresses.
@@ -2014,12 +1988,15 @@ def test_draft_background_writes_file(tmp_path):
                                   "content_bullets": ["b1"]}]}
     cmap = {"Smith2020Foo": {"title": "Foo", "year": 2020}}
     out = tmp_path / "ib.tex"
+    # Section 1.2 maps to \chapter{BACKGROUND AND RELATED WORK} in the NRL
+    # template, so the LLM output starts at \section{} level — never \chapter{}
     with patch("src.agents.lit_review_agent.call_llm",
-               return_value=r"\subsection{Background}\cite{Smith2020Foo} ok"):
+               return_value=r"\section{Prior Work}\cite{Smith2020Foo} ok"):
         draft_background(outline, cmap, "proposal text", out_path=out)
     text = out.read_text()
-    assert "Background" in text
+    assert "Prior Work" in text
     assert "Smith2020Foo" in text
+    assert "\\chapter" not in text  # chapter heading must not appear in content
 ```
 
 4. Run: pytest tests/test_draft_background_offline.py -v
@@ -2482,105 +2459,380 @@ IF STUCK: Print "Stuck on: <what>" and stop.
 
 ### Phase 7 — Polish
 
-#### 7.1 — Assembler · OC · M · Devstral local · ~25 min
+#### 7.1 — NRL-Aware Assembler · OC · M · Devstral local · ~30 min
 
 **Complexity:** M (Medium)
 **Recommended Model:** Ollama (devstral-small-2:24b) — Free
+
+**Background for OC.** The NRL report template already contains `\chapter{}` and
+`\section{}` headings and `\begin{executivesummary}` / `\begin{acknowledgments}`
+environments. Each content slot is marked by a `PLACEHOLDER` line. The Assembler
+must replace those PLACEHOLDER lines with generated content rather than appending
+a monolithic body. The bibliography must be copied as `References.bib` because the
+NRL template uses `\bibliography{References}`. The `bibunits` package is used by the
+template for appendix-level bibliographies and should not be disturbed.
 
 **OC PROMPT:**
 
 ````text
 ROLE: You are OpenCode in the report-orchestra repo.
-CONTEXT: Read PLAN.md §6.7.1.
-TASK: Implement the Assembler that stitches template + sections + bib
-+ diagrams into one .tex, including the distribution statement.
+CONTEXT: Read PLAN.md §6.7.1 and the NRL-template background note above it.
+PRECONDITIONS: 0.x through 6.x complete.
+TASK: Implement the NRL-aware Assembler that replaces PLACEHOLDER blocks
+inside the existing NRL template structure, and create the section-to-chapter
+mapping configuration file.
 
 DO THIS:
 
-1. Replace src/agents/assembler.py with EXACTLY:
+1. Create config/nrl_template_mapping.yaml with EXACTLY:
+
+```yaml
+# Maps outline section_ids to the NRL template heading that precedes each
+# PLACEHOLDER block. The assembler searches for the heading, then replaces
+# the first PLACEHOLDER line found after it (stopping at the next
+# \chapter or \section boundary).
+sections:
+  "1.1": "\\chapter{INTRODUCTION}"
+  "1.2": "\\chapter{BACKGROUND AND RELATED WORK}"
+  "2.1": "\\section{Problem Formulation}"
+  "2.2": "\\section{Approach}"
+  "2.3": "\\chapter{METHODOLOGY}"
+  "3":   "\\chapter{RESULTS}"
+  "4.1": "\\chapter{DISCUSSION}"
+  "4.2": "\\chapter{SUMMARY AND CONCLUSIONS}"
+  "4.3": "\\subsection{Transitions}"
+
+# LaTeX environment names used by the NRL template for special sections
+executive_summary: "executivesummary"
+acknowledgments:   "acknowledgments"
+
+# NRL template uses \bibliography{References}; verified.bib is copied
+# to this filename automatically
+bibliography_name: "References"
+```
+
+2. Replace src/agents/assembler.py with EXACTLY:
 
 ```python
-"""Assemble final LaTeX from sections, bib, diagrams, distribution stmt."""
+"""NRL-template-aware Assembler.
+
+Replaces PLACEHOLDER lines within the existing \\chapter{} / \\section{}
+structure of the NRL template. Each PLACEHOLDER is identified by the
+chapter or section heading that precedes it, per nrl_template_mapping.yaml.
+
+Key NRL requirements handled here:
+- \\chapter{} hierarchy: content is inserted at \\section{} level and below.
+- \\begin{executivesummary} and \\begin{acknowledgments} environments.
+- verified.bib is copied to References.bib to match \\bibliography{References}.
+- bibunits (used for appendix bibliographies) is left untouched.
+"""
 from __future__ import annotations
-import shutil
+import re, shutil, yaml
 from pathlib import Path
+
+_DEFAULT_MAPPING = (
+    Path(__file__).resolve().parents[2] / "config" / "nrl_template_mapping.yaml"
+)
+
+# Matches any line that contains the word PLACEHOLDER (case-insensitive).
+# The NRL template uses bare "PLACEHOLDER" lines as content insertion markers.
+_PLACEHOLDER_RE = re.compile(
+    r"^[^\n]*PLACEHOLDER[^\n]*$", re.MULTILINE | re.IGNORECASE
+)
+
+
+def _load_mapping(mapping_path=None) -> dict:
+    p = Path(mapping_path) if mapping_path else _DEFAULT_MAPPING
+    with open(p) as f:
+        return yaml.safe_load(f)
+
+
+def _replace_placeholder_after_heading(
+    tex: str, heading: str, content: str
+) -> str:
+    """Replace the first PLACEHOLDER after 'heading' with 'content'.
+
+    Limits the search to the current section's content by stopping at the
+    next \\chapter{} or \\section{} boundary. Returns tex unchanged if the
+    heading or PLACEHOLDER is absent (graceful no-op).
+    """
+    m = re.search(re.escape(heading), tex)
+    if not m:
+        return tex  # heading not found in template — skip silently
+
+    after_pos = m.end()
+
+    # Stop searching at the next \chapter{...} or \section{...} so we
+    # don't accidentally claim a PLACEHOLDER that belongs to an adjacent section.
+    next_boundary = re.search(r"\\(?:chapter|section)\{", tex[after_pos:])
+    end_pos = (
+        after_pos + next_boundary.start() if next_boundary else len(tex)
+    )
+
+    region = tex[after_pos:end_pos]
+    ph = _PLACEHOLDER_RE.search(region)
+    if not ph:
+        return tex  # no PLACEHOLDER in this section — skip silently
+
+    # Splice generated content over the PLACEHOLDER line
+    abs_start = after_pos + ph.start()
+    abs_end = after_pos + ph.end()
+    return tex[:abs_start] + content + tex[abs_end:]
+
+
+def _replace_environment_content(
+    tex: str, env_name: str, content: str
+) -> str:
+    """Replace the body inside \\begin{env_name}...\\end{env_name}.
+
+    Used for NRL-specific environments: executivesummary, acknowledgments.
+    Returns tex unchanged if the environment is absent.
+    """
+    pattern = re.compile(
+        r"(\\begin\{" + re.escape(env_name) + r"\})"
+        r".*?"
+        r"(\\end\{" + re.escape(env_name) + r"\})",
+        re.DOTALL,
+    )
+    m = pattern.search(tex)
+    if not m:
+        return tex  # environment absent — skip
+    return (
+        tex[: m.start(1) + len(m.group(1))]
+        + "\n"
+        + content
+        + "\n"
+        + tex[m.start(2) :]
+    )
+
 
 def assemble(
     template_tex: str,
-    section_files: dict,           # {section_id: latex_str}
-    diagram_blocks: dict,          # {diagram_id: latex figure block}
+    section_files: dict,       # {section_id: latex_str}
+    diagram_blocks: dict,      # {diagram_id: latex figure block}
     bib_path: str,
     distribution_stmt: str = "",
     acknowledgements: str = "",
+    executive_summary: str = "",
     out_path: str = "outputs/report.tex",
+    _mapping_path=None,        # override path for unit tests
 ) -> str:
-    order = ["1.1", "1.2", "2.1", "2.2", "2.3", "3", "4.1", "4.2", "4.3"]
-    body_parts = []
+    mapping = _load_mapping(_mapping_path)
+    section_map = mapping.get("sections", {})
+    exec_env   = mapping.get("executive_summary", "executivesummary")
+    ack_env    = mapping.get("acknowledgments", "acknowledgments")
+    bib_name   = mapping.get("bibliography_name", "References")
+
+    tex = template_tex
+
+    # 1. Prepend distribution statement immediately after \begin{document}
     if distribution_stmt:
-        body_parts.append(
-            "\\begin{center}\\textbf{" + distribution_stmt
-            + "}\\end{center}\n\\vspace{1em}")
-    for sid in order:
-        if sid in section_files:
-            body_parts.append(section_files[sid])
-    for did, code in diagram_blocks.items():
-        body_parts.append(code)
+        dist_block = (
+            "\n\\begin{center}\\textbf{"
+            + distribution_stmt
+            + "}\\end{center}\n\\vspace{1em}\n"
+        )
+        if "\\begin{document}" in tex:
+            tex = tex.replace("\\begin{document}",
+                              "\\begin{document}" + dist_block, 1)
+
+    # 2. Populate executive summary environment if content provided
+    if executive_summary:
+        tex = _replace_environment_content(tex, exec_env, executive_summary)
+
+    # 3. Replace each section's PLACEHOLDER in the NRL chapter/section structure.
+    #    Process in outline order so that multi-PLACEHOLDER chapters (e.g.,
+    #    SUMMARY AND CONCLUSIONS containing both 4.2 body and 4.3 Transitions)
+    #    are resolved top-to-bottom correctly.
+    section_order = [
+        "1.1", "1.2", "2.1", "2.2", "2.3", "3", "4.1", "4.2", "4.3"
+    ]
+    for sid in section_order:
+        if sid not in section_files or sid not in section_map:
+            continue
+        heading = section_map[sid]
+        tex = _replace_placeholder_after_heading(
+            tex, heading, section_files[sid]
+        )
+
+    # 4. Append diagram blocks that were not already embedded in section content.
+    #    (If cli.py embeds diagrams into section_files at their anchor, they
+    #    won't appear here. Orphans fall back to placement before \end{document}.)
+    embedded_ids = {
+        did
+        for did, _code in diagram_blocks.items()
+        if any(did in sf for sf in section_files.values())
+    }
+    orphan_diagrams = "\n\n".join(
+        code
+        for did, code in diagram_blocks.items()
+        if did not in embedded_ids
+    )
+    if orphan_diagrams and "\\end{document}" in tex:
+        tex = tex.replace(
+            "\\end{document}", orphan_diagrams + "\n\n\\end{document}", 1
+        )
+
+    # 5. Populate acknowledgments environment
     if acknowledgements:
-        body_parts.append("\\section*{Acknowledgements}\n" + acknowledgements)
-    body_parts.append("\\bibliographystyle{ieeetr}")
-    body_parts.append("\\bibliography{" + Path(bib_path).stem + "}")
-    body = "\n\n".join(body_parts)
+        tex = _replace_environment_content(tex, ack_env, acknowledgements)
 
-    if "%%REPORT_BODY%%" in template_tex:
-        tex = template_tex.replace("%%REPORT_BODY%%", body)
-    else:
-        tex = template_tex.replace("\\end{document}",
-                                   body + "\n\\end{document}")
-
+    # 6. Write output; copy verified.bib → References.bib (NRL uses
+    #    \bibliography{References}, so the filename must match exactly)
     outp = Path(out_path)
     outp.parent.mkdir(parents=True, exist_ok=True)
     outp.write_text(tex)
-    if Path(bib_path).exists():
-        shutil.copy(bib_path, outp.parent / Path(bib_path).name)
+
+    bib = Path(bib_path)
+    if bib.exists():
+        shutil.copy(bib, outp.parent / f"{bib_name}.bib")
+
     return tex
 ```
 
-2. Create tests/test_assemble.py:
+3. Create tests/fixtures/nrl_template_snippet.tex with EXACTLY:
 
-```python
-from src.agents.assembler import assemble
+```latex
+\documentclass[12pt]{article}
 
-def test_assemble_inserts_body(tmp_path):
-    template = "\\documentclass{article}\\begin{document}%%REPORT_BODY%%\\end{document}"
-    sections = {"1.1": "\\subsection{Objective}\nDo X.",
-                "3":   "\\section{Results}\nFound Y."}
-    diagrams = {"fig_a": "\\begin{figure}A\\end{figure}"}
-    bib = tmp_path / "ref.bib"
-    bib.write_text("@article{X,title={X}}")
-    out = tmp_path / "r.tex"
-    tex = assemble(template, sections, diagrams,
-                   bib_path=bib, distribution_stmt="DIST A",
-                   out_path=out)
-    assert "Objective" in tex and "Results" in tex
-    assert "DIST A" in tex
-    assert "\\bibliography{ref}" in tex
-    assert (tmp_path / "ref.bib").exists()
+\begin{document}
+
+\begin{executivesummary}
+PLACEHOLDER
+\end{executivesummary}
+
+\chapter{INTRODUCTION}
+
+PLACEHOLDER
+
+\chapter{BACKGROUND AND RELATED WORK}
+
+PLACEHOLDER
+
+\begin{acknowledgments}
+PLACEHOLDER
+\end{acknowledgments}
+
+\bibliography{References}
+\end{document}
 ```
 
-3. Run: pytest tests/test_assemble.py -v
+4. Create tests/fixtures/nrl_mapping.yaml with EXACTLY:
 
-4. Commit: git add -A && git commit -m "7.1: assembler"
+```yaml
+sections:
+  "1.1": "\\chapter{INTRODUCTION}"
+  "1.2": "\\chapter{BACKGROUND AND RELATED WORK}"
+executive_summary: "executivesummary"
+acknowledgments: "acknowledgments"
+bibliography_name: "References"
+```
 
-ACCEPTANCE TEST: pytest shows 1 passed.
+5. Replace tests/test_assemble.py with EXACTLY:
+
+```python
+from pathlib import Path
+from src.agents.assembler import assemble
+
+FIX     = Path(__file__).parent / "fixtures"
+NRL_TEX = (FIX / "nrl_template_snippet.tex").read_text()
+MAPPING = FIX / "nrl_mapping.yaml"
+
+
+def test_assemble_replaces_chapter_placeholders(tmp_path):
+    """PLACEHOLDER lines inside NRL chapters are replaced with section content."""
+    sections = {
+        "1.1": "The objective is to develop a neural network classifier.",
+        "1.2": "Prior work spans deep learning and signal processing.",
+    }
+    bib = tmp_path / "verified.bib"
+    bib.write_text("@article{Smith2020Foo,title={Foo}}")
+    out = tmp_path / "report.tex"
+
+    tex = assemble(
+        NRL_TEX, sections, {},
+        bib_path=bib,
+        acknowledgements="This work was supported by ONR.",
+        out_path=out,
+        _mapping_path=MAPPING,
+    )
+
+    assert "objective is to develop" in tex, "section 1.1 content missing"
+    assert "deep learning" in tex, "section 1.2 content missing"
+    assert "This work was supported" in tex, "acknowledgements missing"
+    assert "PLACEHOLDER" not in tex, "unreplaced PLACEHOLDER remains"
+    # NRL bibliography: verified.bib must be copied as References.bib
+    assert (out.parent / "References.bib").exists(), "References.bib not created"
+
+
+def test_assemble_distribution_stmt_precedes_content(tmp_path):
+    """Distribution statement is inserted immediately after \\begin{document}."""
+    template = (
+        "\\begin{document}\n"
+        "\\chapter{INTRODUCTION}\nPLACEHOLDER\n"
+        "\\end{document}"
+    )
+    bib = tmp_path / "v.bib"
+    bib.write_text("")
+    out = tmp_path / "r.tex"
+
+    tex = assemble(
+        template, {"1.1": "intro text"}, {},
+        bib_path=bib,
+        distribution_stmt="DIST STMT A",
+        out_path=out,
+        _mapping_path=MAPPING,
+    )
+
+    assert "DIST STMT A" in tex
+    assert tex.index("DIST STMT A") < tex.index("intro text")
+
+
+def test_assemble_orphan_diagrams_appended_before_end(tmp_path):
+    """Diagrams not embedded in any section content land before \\end{document}."""
+    template = (
+        "\\begin{document}\n"
+        "\\chapter{INTRODUCTION}\nPLACEHOLDER\n"
+        "\\end{document}"
+    )
+    bib = tmp_path / "v.bib"
+    bib.write_text("")
+    out = tmp_path / "r.tex"
+    diagrams = {"fig_arch": "\\begin{figure}[ht]arch\\end{figure}"}
+
+    tex = assemble(
+        template, {"1.1": "intro text"}, diagrams,
+        bib_path=bib, out_path=out,
+        _mapping_path=MAPPING,
+    )
+
+    assert "arch\\end{figure}" in tex, "orphan diagram missing from output"
+    assert tex.index("arch\\end{figure}") < tex.index("\\end{document}")
+```
+
+6. Run: pytest tests/test_assemble.py -v
+
+7. Commit: git add -A && git commit -m "7.1: NRL-aware assembler with placeholder replacement"
+
+ACCEPTANCE TEST:
+- pytest shows 3 passed.
+- `grep -c PLACEHOLDER tests/fixtures/nrl_template_snippet.tex` prints 3
+  (confirming the fixture has PLACEHOLDERs to replace).
+- After a full run, `outputs/References.bib` exists (not `verified.bib`).
 
 WHEN DONE:
-Print: "Subtask 7.1 complete: assembler"
+Print: "Subtask 7.1 complete: NRL-aware assembler"
 STOP.
 
-IF STUCK: Print "Stuck on: <what>" and stop.
+IF STUCK:
+- If a test fails with "heading not found": confirm the heading string in
+  nrl_mapping.yaml exactly matches the text in the fixture (backslash escaping).
+- If "PLACEHOLDER remains": check that the heading for that section_id is
+  in the mapping AND exists verbatim in the template.
+- Print "Stuck on: <what>" and stop.
 ````
 
-✅ **Verify:** `pytest tests/test_assemble.py -v` shows 1 passed.
+✅ **Verify:** `pytest tests/test_assemble.py -v` shows 3 passed.
 
 ---
 
@@ -2663,8 +2915,24 @@ def full_run(inputs_dir="inputs", out_dir="outputs") -> int:
     diagrams = emit_all(outline["diagram_plan"], excerpts_by_section)
     diag_labels = [d["diagram_id"] for d in outline["diagram_plan"]]
 
+    # Build a section_id → [diagram_code, ...] index so each diagram lands
+    # in the correct NRL chapter (the Assembler places orphans before
+    # \end{document} as a fallback, but in-chapter placement is preferred).
+    diag_by_section: dict = {}
+    for spec in outline["diagram_plan"]:
+        anchor = spec.get("section_anchor", "3")
+        code = diagrams.get(spec["diagram_id"], "")
+        if code:
+            diag_by_section.setdefault(anchor, []).append(code)
+
     print("[5/7] sections ...")
-    section_files = {"1.2": intro_bg}
+    # Start with the Background section produced by the Lit Review agent,
+    # then embed any diagrams anchored there.
+    intro_bg_content = intro_bg
+    for dcode in diag_by_section.get("1.2", []):
+        intro_bg_content += "\n\n" + dcode
+    section_files = {"1.2": intro_bg_content}
+
     for sec in outline["section_plan"]:
         sid = sec["section_id"]
         if sid in section_files:
@@ -2673,8 +2941,12 @@ def full_run(inputs_dir="inputs", out_dir="outputs") -> int:
         excerpt = "\n\n".join(f"[{h['id']}]\n{h['text']}" for h in hits)
         verified_for_sec = [{"key": k, "title": cmap[k]["title"]}
                             for k in list(cmap.keys())[:25]]
-        section_files[sid] = write_section(
-            sec, excerpt, verified_for_sec, diag_labels)
+        content = write_section(sec, excerpt, verified_for_sec, diag_labels)
+        # Embed diagrams anchored to this section so they appear in the
+        # correct NRL chapter after PLACEHOLDER replacement.
+        for dcode in diag_by_section.get(sid, []):
+            content += "\n\n" + dcode
+        section_files[sid] = content
 
     print("[6/7] assemble ...")
     dist = ""
@@ -2686,8 +2958,13 @@ def full_run(inputs_dir="inputs", out_dir="outputs") -> int:
     if ack_path.exists():
         ack = ack_path.read_text()
     out_tex = Path(out_dir) / "report.tex"
+    # The Assembler replaces PLACEHOLDER blocks in the NRL template structure.
+    # diagram_blocks passed here are already embedded in section_files above,
+    # so this dict serves only as an orphan fallback; pass it anyway.
+    # verified.bib is automatically copied to References.bib by the assembler.
     tex = assemble(inputs["template"], section_files, diagrams,
                    "work/03_lit_review/verified.bib", dist, ack,
+                   executive_summary="",   # populate from inputs if available
                    out_path=out_tex)
 
     print("[7/7] refine ...")
@@ -2794,6 +3071,11 @@ IF STUCK: Print "Stuck on: <what>" and stop.
 | Local Ollama loses tool access in OC | Documented gotcha — verify OpenCode config points to running Ollama server |
 | Distribution statement is wrong | Leslie writes `distribution_statement.txt` once and a program manager reviews; never auto-generated |
 | 16K-line notebook leaks PII | Indexer can be extended with a `--scrub` mode that flags chunks containing names/emails for review before they go into prompts |
+| NRL template heading mismatch | `_replace_placeholder_after_heading` silently skips a section if the heading string in `nrl_template_mapping.yaml` doesn't match the template verbatim (different whitespace, braces, case). Mitigation: after a run, grep the output for remaining `PLACEHOLDER` occurrences (`grep -c PLACEHOLDER outputs/report.tex`) and fix the mapping. Log a warning to stderr when a section is skipped. |
+| Multiple PLACEHOLDER blocks in one chapter | If a chapter has two PLACEHOLDERs (e.g., 4.2 body + 4.3 Transitions subsection), sequential processing handles them correctly only if both headings appear in `nrl_template_mapping.yaml`. Verify the mapping covers every distinct placeholder in the template before running. |
+| Section Writer emits `\chapter{}` headings | The prompt forbids it, but LLMs occasionally ignore constraints. The Refinement Agent should flag `\chapter` occurrences inside generated content (not the template's own headers); add a post-assembly regex check that warns if `\chapter` appears more times than expected from the template. |
+| `bibunits` appendix bibliographies break | The NRL template uses `bibunits` for per-appendix reference lists. The Assembler does not touch `\begin{bibunit}` / `\end{bibunit}` blocks. Ensure that `\putbib` commands inside appendices reference correct `.bib` names (typically `References.bib`). No code change required unless the template uses a non-standard name. |
+| `nrlabstract` and SF298 fields left blank | These NRL-specific environments are not currently populated by any agent. Leslie must fill `\nrlabstract`, `\ReportDate`, `\ReportNumber`, and related SF298 metadata fields manually in `inputs/template.tex` before running the pipeline. |
 
 ---
 

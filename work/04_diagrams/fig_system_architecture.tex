@@ -1,0 +1,28 @@
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[
+  node distance=2cm,
+  domain/.style={rectangle, draw, fill=blue!20, minimum width=2cm, minimum height=1cm},
+  shared/.style={rectangle, draw, fill=green!20, minimum width=2cm, minimum height=1cm},
+  arrow/.style={-Stealth}
+]
+  % Domains
+  \node[domain] (acoustics) {Acoustics};
+  \node[domain, right=of acoustics] (meteorology) {Meteorology};
+  \node[domain, right=of meteorology] (shm) {SHM};
+
+  % Shared Techniques
+  \node[shared, below=of acoustics] (generalization) {Generalization};
+  \node[shared, below=of meteorology] (regularization) {Regularization};
+  \node[shared, below=of shm] (optimization) {Optimization};
+
+  % Arrows
+  \draw[arrow] (acoustics) -- (generalization);
+  \draw[arrow] (meteorology) -- (regularization);
+  \draw[arrow] (shm) -- (optimization);
+  \draw[arrow] (generalization) -- (regularization);
+  \draw[arrow] (regularization) -- (optimization);
+\end{tikzpicture}
+\caption{Parallel architecture for acoustics, meteorology, and SHM domains with shared generalization techniques.}
+\label{fig:fig_system_architecture}
+\end{figure}

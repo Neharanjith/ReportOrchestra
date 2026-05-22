@@ -1,17 +1,17 @@
 {
   "section_plan": [
-    { "section_id": "1.1", "title": "Obj", "content_bullets": [], "notebook_topics": [], "citation_hints": [] },
-    { "section_id": "1.2", "title": "Obj", "content_bullets": [], "notebook_topics": [], "citation_hints": [] },
-    { "section_id": "2.1", "title": "Obj", "content_bullets": [], "notebook_topics": [], "citation_hints": [] },
-    { "section_id": "2.2", "title": "Obj", "content_bullets": [], "notebook_topics": [], "citation_hints": [] },
-    { "section_id": "2.3", "title": "Obj", "content_bullets": [], "notebook_topics": [], "citation_hints": [] },
-    { "section_id": "4.1", "title": "Obj", "content_bullets": [], "notebook_topics": [], "citation_hints": [] },
-    { "section_id": "4.2", "title": "Obj", "content_bullets": [], "notebook_topics": [], "citation_hints": [] },
-    { "section_id": "4.3", "title": "Obj", "content_bullets": [], "notebook_topics": [], "citation_hints": [] }
+    {"section_id": "1.1"},
+    {"section_id": "1.2"},
+    {"section_id": "2.1"},
+    {"section_id": "2.2"},
+    {"section_id": "2.3"},
+    {"section_id": "4.1"},
+    {"section_id": "4.2"},
+    {"section_id": "4.3"}
   ],
   "lit_search_strategy": {},
   "diagram_plan": [
-    { "diagram_id": "1", "title": "a", "kind": "tikz", "intent": "a", "section_anchor": "2.1" },
-    { "diagram_id": "2", "title": "a", "kind": "mermaid", "intent": "a", "section_anchor": "2.2" }
+    {"diagram_id": "fig_1", "kind": "tikz"},
+    {"diagram_id": "fig_2", "kind": "mermaid"}
   ]
 }

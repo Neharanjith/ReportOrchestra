@@ -1,0 +1,32 @@
+```
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[
+  >={Stealth[scale=1.2]},
+  node distance=1.5cm,
+  box/.style={rectangle, draw, thick, minimum width=2cm, minimum height=1cm},
+  circle/.style={circle, draw, thick, minimum size=1cm}
+]
+  % Nodes
+  \node[box] (anchor) {Anchor};
+  \node[box, right=of anchor] (positive) {Positive};
+  \node[box, below=of positive] (negative1) {Negative 1};
+  \node[box, below=of negative1] (negative2) {Negative 2};
+  \node[circle, right=of positive] (loss) {Contrastive Loss};
+
+  % Arrows
+  \draw[->] (anchor) -- (positive) node[midway, above] {Similar};
+  \draw[->] (anchor) -- (negative1) node[midway, above] {Dissimilar};
+  \draw[->] (anchor) -- (negative2) node[midway, above] {Dissimilar};
+  \draw[->] (positive) -- (loss);
+  \draw[->] (negative1) -- (loss);
+  \draw[->] (negative2) -- (loss);
+
+  % Labels
+  \node[above=0.1cm of anchor] {Input};
+  \node[below=0.1cm of loss] {$\mathcal{L} = \log \frac{e^{\text{sim}(a,p)}}{e^{\text{sim}(a,p)} + \sum_k e^{\text{sim}(a,n_k)}}$};
+\end{tikzpicture}
+\caption{Contrastive loss structure with anchor, positive, and negative samples.}
+\label{fig:fig_contrastive_loss}
+\end{figure}
+```

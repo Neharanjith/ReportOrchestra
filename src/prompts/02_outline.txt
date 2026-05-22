@@ -43,6 +43,12 @@ Schema (every key required, in this exact order):
 Rules:
 - section_plan MUST contain entries with these section_ids:
   "1.1","1.2","2.1","2.2","2.3","3","4.1","4.2","4.3".
+  These IDs map to NRL chapters/sections per config/nrl_template_mapping.yaml:
+  1.1 → INTRODUCTION chapter, 1.2 → BACKGROUND AND RELATED WORK chapter,
+  2.1 → Problem Formulation section, 2.2 → Approach section,
+  2.3 → METHODOLOGY chapter, 3 → RESULTS chapter, 4.1 → DISCUSSION chapter,
+  4.2 → SUMMARY AND CONCLUSIONS chapter, 4.3 → Transitions subsection.
+  Do NOT alter these section_ids; they are consumed verbatim by the Assembler.
 - Every dataset, metric, baseline, or external tool mentioned in the
   notebook MUST appear as a citation_hint somewhere.
 - 2 to 4 entries in diagram_plan. Each kind is "tikz" or "mermaid".

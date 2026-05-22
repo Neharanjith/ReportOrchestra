@@ -319,9 +319,28 @@ ReportOrchestra uses AskSage to access Claude models (Sonnet, Opus, Haiku) for t
 - `claude-opus-4-7-default` — Most capable (Google Vertex AI)
 - `claude-haiku-4-5-20251001` — Fastest/cheapest (Google Vertex AI)
 
+**Part C: Semantic Scholar API Key (for higher rate limits)**
+
+The Semantic Scholar API works without a key but is rate-limited to ~100 requests per 5 minutes. An API key raises that ceiling to ~10,000 requests per 5 minutes, which matters when discovering citations across many queries.
+
+1. Request a free key at: https://www.semanticscholar.org/product/api (takes ~1 business day to approve)
+
+2. Once issued, add it to your shell environment (same file as AskSage vars):
+   ```bash
+   export S2_API_KEY="your-semantic-scholar-key-here"
+   ```
+
+3. Verify it works:
+   ```bash
+   curl -H "x-api-key: $S2_API_KEY" \
+     "https://api.semanticscholar.org/graph/v1/paper/search?query=neural+networks&limit=1&fields=title"
+   ```
+   You should see a JSON response with a paper title. Without the key the same URL also works, but will hit rate limits faster during a full lit-review run.
+
 ✅ **Verify:** 
 - OC successfully creates files (Ollama working)
 - The curl command returns a valid JSON response (AskSage working)
+- `echo $S2_API_KEY` shows your Semantic Scholar key (or empty if not yet approved — that is fine for setup; the system degrades gracefully to the public rate limit)
 
 ---
 
@@ -1574,6 +1593,7 @@ DO THIS:
 ```python
 """Thin Semantic Scholar API wrapper with retry logic for rate limits."""
 from __future__ import annotations
+import os
 import sys
 import time
 import requests
@@ -1585,6 +1605,18 @@ FIELDS = "title,authors,year,abstract,externalIds,venue,citationCount"
 # Retry configuration
 MAX_RETRIES = 3
 BACKOFF_BASE = 2  # seconds: 2, 4, 8
+
+
+def _auth_headers() -> dict:
+    """Return the x-api-key header if S2_API_KEY is set in the environment.
+
+    Without a key the public tier allows ~100 requests/5 min.
+    With a key the authenticated tier allows ~10,000 requests/5 min.
+    Obtain a free key at: https://www.semanticscholar.org/product/api
+    """
+    key = os.environ.get("S2_API_KEY", "")
+    return {"x-api-key": key} if key else {}
+
 
 def _throttle(rate=1.0):
     gap = 1.0 / rate
@@ -1641,7 +1673,8 @@ def search(query: str, limit: int = 10) -> list[dict]:
         "GET",
         f"{BASE}/paper/search",
         params={"query": query, "limit": limit, "fields": FIELDS},
-        timeout=30
+        headers=_auth_headers(),
+        timeout=30,
     )
     return r.json().get("data", [])
 
@@ -1650,7 +1683,8 @@ def get_paper(paper_id: str) -> dict:
         "GET",
         f"{BASE}/paper/{paper_id}",
         params={"fields": FIELDS},
-        timeout=30
+        headers=_auth_headers(),
+        timeout=30,
     )
     return r.json()
 ```
@@ -1722,8 +1756,10 @@ def test_discover_dedupes(tmp_path):
 5. Create tests/test_semantic_scholar_retry.py:
 
 ```python
+import os
 from unittest.mock import patch, MagicMock
 import pytest
+import src.tools.semantic_scholar as sem
 from src.tools.semantic_scholar import _request_with_retry
 
 def test_retry_on_429(capsys):
@@ -1755,22 +1791,47 @@ def test_max_retries_exhausted():
         with patch("src.tools.semantic_scholar.time.sleep"):
             with pytest.raises(__import__('requests').exceptions.HTTPError):
                 _request_with_retry("GET", "http://test.com")
+
+def test_auth_header_sent_when_s2_api_key_set():
+    """x-api-key header is included in every request when S2_API_KEY is set."""
+    mock_resp = MagicMock(status_code=200, json=lambda: {"data": []},
+                          raise_for_status=MagicMock())
+    with patch.dict(os.environ, {"S2_API_KEY": "test-key-123"}):
+        with patch("src.tools.semantic_scholar.requests.request",
+                   return_value=mock_resp) as mock_req:
+            with patch("src.tools.semantic_scholar.time.sleep"):
+                sem.search("neural networks")
+    headers_sent = mock_req.call_args[1].get("headers", {})
+    assert headers_sent.get("x-api-key") == "test-key-123"
+
+def test_no_auth_header_when_s2_api_key_absent():
+    """No x-api-key header is sent when S2_API_KEY is not in the environment."""
+    mock_resp = MagicMock(status_code=200, json=lambda: {"data": []},
+                          raise_for_status=MagicMock())
+    env_without_key = {k: v for k, v in os.environ.items() if k != "S2_API_KEY"}
+    with patch.dict(os.environ, env_without_key, clear=True):
+        with patch("src.tools.semantic_scholar.requests.request",
+                   return_value=mock_resp) as mock_req:
+            with patch("src.tools.semantic_scholar.time.sleep"):
+                sem.search("neural networks")
+    headers_sent = mock_req.call_args[1].get("headers", {})
+    assert "x-api-key" not in headers_sent
 ```
 
 6. Run: pytest tests/test_lit_discovery_offline.py tests/test_semantic_scholar_retry.py -v
 
-7. Commit: git add -A && git commit -m "4.1: lit discovery + S2 wrapper with retry logic"
+7. Commit: git add -A && git commit -m "4.1: lit discovery + S2 wrapper with API key support and retry logic"
 
-ACCEPTANCE TEST: pytest shows 3 passed.
+ACCEPTANCE TEST: pytest shows 5 passed.
 
 WHEN DONE:
-Print: "Subtask 4.1 complete: candidate discovery with rate-limit retry"
+Print: "Subtask 4.1 complete: candidate discovery with API key auth and rate-limit retry"
 STOP.
 
 IF STUCK: Print "Stuck on: <what>" and stop.
 ````
 
-✅ **Verify:** `pytest tests/test_lit_discovery_offline.py tests/test_semantic_scholar_retry.py -v` shows 3 passed.
+✅ **Verify:** `pytest tests/test_lit_discovery_offline.py tests/test_semantic_scholar_retry.py -v` shows 5 passed.
 
 ---
 

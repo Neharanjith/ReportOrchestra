@@ -4,182 +4,246 @@
       "section_id": "1.1",
       "title": "Objective",
       "content_bullets": [
-        "Develop novel deep learning methods enabling neural networks to generalize across diverse physical environments and boundary conditions in physics domains",
-        "Address gaps in applying DL to physics problems where standard computer vision techniques fail",
-        "Demonstrate utility on three Navy-relevant physics tasks: underwater acoustics, RF propagation, and structural health monitoring"
+        "Deep learning (DL) techniques perform well on computer vision and language tasks but gaps exist in applying DL to physics problems",
+        "Propose foundational research to enable neural networks (NNs) to perform well on physics tasks across broad spectrum of physical environments and boundary conditions",
+        "Develop new methods attaining high accuracy in large problem spaces characteristic of physical domains",
+        "Demonstrate utility on three Navy-relevant physics tasks: underwater acoustics, electromagnetic propagation, structural health monitoring"
       ],
       "notebook_topics": [
         "generalization challenges in physics domains",
-        "differences between CV/NLP and physics applications"
+        "neural network architectures for physics",
+        "Navy applications: acoustics, EM propagation, structural health monitoring"
       ],
       "citation_hints": [
-        "Physics-informed Neural Networks (PINNs) foundational papers",
         "Universal Differential Equations (Rackauckas et al.)",
+        "Physics-informed Neural Networks (Raissi et al.)",
+        "Neural Ordinary Differential Equations (Chen et al.)",
         "Simulation Intelligence survey (Lavin et al.)"
       ]
     },
     {
       "section_id": "1.2",
-      "title": "Motivation and Background",
+      "title": "Background and Related Work",
       "content_bullets": [
-        "Neural networks excel in CV/NLP but struggle with physics domain generalization",
-        "Emerging field of Simulation Intelligence merges scientific computing with neural networks",
-        "Current NN solutions lack evidence of good test performance over entire range of physically realizable inputs",
-        "Gap: no prior studies on generalization in physics domains"
+        "Trained NNs generalize well on CV and language tasks (medical diagnosis, self-driving vehicles, Navy applications)",
+        "Recent integration of NNs into physics emulators: UDE, PINN, NODE",
+        "Benefits: orders of magnitude speedups, lower implementation costs, ability to shape PDEs to conform with observations",
+        "Merger of scientific computing, simulation, and neural networks described as 'Simulation Intelligence'",
+        "Gap: NNs do not generalize well enough for universal physics solutions across all environments and boundary conditions",
+        "Literature lacks evidence of NN solutions providing good test performance over entire range of physically realizable inputs",
+        "No prior studies on generalization in physics domains"
       ],
       "notebook_topics": [
-        "UDE, PINN, NODE architectures",
-        "benefits of NN-physics integration",
-        "generalization failure modes in physics"
+        "physics-informed neural networks",
+        "generalization in computer vision vs physics",
+        "differential equation solvers",
+        "simulation intelligence"
       ],
       "citation_hints": [
-        "Physics-informed Neural Networks (Raissi, Perdikaris, Karniadakis)",
-        "Neural Ordinary Differential Equations (Chen et al.)",
-        "Physics Meets Machine Learning survey (Meng et al.)"
+        "UDE paper (Rackauckas et al. 2020)",
+        "PINN papers (Raissi et al. 2017, 2019)",
+        "NODE paper (Chen et al. 2018)",
+        "Physics meets ML survey (Meng et al. 2022)",
+        "Simulation Intelligence (Lavin et al. 2021)",
+        "Generalization studies (Chatterjee & Zielinski 2022, Dziugaite et al. 2020, Jiang et al. 2019, 2020)"
       ]
     },
     {
       "section_id": "2.1",
-      "title": "Research Hypotheses",
+      "title": "Problem Formulation",
       "content_bullets": [
-        "H1: CV/NLP generalization methods will improve physics task generalization",
-        "H2: Physics equations, symmetry, and invariances can improve domain-specific generalization",
-        "Two technical challenges: identify cross-domain techniques (TC1) and derive domain-specific methods (TC2)"
+        "Research Hypothesis 1: Properties and methods improving generalization in mature DL (CV, NLP) will also improve generalization on physics tasks",
+        "Research Hypothesis 2: Physics equations, symmetry, and invariances can be used to improve generalization in each domain",
+        "Technical Challenge 1: Identify generalization techniques from mature DL methods that work across physics tasks",
+        "Technical Challenge 2: Derive generalization methods for three physics domain testbeds using physics equations",
+        "Large-scale investigation of generalization in Navy DL physics applications using NRL-exclusive data",
+        "Focus on three domains: underwater acoustics (transmission loss), RF propagation (atmospheric), structural health monitoring"
       ],
       "notebook_topics": [
-        "mixup experiments",
-        "SAM optimizer trials",
-        "data augmentation strategies"
+        "generalization hypotheses",
+        "technical challenges",
+        "physics domain characteristics",
+        "data constraints and classification"
       ],
       "citation_hints": [
-        "mixup paper (Zhang et al.)",
-        "Sharpness-Aware Minimization (Foret et al.)",
-        "generalization measures (Jiang et al., Dziugaite et al.)"
+        "Generalization theoretical studies (references 7-13 from proposal)",
+        "Data augmentation in NMT (Li et al. 2019)",
+        "Generalization bounds (Long & Sedghi 2019)",
+        "Sensitivity and generalization (Novak et al. 2018)"
       ]
     },
     {
       "section_id": "2.2",
-      "title": "Application Domains",
+      "title": "Approach",
       "content_bullets": [
-        "Underwater acoustics: PALIS project for transmission loss prediction from ocean properties",
-        "Meteorology: RF propagation in atmosphere using COAMPS data",
-        "Structural health monitoring: MINC project for damage detection on naval platforms",
-        "All three domains involve Helmholtz wave equation solutions"
+        "Task 1: Create baselines for three domains using existing implementations",
+        "Acoustics baseline: PALIS project neural network methods for transmission loss estimation",
+        "Meteorology baseline: Modify PALIS for COAMPS NWP data and RF propagation",
+        "Structural health monitoring baseline: MINC project real-time NN system for material damage",
+        "Task 2: Investigate NN generalization in physics domains - study properties from mature DL applications",
+        "Properties investigated: data, data augmentation, data diversity, architecture, activation functions, hyperparameters",
+        "Define generalization measures: complexity, norm, sharpness measures",
+        "Investigate transfer learning and unsupervised pretraining mechanisms",
+        "Task 3: Improve generalization using physics equations, symmetries, invariances",
+        "Develop novel data augmentation methods respecting physics constraints (cutout, patch masking)",
+        "Utilize Neural Architecture Search and Hyperparameter Optimization",
+        "Develop dynamic activation functions using cyclical training",
+        "Novel contrastive output augmentation loss function"
       ],
       "notebook_topics": [
-        "NSPE baseline for acoustics",
-        "COAMPS integration for RF",
-        "robotic gantry experimental setup for SHM",
-        "dataset sizes and characteristics"
+        "baseline implementations",
+        "generalization measures",
+        "transfer learning",
+        "physics-informed data augmentation",
+        "neural architecture search",
+        "contrastive loss functions"
       ],
       "citation_hints": [
-        "Naval Standard Parabolic Equation documentation",
-        "COAMPS system description",
-        "Lamb wave propagation in metallic structures"
+        "PALIS project (Smith and Fabre)",
+        "COAMPS system",
+        "MINC project (Smith and Rudolf)",
+        "Cutout data augmentation (DeVries & Taylor 2017)",
+        "Masked autoencoders (He et al. 2021)",
+        "Cyclical training (Smith 2022)",
+        "Lifted structure embedding (Oh Song et al. 2016)"
       ]
     },
     {
       "section_id": "2.3",
-      "title": "Neural Operator Framework",
+      "title": "Methodology",
       "content_bullets": [
-        "Neural operators learn mappings between infinite-dimensional function spaces",
-        "Neumann Series Neural Operator (NSNO) selected for Helmholtz equation",
-        "NSNO achieves 60% error reduction vs standard FNO on 2D Helmholtz problems",
-        "Enables universal physics solvers requiring single training cycle across parameter spaces"
+        "Acoustics domain: Train NNs for 2D TL maps across time, broad spectrum of ocean properties (temperature, salinity, sound speed), source depths, receiver locations, frequencies",
+        "Meteorology domain: Develop RF propagation maps across location, time, atmospheric properties (humidity, temperature, pressure), trapping conditions, RF source heights/frequencies",
+        "Structural health monitoring: Enable systems to perform across variety of metallic surfaces, sensor configurations, complex geometries, non-linear wave dynamics, damage characteristics",
+        "Evaluation approach: Define experiments to measure generalization ability along dimensions of importance",
+        "Example experiment: Test sensitivity to small changes in source frequency and location",
+        "Subject matter expert evaluation of promising methods",
+        "Deliverables: Methods improving generalization across domains, methodology for designing domain-specific methods, updated implementations"
       ],
       "notebook_topics": [
-        "comparison of DeepONets, FNO, NSNO",
-        "implementation progress",
-        "generalization experiments planned"
+        "domain-specific requirements",
+        "experimental design",
+        "evaluation metrics",
+        "transition potential"
       ],
       "citation_hints": [
-        "Fourier Neural Operator paper",
-        "DeepONet architecture",
-        "NSNO for heterogeneous Helmholtz equations"
+        "NSPE (Naval Standard Parabolic Equation)",
+        "COAMPS system documentation",
+        "Helmholtz equation applications",
+        "Lamb wave propagation"
       ]
     },
     {
       "section_id": "3",
-      "title": "Methodology",
+      "title": "Results",
       "content_bullets": [
-        "Task 1: Establish baselines for three domains using existing implementations",
-        "Task 2: Investigate CV/NLP generalization properties (data augmentation, architecture, hyperparameters)",
-        "Task 3: Develop physics-informed generalization techniques (symmetries, invariances, novel loss functions)",
-        "Contrastive output augmentation loss: positive MSE term plus negative terms for non-matching outputs"
+        "FY24 results: Identified that standard CV generalization techniques (mixup, SAM) prove ineffective for physics applications",
+        "Necessitated development of domain-specific methodologies incorporating fundamental physical principles",
+        "FY25 progress: Neural operators (NSNO) for Helmholtz equations show 60% error reduction vs standard FNO",
+        "NSNO demonstrates improved stability for large wavenumbers",
+        "CLIP pretraining experiments: Expected benefits not realized, pretrained models generally inferior to local training",
+        "Approximate solution methods: Ray-trace vectors as secondary input perform equivalently to low-resolution TL with reduced runtime",
+        "Cyclical generation experiments: Method could not effectively evaluate generated TL quality",
+        "Mixup experiments across frequency ranges: Results vary by domain, generally small improvements in test metrics with degraded training metrics",
+        "SAM optimizer experiments: Increased training time without clear performance benefits",
+        "Frequency-specific training: Training on subset of frequencies shows degraded performance on held-out frequencies"
       ],
       "notebook_topics": [
-        "frequency range experiments",
-        "CLIP pretraining attempts",
-        "cyclical generation for quality assessment",
-        "ray-trace vector inputs"
+        "generalization technique effectiveness",
+        "neural operator performance",
+        "CLIP pretraining results",
+        "data augmentation outcomes",
+        "optimizer comparisons"
       ],
       "citation_hints": [
-        "cutout and patch masking papers",
-        "contrastive learning (cross-entropy softmax, metric learning)",
-        "cyclical learning rate (Smith)"
+        "Mixup paper (Zhang et al. 2018)",
+        "SAM paper (Foret et al. 2020)",
+        "NSNO architecture paper",
+        "FNO baseline paper",
+        "CLIP methodology (Radford et al.)"
       ]
     },
     {
       "section_id": "4.1",
-      "title": "Underwater Acoustics Results",
+      "title": "Discussion",
       "content_bullets": [
-        "Approximate solutions (ray-traces) as secondary input channels improve TL generation quality",
-        "Ray-trace vectors perform equivalently to secondary channels with faster runtime",
-        "Cyclical generation (TL\u2192SSP\u2192TL) cannot reliably assess TL quality due to complexity asymmetry",
-        "Frequency-specific training vs multi-frequency training comparisons"
+        "Neural operators represent significant advancement for physics-guided neural networks",
+        "NSNO architecture mimics analytical Neumann series expansion, providing mathematical grounding",
+        "Multi-scale skip connections crucial for capturing broad wavelength ranges in high-frequency solutions",
+        "CLIP pretraining limitations: Universal applicability not achieved, benefits diminish with decreasing training dataset sizes",
+        "Physics-specific constraints limit applicability of standard CV data augmentation techniques",
+        "Importance of domain expertise: Understanding physics equations, symmetries, invariances essential for effective model design",
+        "Computational efficiency gains: Neural operators provide substantial speedup while maintaining accuracy for sensitive tasks",
+        "Generalization-accuracy tradeoff: Methods improving test generalization often degrade training performance",
+        "Domain-specific approaches necessary: Single universal method insufficient across all physics domains"
       ],
       "notebook_topics": [
-        "fRange experiments (50/200 Hz train, 100 Hz test)",
-        "mixup probability sweeps",
-        "scaled vs unscaled data",
-        "UVCGAN_V2 architecture performance"
+        "neural operator advantages",
+        "CLIP limitations in physics",
+        "physics constraints on ML",
+        "computational tradeoffs",
+        "domain expertise importance"
       ],
       "citation_hints": [
-        "PALIS project reports",
-        "transmission loss calculation methods",
-        "sound speed profile representations"
+        "Neumann series mathematical foundation",
+        "U-Net architecture papers",
+        "CLIP original paper",
+        "Physics-informed ML survey papers"
       ]
     },
     {
       "section_id": "4.2",
-      "title": "Meteorology Results",
+      "title": "Summary and Conclusions",
       "content_bullets": [
-        "Modified refractivity prediction in marine atmospheric surface layer",
-        "Ducting phenomena modeling (sub-refraction, standard-refraction, super-refraction, trapping)",
-        "Propagation factor calculation across atmospheric domain",
-        "S-band (3 GHz) and X-band (10 GHz) frequency experiments"
+        "Demonstrated that standard DL generalization techniques require significant adaptation for physics domains",
+        "Neural operators (particularly NSNO) show promise for solving heterogeneous Helmholtz equations with improved generalization",
+        "CLIP pretraining approach did not provide expected benefits for physics domain foundation models",
+        "Physics-informed constraints and domain-specific methods essential for achieving robust generalization",
+        "Established baselines and evaluation frameworks for three Navy-relevant physics domains",
+        "Identified key differences between CV/NLP generalization and physics domain generalization",
+        "Future work: Further development of neural operator frameworks, investigation of physics-specific data augmentation, exploration of hybrid physics-ML approaches",
+        "Transition potential: Methods developed have high potential to improve existing Navy applications (PALIS, COAMPS, MINC)"
       ],
       "notebook_topics": [
-        "COAMPS data integration",
-        "Eastern Mediterranean and Persian Gulf datasets",
-        "high-altitude normalized data processing",
-        "UncappedNormalized32Float dataset"
+        "key findings summary",
+        "neural operator conclusions",
+        "CLIP pretraining conclusions",
+        "future research directions",
+        "transition opportunities"
       ],
       "citation_hints": [
-        "COAMPS system documentation",
-        "modified refractivity formulation",
-        "atmospheric ducting physics"
+        "PALIS project outcomes",
+        "MINC project outcomes",
+        "COAMPS integration potential",
+        "Navy operational applications"
       ]
     },
     {
       "section_id": "4.3",
-      "title": "Structural Health Monitoring Results",
+      "title": "Transitions",
       "content_bullets": [
-        "100% detection accuracy achieved using Gabor representation of time-series wavepackets",
-        "Simulated damage via contact loads enables large experimental datasets",
-        "Automated robotic gantry generates tens of thousands of labeled training samples",
-        "Physics-first approach: neural networks leverage time-frequency sensor data directly"
+        "PALIS project: Neural network methods for transmission loss estimation transitioning to tactical decision aids (TDAs)",
+        "Potential to replace expensive NSPE algorithms in submarine sonar systems",
+        "COAMPS integration: RF propagation neural surrogates for meteorology applications",
+        "MINC project: Real-time structural health monitoring systems for naval platforms",
+        "Transition to Builder software for platform maintenance scheduling",
+        "Enhanced sonar prediction accuracy improving ASW effectiveness",
+        "Real-time EM propagation models supporting counter-EW tactics",
+        "Reduced computational requirements enabling shipboard deployment",
+        "Improved operational capabilities through faster simulation and prediction"
       ],
       "notebook_topics": [
-        "MINC project architecture",
-        "LocatorZ model in Julia",
-        "sparse Gabor representation",
-        "convolutional layers for local feature extraction"
+        "operational transition paths",
+        "Navy system integration",
+        "performance improvements",
+        "deployment scenarios"
       ],
       "citation_hints": [
-        "MINC GitHub repository",
-        "Lamb wave propagation theory",
-        "Gabor transform for signal processing"
+        "PALIS transition documentation",
+        "NSPE system specifications",
+        "COAMPS operational use",
+        "MINC laboratory validation",
+        "Navy TDA requirements"
       ]
     }
   ],
@@ -187,24 +251,27 @@
     "introduction": {
       "macro_queries": [
         "physics-informed neural networks generalization",
-        "neural operators for PDEs",
-        "deep learning for scientific computing"
+        "neural operators for partial differential equations",
+        "deep learning for scientific computing",
+        "simulation intelligence machine learning",
+        "transfer learning physics domains"
       ],
       "must_cite_anchors": [
         "Universal Differential Equations",
-        "Physics-informed Neural Networks",
-        "Neural Ordinary Differential Equations",
-        "Simulation Intelligence"
+        "Physics-informed Neural Networks (PINN)",
+        "Neural Ordinary Differential Equations (NODE)",
+        "Simulation Intelligence",
+        "generalization in deep learning"
       ]
     },
     "background": {
       "clusters": [
         {
-          "name": "Generalization Theory",
+          "name": "Physics-Informed Neural Networks",
           "queries": [
-            "generalization measures deep learning",
-            "sharpness-aware minimization",
-            "data augmentation for generalization"
+            "PINN applications partial differential equations",
+            "physics-informed deep learning",
+            "neural network PDE solvers"
           ],
           "expected_count": 8
         },
@@ -212,46 +279,58 @@
           "name": "Neural Operators",
           "queries": [
             "Fourier Neural Operator",
-            "DeepONet architecture",
-            "operator learning for PDEs"
+            "DeepONet operator learning",
+            "Neumann Series Neural Operator",
+            "neural operators Helmholtz equation"
+          ],
+          "expected_count": 6
+        },
+        {
+          "name": "Generalization Theory",
+          "queries": [
+            "generalization bounds neural networks",
+            "sharpness-aware minimization",
+            "complexity measures generalization",
+            "data augmentation generalization"
+          ],
+          "expected_count": 10
+        },
+        {
+          "name": "Underwater Acoustics ML",
+          "queries": [
+            "machine learning ocean acoustics",
+            "neural networks transmission loss",
+            "parabolic equation surrogate models"
           ],
           "expected_count": 5
         },
         {
-          "name": "Underwater Acoustics",
+          "name": "RF Propagation Modeling",
           "queries": [
-            "parabolic equation acoustic propagation",
-            "transmission loss prediction",
-            "sound speed profile modeling"
-          ],
-          "expected_count": 4
-        },
-        {
-          "name": "RF Propagation",
-          "queries": [
-            "atmospheric ducting RF propagation",
-            "modified refractivity",
-            "COAMPS numerical weather prediction"
+            "machine learning RF propagation",
+            "atmospheric refraction neural networks",
+            "electromagnetic wave prediction ML"
           ],
           "expected_count": 4
         },
         {
           "name": "Structural Health Monitoring",
           "queries": [
-            "Lamb wave damage detection",
-            "guided wave structural monitoring",
-            "time-frequency analysis for SHM"
-          ],
-          "expected_count": 4
-        },
-        {
-          "name": "Contrastive Learning",
-          "queries": [
-            "CLIP contrastive pretraining",
-            "contrastive loss functions",
-            "foundation models for vision"
+            "deep learning structural health monitoring",
+            "neural networks damage detection",
+            "Lamb wave analysis machine learning"
           ],
           "expected_count": 5
+        },
+        {
+          "name": "Transfer Learning and Pretraining",
+          "queries": [
+            "CLIP contrastive learning",
+            "foundation models scientific computing",
+            "transfer learning physics domains",
+            "unsupervised pretraining neural networks"
+          ],
+          "expected_count": 6
         }
       ]
     }
@@ -259,31 +338,31 @@
   "diagram_plan": [
     {
       "diagram_id": "fig_system_architecture",
-      "title": "Three-Domain Physics Neural Network Framework",
+      "title": "Neural Network Architecture for Physics Domain Generalization",
       "kind": "tikz",
-      "intent": "Show parallel architecture for acoustics, meteorology, and SHM domains with shared generalization techniques",
+      "intent": "Illustrate the overall system architecture showing encoder-decoder structure with physics-informed constraints and metadata integration for the three Navy domains",
       "section_anchor": "2.2"
     },
     {
       "diagram_id": "fig_neural_operator_flow",
-      "title": "Neural Operator Training and Inference Pipeline",
+      "title": "Neural Operator Processing Flow",
       "kind": "mermaid",
-      "intent": "Illustrate function-space mapping concept and NSNO architecture for Helmholtz equation",
-      "section_anchor": "2.3"
-    },
-    {
-      "diagram_id": "fig_contrastive_loss",
-      "title": "Contrastive Output Augmentation Loss Structure",
-      "kind": "tikz",
-      "intent": "Visualize positive and negative loss terms for physics domain contrastive learning",
+      "intent": "Show the data flow through the NSNO architecture including multi-scale skip connections and Neumann series expansion approximation",
       "section_anchor": "3"
     },
     {
-      "diagram_id": "fig_cyclical_generation",
-      "title": "Cyclical Generation Quality Assessment",
+      "diagram_id": "fig_domain_comparison",
+      "title": "Three Physics Domain Problem Spaces",
+      "kind": "tikz",
+      "intent": "Compare and contrast the problem characteristics, input/output spaces, and physical constraints across acoustics, RF propagation, and structural health monitoring domains",
+      "section_anchor": "2.1"
+    },
+    {
+      "diagram_id": "fig_generalization_workflow",
+      "title": "Generalization Improvement Methodology",
       "kind": "mermaid",
-      "intent": "Depict SSP\u2192TL\u2192SSP cycle and asymmetry in complexity between forward and reverse paths",
-      "section_anchor": "4.1"
+      "intent": "Flowchart showing the iterative process of baseline creation, generalization technique investigation, physics-informed method development, and evaluation",
+      "section_anchor": "2.3"
     }
   ]
 }

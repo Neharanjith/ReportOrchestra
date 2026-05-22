@@ -20,6 +20,7 @@ def test_assemble_replaces_chapter_placeholders(tmp_path):
         NRL_TEX, sections, {},
         bib_path=bib,
         acknowledgements="This work was supported by ONR.",
+        executive_summary="Exec sum",
         out_path=out,
         _mapping_path=MAPPING,
     )

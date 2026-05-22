@@ -59,8 +59,24 @@ def full_run(inputs_dir="inputs", out_dir="outputs") -> int:
     diagrams = emit_all(outline["diagram_plan"], excerpts_by_section)
     diag_labels = [d["diagram_id"] for d in outline["diagram_plan"]]
 
+    # Build a section_id -> [diagram_code, ...] index so each diagram lands
+    # in the correct NRL chapter (the Assembler places orphans before
+    # \end{document} as a fallback, but in-chapter placement is preferred).
+    diag_by_section: dict = {}
+    for spec in outline["diagram_plan"]:
+        anchor = spec.get("section_anchor", "3")
+        code = diagrams.get(spec["diagram_id"], "")
+        if code:
+            diag_by_section.setdefault(anchor, []).append(code)
+
     print("[5/7] sections ...")
-    section_files = {"1.2": intro_bg}
+    # Start with the Background section produced by the Lit Review agent,
+    # then embed any diagrams anchored there.
+    intro_bg_content = intro_bg
+    for dcode in diag_by_section.get("1.2", []):
+        intro_bg_content += "\n\n" + dcode
+    section_files = {"1.2": intro_bg_content}
+
     for sec in outline["section_plan"]:
         sid = sec["section_id"]
         if sid in section_files:
@@ -69,8 +85,12 @@ def full_run(inputs_dir="inputs", out_dir="outputs") -> int:
         excerpt = "\n\n".join(f"[{h['id']}]\n{h['text']}" for h in hits)
         verified_for_sec = [{"key": k, "title": cmap[k]["title"]}
                             for k in list(cmap.keys())[:25]]
-        section_files[sid] = write_section(
-            sec, excerpt, verified_for_sec, diag_labels)
+        content = write_section(sec, excerpt, verified_for_sec, diag_labels)
+        # Embed diagrams anchored to this section so they appear in the
+        # correct NRL chapter after PLACEHOLDER replacement.
+        for dcode in diag_by_section.get(sid, []):
+            content += "\n\n" + dcode
+        section_files[sid] = content
 
     print("[6/7] assemble ...")
     dist = ""
@@ -82,8 +102,13 @@ def full_run(inputs_dir="inputs", out_dir="outputs") -> int:
     if ack_path.exists():
         ack = ack_path.read_text()
     out_tex = Path(out_dir) / "report.tex"
+    # The Assembler replaces PLACEHOLDER blocks in the NRL template structure.
+    # diagram_blocks passed here are already embedded in section_files above,
+    # so this dict serves only as an orphan fallback; pass it anyway.
+    # verified.bib is automatically copied to References.bib by the assembler.
     tex = assemble(inputs["template"], section_files, diagrams,
                    "work/03_lit_review/verified.bib", dist, ack,
+                   executive_summary="",   # populate from inputs if available
                    out_path=out_tex)
 
     print("[7/7] refine ...")

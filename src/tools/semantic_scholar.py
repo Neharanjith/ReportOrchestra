@@ -1,5 +1,6 @@
 """Thin Semantic Scholar API wrapper with retry logic for rate limits."""
 from __future__ import annotations
+import os
 import sys
 import time
 import requests
@@ -11,6 +12,18 @@ FIELDS = "title,authors,year,abstract,externalIds,venue,citationCount"
 # Retry configuration
 MAX_RETRIES = 3
 BACKOFF_BASE = 2  # seconds: 2, 4, 8
+
+
+def _auth_headers() -> dict:
+    """Return the x-api-key header if S2_API_KEY is set in the environment.
+
+    Without a key the public tier allows ~100 requests/5 min.
+    With a key the authenticated tier allows ~10,000 requests/5 min.
+    Obtain a free key at: https://www.semanticscholar.org/product/api
+    """
+    key = os.environ.get("S2_API_KEY", "")
+    return {"x-api-key": key} if key else {}
+
 
 def _throttle(rate=1.0):
     gap = 1.0 / rate
@@ -67,7 +80,8 @@ def search(query: str, limit: int = 10) -> list[dict]:
         "GET",
         f"{BASE}/paper/search",
         params={"query": query, "limit": limit, "fields": FIELDS},
-        timeout=30
+        headers=_auth_headers(),
+        timeout=30,
     )
     return r.json().get("data", [])
 
@@ -76,6 +90,7 @@ def get_paper(paper_id: str) -> dict:
         "GET",
         f"{BASE}/paper/{paper_id}",
         params={"fields": FIELDS},
-        timeout=30
+        headers=_auth_headers(),
+        timeout=30,
     )
     return r.json()

@@ -14,7 +14,11 @@
       "pytorch",
       "palis",
       "inference speed",
-      "regularization"
+      "training speed",
+      "regularization",
+      "10-25-23",
+      "10-30-23",
+      "11-6-23"
     ]
   },
   {
@@ -32,9 +36,10 @@
       "copyrange.sh",
       "ssp",
       "tl",
+      "uvcgan_v2",
       "generalization",
       "frequency",
-      "uvcgan_v2"
+      "metrics"
     ]
   },
   {
@@ -56,13 +61,11 @@
       "wavelength",
       "refraction",
       "scattering",
-      "sofar channel",
-      "acoustic impedance",
       "underwater acoustics",
+      "impedance",
       "neural networks",
-      "physics domain problems",
-      "generalization",
-      "governing equations"
+      "physics equations",
+      "generalization"
     ]
   },
   {
@@ -141,8 +144,8 @@
       "fid",
       "generator loss",
       "training metrics",
-      "test metrics",
-      "epoch time"
+      "epoch time",
+      "neural network"
     ]
   },
   {
@@ -158,13 +161,26 @@
       "mse",
       "ssim",
       "fid",
-      "epochs",
       "training",
       "test",
       "metrics",
-      "dates",
-      "jobs",
-      "jean"
+      "epochs",
+      "loss",
+      "learning rate",
+      "ssim",
+      "fid",
+      "mse",
+      "rel mse",
+      "generator loss",
+      "time per epoch",
+      "mixup parameter",
+      "job status",
+      "job id",
+      "partition",
+      "node list",
+      "output directory",
+      "date",
+      "performance comparison"
     ]
   },
   {
@@ -229,15 +245,16 @@
     "id": "chunk_0011",
     "token_count": 1941,
     "keywords": [
-      "mixup",
-      "sam",
-      "c-w",
+      "example_usage",
+      "sam_results",
+      "c-w_results",
       "mse",
       "ssim",
       "fid",
       "1/9/24",
       "1/29/24",
-      "metrics"
+      "mixup",
+      "scaling"
     ]
   },
   {
@@ -255,9 +272,9 @@
       "fid",
       "gun",
       "uvcgan",
-      "palis",
       "2023dec21",
-      "metrics"
+      "palis",
+      "acoustics"
     ]
   },
   {
@@ -330,10 +347,8 @@
       "ssim",
       "epochs",
       "learning rate",
-      "dataset files",
-      "2024",
-      "physics tasks",
-      "deep learning"
+      "datasets",
+      "2024"
     ]
   },
   {
@@ -446,12 +461,11 @@
       "loss_calculation",
       "distributed_training",
       "cross_entropy",
+      "memory_management",
       "pytorch",
       "cuda",
-      "memory_management",
       "nccl",
-      "world_size",
-      "rank"
+      "torch"
     ]
   },
   {
@@ -468,7 +482,6 @@
       "distributed training",
       "embeddings",
       "cross-entropy",
-      "normalization",
       "temperature scaling",
       "12/2/24",
       "12/4/24",
@@ -522,8 +535,8 @@
       "pytorch",
       "tensor operations",
       "data loading",
-      "neural networks",
-      "dimensionality"
+      "parallel processing",
+      "neural networks"
     ]
   },
   {
@@ -608,14 +621,14 @@
     "id": "chunk_0031",
     "token_count": 223,
     "keywords": [
-      "model_weights",
+      "model",
+      "weights",
       "checkpoint",
-      "torch",
-      "state_dict",
+      "pytorch",
       "optimizer",
+      "state_dict",
       "device",
-      "filenotfounderror",
-      "load_path"
+      "file_path"
     ]
   },
   {
@@ -700,10 +713,10 @@
     "keywords": [
       "pytorch",
       "state_dict",
-      "model loading",
-      "error handling",
-      "neural networks",
-      "weights mismatch",
+      "model_loading",
+      "error_handling",
+      "neural_network",
+      "weights_mismatch",
       "clip",
       "generatorwrapper"
     ]
@@ -753,8 +766,10 @@
       "model_path",
       "encoder_state_dict",
       "state_dict",
-      "load",
-      "external_tools"
+      "loading",
+      "weights",
+      "pretrained",
+      "pytorch"
     ]
   },
   {
@@ -786,11 +801,11 @@
       "encoder_state_dict",
       "generator",
       "weight_copying",
-      "pytorch",
       "model_transfer",
       "state_dict",
       "key_mapping",
-      "tensor_operations"
+      "tensor_operations",
+      "neural_networks"
     ]
   },
   {
@@ -806,7 +821,9 @@
       "model_update",
       "pytorch",
       "weights",
-      "transfer_learning"
+      "transfer_learning",
+      "neural_networks",
+      "training"
     ]
   },
   {
@@ -834,16 +851,22 @@
     "id": "chunk_0044",
     "token_count": 1679,
     "keywords": [
-      "generator",
-      "trainable",
       "clip",
+      "non-clip",
       "mse",
       "ssim",
       "fid",
-      "inference",
-      "epochs",
+      "inference time",
+      "training time",
+      "epoch",
       "loss",
-      "metrics"
+      "generator",
+      "u-net",
+      "batch size",
+      "learning rate",
+      "metrics",
+      "results comparison",
+      "2/18/25"
     ]
   },
   {
@@ -937,7 +960,7 @@
       "dates",
       "external tools",
       "parameters",
-      "experiments"
+      "training"
     ]
   },
   {
@@ -952,9 +975,9 @@
       "mse",
       "ssim",
       "fid",
-      "clip",
       "training",
-      "test",
+      "testing",
+      "epochs",
       "metrics"
     ]
   },
@@ -1021,7 +1044,7 @@
     "keywords": [
       "state_dict",
       "unexpected keys",
-      "unet architecture",
+      "u-net architecture",
       "batchnorm parameters",
       "model verification",
       "pytorch",
@@ -1102,22 +1125,24 @@
       "cuda",
       "loss functions",
       "ssim",
-      "gan",
-      "data loading",
-      "model training",
-      "debugging",
+      "multi-folder debugging",
       "code comparison",
       "python",
-      "diff",
-      ".venv",
+      "pytorch",
+      "generator",
+      "scheduler",
+      "metrics",
+      "assertions",
+      "debugging",
+      "code diff",
       "main.py",
-      "vec_path",
-      "folders.txt",
-      "meteorology_data",
-      "gen_loss",
-      "lambda_recon",
-      "lambda_ssim",
-      "ssim_win"
+      "palace",
+      "phoenix",
+      ".venv",
+      "cuda",
+      "vec_shapes",
+      "ecse",
+      "meteorology"
     ]
   },
   {
@@ -1147,10 +1172,10 @@
       "normalization",
       "batch",
       "instance",
+      "none",
       "reverse",
       "metrics",
-      "5/14/25",
-      "hyperparameters"
+      "5/14/25"
     ]
   },
   {
@@ -1200,7 +1225,8 @@
       "neural networks",
       "classification",
       "metrics",
-      "pytorch"
+      "pytorch",
+      "implementation"
     ]
   },
   {
@@ -1243,16 +1269,16 @@
       "mixup_prob",
       "frequency metadata",
       "unetgenerator",
-      "estimator",
       "tensordataset",
       "dataloader",
       "cuda",
       "batch processing",
       "epoch",
       "learning rate",
-      "image generation",
-      "adversarial training",
-      "real vs fake classification"
+      "real/fake labels",
+      "progress tracking",
+      "model checkpoints",
+      "image generation"
     ]
   },
   {
@@ -1282,12 +1308,11 @@
       "loss",
       "optimizers",
       "adversarial_loss",
-      "bceloss",
       "adam",
+      "learning_rate",
+      "betas",
       "generator",
-      "discriminator",
-      "parameters",
-      "learning_rate"
+      "discriminator"
     ]
   },
   {
@@ -1304,20 +1329,10 @@
       "generator",
       "discriminator",
       "training loop",
-      "epochs",
-      "batch processing",
-      "scalar input",
-      "vector embedding",
+      "scalar/vector embedding",
       "projection discriminator",
       "cnn architecture",
-      "feature vectors",
-      "ray tracing",
-      "palis classes",
-      "clip program",
-      "command-line arguments",
-      "data preprocessing",
-      "vector shapes",
-      "metadata parsing"
+      "feature vectors"
     ]
   },
   {
@@ -1367,13 +1382,20 @@
     "token_count": 1393,
     "keywords": [
       "palis",
-      "data",
-      "training",
-      "neural networks",
-      "physics",
-      "generalization",
-      "dates",
-      "methods"
+      "newdata",
+      "ecse",
+      "epac",
+      "gomex",
+      "hawaii",
+      "mar2",
+      "useast",
+      "tls",
+      "fvs",
+      "ray traces",
+      "unet",
+      "pytorch",
+      "6/11/25",
+      "6/18/25"
     ]
   },
   {
@@ -1384,12 +1406,14 @@
     "id": "chunk_0071",
     "token_count": 638,
     "keywords": [
-      "datasets",
-      "methods",
-      "metrics",
-      "results",
-      "dates",
-      "external tools"
+      "data preprocessing",
+      "model training",
+      "pytorch",
+      "adamw optimizer",
+      "image data",
+      "vector metadata",
+      "gpu acceleration",
+      "command-line arguments"
     ]
   },
   {
@@ -1504,6 +1528,7 @@
       "generator",
       "dynamic",
       "configuration",
+      "system",
       "implementation"
     ]
   },
@@ -1561,10 +1586,10 @@
       "unet",
       "multi-head",
       "encoder-decoder",
-      "modular",
-      "dynamic",
+      "dynamic output",
       "configuration",
-      "validation"
+      "validation",
+      "modular implementation"
     ]
   },
   {
@@ -1583,7 +1608,7 @@
       "dynamic depth",
       "feature maps",
       "input validation",
-      "2d\u21921d conversion",
+      "image dimensions",
       "fc layer"
     ]
   },
@@ -1732,8 +1757,12 @@
     "keywords": [
       "model-serialization",
       "configuration-management",
-      "logging-integration",
-      "reproducible-seeds"
+      "logging",
+      "reproducibility",
+      "pytorch",
+      "unet",
+      "multi-head",
+      "generator"
     ]
   },
   {
@@ -1888,6 +1917,7 @@
       "generator",
       "dynamic",
       "configuration",
+      "system",
       "implementation"
     ]
   },
@@ -1945,10 +1975,10 @@
       "unet",
       "multi-head",
       "encoder-decoder",
-      "modular",
-      "dynamic",
+      "dynamic output",
       "configuration",
-      "validation"
+      "validation",
+      "modular implementation"
     ]
   },
   {
@@ -1967,7 +1997,7 @@
       "dynamic depth",
       "feature maps",
       "input validation",
-      "2d\u21921d conversion",
+      "image dimensions",
       "fc layer"
     ]
   },
@@ -2096,8 +2126,12 @@
     "keywords": [
       "model-serialization",
       "configuration-management",
-      "logging-integration",
-      "reproducible-seeds"
+      "logging",
+      "reproducibility",
+      "pytorch",
+      "unet",
+      "multi-head",
+      "generator"
     ]
   },
   {
@@ -2133,9 +2167,9 @@
       "multi-head",
       "validation",
       "rectangular-images",
+      "grayscale",
       "synthetic-data",
-      "error-handling",
-      "meta-selection"
+      "error-handling"
     ]
   },
   {
@@ -2164,14 +2198,14 @@
     "id": "chunk_0112",
     "token_count": 23,
     "keywords": [
+      "datasets",
       "directories",
       "paths",
-      "data storage",
-      "file organization",
-      "dataset management",
-      "folder structure",
       "configuration",
-      "variables"
+      "variables",
+      "file structure",
+      "data storage",
+      "organization"
     ]
   },
   {
@@ -2200,14 +2234,14 @@
     "id": "chunk_0114",
     "token_count": 851,
     "keywords": [
-      "file_verification",
-      "binary_data",
-      "tensor_operations",
-      "batch_processing",
-      "numpy",
+      "data",
+      "binary",
+      "tensors",
+      "batch",
+      "python",
       "struct",
-      "torch",
-      "float32"
+      "numpy",
+      "torch"
     ]
   },
   {
@@ -2222,10 +2256,10 @@
       "binary",
       "batch",
       "tensor",
-      "matrices",
       "file",
       "size",
-      "dimensions"
+      "matrix",
+      "list"
     ]
   },
   {
@@ -2243,7 +2277,7 @@
       "tensor-processing",
       "batch-processing",
       "data-export",
-      "file-io"
+      "file-handling"
     ]
   },
   {
@@ -2353,9 +2387,9 @@
       "arxiv",
       "conference proceedings",
       "apa style",
+      "doi",
       "cross-disciplinary insights",
-      "open-source models",
-      "cutting-edge techniques"
+      "open-source models"
     ]
   },
   {
@@ -2592,12 +2626,12 @@
     "keywords": [
       "critique",
       "lack of specificity",
-      "missing quantitative metrics",
+      "missing metrics",
       "navy requirements",
       "citations",
       "physics-informed neural networks",
       "overgeneralization",
-      "dl for physics applications"
+      "dl for physics"
     ]
   },
   {
@@ -2637,7 +2671,7 @@
       "adversarial training",
       "hybrid physics-dl architectures",
       "dataset sources",
-      "dod hpcmp access",
+      "dod hpcmp",
       "feasibility claims",
       "dois",
       "grant numbers",
@@ -2706,11 +2740,11 @@
       "deep learning",
       "physics simulation",
       "naval operations",
-      "maritime environments",
       "neural networks",
-      "complex physical phenomena",
+      "maritime environments",
       "boundary conditions",
-      "foundational research"
+      "foundational research",
+      "complex physical phenomena"
     ]
   },
   {
@@ -2723,13 +2757,15 @@
     "token_count": 181,
     "keywords": [
       "deep learning",
-      "computational fluid dynamics",
       "hydrodynamic modeling",
       "electromagnetic signature",
-      "acoustic propagation",
-      "naval operations",
+      "underwater acoustic propagation",
+      "drag reduction",
+      "stealth capabilities",
+      "sonar performance",
       "distributed maritime operations",
-      "marine corps expeditionary advanced base operations"
+      "marine corps expeditionary advanced base operations",
+      "chief of naval operations' navigation plan"
     ]
   },
   {
@@ -2742,10 +2778,10 @@
     "token_count": 145,
     "keywords": [
       "physics simulations",
+      "deep learning",
       "computational acceleration",
       "design optimization",
-      "prediction accuracy",
-      "fuel efficiency",
+      "operational impact",
       "anti-submarine warfare",
       "mine countermeasures",
       "electromagnetic spectrum operations"
@@ -2807,8 +2843,8 @@
       "fuel consumption",
       "underwater acoustics",
       "electromagnetic signatures",
-      "accuracy",
-      "generalization"
+      "predictive capabilities",
+      "operational efficiency"
     ]
   },
   {
@@ -2919,7 +2955,6 @@
       "methods",
       "metrics",
       "results",
-      "dates",
       "external tools"
     ]
   },
@@ -3040,7 +3075,8 @@
       "hybrid models",
       "reduced-order physics solvers",
       "real-time sonar performance",
-      "anti-submarine warfare"
+      "anti-submarine warfare",
+      "littoral zones"
     ]
   },
   {
@@ -3122,8 +3158,9 @@
       "simulation",
       "shm",
       "dod",
-      "cross-service benefits",
-      "industry applications"
+      "em warfare",
+      "dmo",
+      "platform readiness"
     ]
   },
   {
@@ -3233,9 +3270,9 @@
       "arxiv",
       "conference proceedings",
       "apa style",
+      "doi",
       "cross-disciplinary insights",
-      "open-source models",
-      "cutting-edge techniques"
+      "open-source models"
     ]
   },
   {
@@ -3309,7 +3346,7 @@
       "sciml",
       "helmholtz equation",
       "wave propagation",
-      "clip",
+      "clip training",
       "data-driven frameworks",
       "pgnns",
       "pinns",
@@ -3412,9 +3449,10 @@
     "keywords": [
       "multi-physics training",
       "unified physics encoders",
-      "transformer-based operators",
+      "transformer-based architectures",
       "non-local interactions",
       "cross-domain knowledge transfer",
+      "heterogeneous datasets",
       "acoustics",
       "fluid dynamics",
       "elastodynamics"
@@ -3435,10 +3473,9 @@
       "numerical methods",
       "finite element solvers",
       "neural operators",
-      "surrogate models",
       "high-throughput inference",
-      "bayesian neural operators",
       "uncertainty quantification",
+      "bayesian neural operators",
       "inverse problems",
       "source localization",
       "shm"
@@ -3718,7 +3755,7 @@
     "keywords": [
       "timeline constraints",
       "code rewrite",
-      "chinese authorship",
+      "authorship concern",
       "ray tracing",
       "physics modeling",
       "neural operators",
@@ -3753,11 +3790,14 @@
     "id": "chunk_0192",
     "token_count": 30,
     "keywords": [
+      "7/17/25",
       "tl2vec",
       "normalized vectors",
       "progress report",
       "nsno paper",
-      "7/17/25"
+      "datasets",
+      "methods",
+      "metrics"
     ]
   },
   {
@@ -3829,8 +3869,8 @@
       "structural health monitoring",
       "naval maritime operations",
       "machine learning",
-      "simulation",
-      "data-driven modeling"
+      "computational modeling",
+      "data-driven methods"
     ]
   },
   {
@@ -3926,6 +3966,7 @@
       "predictive maintenance",
       "marine corps",
       "force design 2030",
+      "distributed sustainment",
       "microcracks",
       "delamination"
     ]
@@ -3946,7 +3987,7 @@
       "asw effectiveness",
       "em propagation",
       "electronic warfare",
-      "real-time modeling"
+      "dod applications"
     ]
   },
   {
@@ -4001,8 +4042,7 @@
       "formal language",
       "discipline-specific terminology",
       "step-by-step reasoning",
-      "scientific validity",
-      "writing style improvement"
+      "scientific validity"
     ]
   },
   {
@@ -4085,7 +4125,13 @@
     "token_count": 5,
     "keywords": [
       "constraints",
-      "revised technical approach report"
+      "technical approach",
+      "report",
+      "revised",
+      "datasets",
+      "methods",
+      "metrics",
+      "results"
     ]
   },
   {
@@ -4126,10 +4172,10 @@
       "neural operators",
       "physics-informed constraints",
       "generalization",
+      "fy24",
       "sonar",
       "rf propagation",
-      "structural health monitoring",
-      "fy24"
+      "structural health monitoring"
     ]
   },
   {
@@ -4169,8 +4215,8 @@
       "oceanographic parameters",
       "generative networks",
       "asw operations",
-      "numerical methods",
-      "simulation studies"
+      "simulation studies",
+      "benchmarking"
     ]
   },
   {
@@ -4236,12 +4282,12 @@
     "keywords": [
       "physics-informed neural operators",
       "helmholtz equation",
+      "wave propagation",
       "acoustic transmission loss",
       "rf propagation",
       "structural damage detection",
       "computational efficiency",
-      "predictive accuracy",
-      "tactical decision aids"
+      "predictive accuracy"
     ]
   },
   {
@@ -4300,8 +4346,8 @@
       "formatting",
       "technical descriptions",
       "organizational issues",
-      "tense",
-      "metrics"
+      "tense inconsistencies",
+      "missing details"
     ]
   },
   {
@@ -4443,7 +4489,7 @@
     "token_count": 162,
     "keywords": [
       "underwater acoustics",
-      "transmission losses",
+      "transmission loss",
       "palis code",
       "ray-traces",
       "computational efficiency",
@@ -4539,8 +4585,7 @@
       "neural operator",
       "training",
       "discriminator loss",
-      "sound source frequencies",
-      "palis data"
+      "sound source frequencies"
     ]
   },
   {
@@ -4598,8 +4643,8 @@
       "physics-guided neural network",
       "helmholtz equations",
       "inhomogeneous medium",
-      "natural language supervision",
       "transferable visual models",
+      "natural language supervision",
       "2021",
       "2024",
       "2025"
@@ -4656,8 +4701,7 @@
       "formal language",
       "discipline-specific terminology",
       "step-by-step reasoning",
-      "scientific validity",
-      "writing style improvement"
+      "scientific validity"
     ]
   },
   {
@@ -4742,8 +4786,8 @@
     "token_count": 83,
     "keywords": [
       "fourier neural operators",
-      "neural operators",
-      "gans",
+      "neural surrogate models",
+      "generative adversarial networks",
       "physics-based feature engineering",
       "function space learning",
       "real-time prediction",
@@ -4760,13 +4804,12 @@
     "token_count": 76,
     "keywords": [
       "coamps",
-      "lamb waves",
-      "ray tracing",
-      "refractivity",
-      "tdas",
+      "lamb wave propagation",
+      "ray tracing methods",
+      "modified refractivity prediction",
+      "tactical decision aids (tdas)",
       "palis",
-      "sonar",
-      "machine learning"
+      "sonar performance prediction"
     ]
   },
   {
@@ -4815,14 +4858,14 @@
     "id": "chunk_0246",
     "token_count": 61,
     "keywords": [
-      "neumann series neural operator",
-      "helmholtz equations",
+      "neumann series",
+      "neural operator",
+      "helmholtz equation",
       "wave propagation",
       "inhomogeneous media",
       "solution operator",
       "acoustic modeling",
-      "elastic waves",
-      "neural networks"
+      "elastic waves"
     ]
   },
   {
@@ -4836,7 +4879,7 @@
       "neumann series",
       "helmholtz equations",
       "neural operator",
-      "solution methods",
+      "operator-based solution frameworks",
       "accuracy",
       "convergence",
       "computational efficiency"
@@ -4952,7 +4995,7 @@
       "multigrid",
       "neural operators",
       "hierarchical transformers",
-      "multiscale decomposition",
+      "multi-scale decomposition",
       "preconditioners",
       "ht-net",
       "low-frequency",
@@ -4975,7 +5018,7 @@
       "chebyshev",
       "dispersion error control",
       "rational approximations",
-      "learnable transforms"
+      "low-dimensional operator"
     ]
   },
   {
@@ -5058,14 +5101,13 @@
     "token_count": 217,
     "keywords": [
       "mumps",
-      "pymumps",
-      "mpi4py",
       "pip",
-      "ubuntu",
-      "debian",
+      "mpi4py",
+      "pymumps",
       "scipy",
       "seaborn",
-      "gen_data_qf"
+      "gen_data_qf",
+      "solver"
     ]
   },
   {
@@ -5120,7 +5162,7 @@
       "nsno",
       "chatgpt-4o",
       "implementation",
-      "code"
+      "neural networks"
     ]
   },
   {
@@ -5135,10 +5177,10 @@
       "fourier transform",
       "convolutional neural network",
       "gelu activation",
-      "parameter learning",
       "pytorch",
       "deep learning",
-      "operator learning"
+      "operator learning",
+      "u-shaped architecture"
     ]
   },
   {
@@ -5155,8 +5197,8 @@
       "complex",
       "field",
       "loss",
-      "grid",
-      "derivative"
+      "derivative",
+      "boundary"
     ]
   },
   {
@@ -5172,9 +5214,10 @@
       "physics-informed learning",
       "helmholtz equation",
       "sommerfeld boundary condition",
-      "adam optimizer",
+      "training loop",
       "loss function",
-      "training loop"
+      "torch",
+      "adam optimizer"
     ]
   },
   {
@@ -5263,8 +5306,8 @@
       "zero-values",
       "batch-processing",
       "data-structure",
-      "tensor-analysis",
-      "numerical-data"
+      "pytorch",
+      "tensor-analysis"
     ]
   },
   {
@@ -5312,9 +5355,9 @@
       "nqf",
       "uno",
       "pinn",
-      "fno",
-      "cnn",
       "gelu",
+      "cnn",
+      "fno",
       "steplr",
       "cosineannealinglr"
     ]
@@ -5329,12 +5372,12 @@
     "keywords": [
       "7/24/25",
       "nsno",
-      "code",
-      "claude",
+      "code rewrite",
+      "claude critique",
       "main.py",
-      "rewrite",
       "functionality",
-      "instructions"
+      "instructions",
+      "improved version"
     ]
   },
   {
@@ -5385,7 +5428,7 @@
       "variable names",
       "best practices",
       "functionality",
-      "llm instructions"
+      "optimization"
     ]
   },
   {
@@ -5448,7 +5491,7 @@
       "code critique",
       "technical issues",
       "imports",
-      "conditional logic",
+      "logic complexity",
       "file paths",
       "error handling",
       "abstraction levels"
@@ -5488,9 +5531,9 @@
       "refactoring",
       "data_loading",
       "model_setup",
-      "training",
       "validation",
-      "cuda"
+      "cuda",
+      "exception_handling"
     ]
   },
   {
@@ -5537,11 +5580,9 @@
       "code",
       "formatting",
       "operators",
-      "spacing",
       "variables",
-      "batch",
-      "size",
-      "samples"
+      "spacing",
+      "python"
     ]
   },
   {
@@ -5555,12 +5596,11 @@
       "naming conventions",
       "code refactoring",
       "variable renaming",
-      "python",
-      "machine learning",
-      "activation functions",
-      "optimizer",
-      "learning rate",
-      "model architecture"
+      "function renaming",
+      "code style",
+      "code formatting",
+      "code quality",
+      "code review"
     ]
   },
   {
@@ -5572,14 +5612,14 @@
     "id": "chunk_0288",
     "token_count": 92,
     "keywords": [
-      "code-organization",
-      "utility-functions",
-      "data-validation",
+      "code organization",
+      "utility functions",
+      "data handling",
       "pathlib",
       "logging",
-      "error-handling",
-      "model-naming",
-      "constants"
+      "constants",
+      "enums",
+      "error handling"
     ]
   },
   {
@@ -5608,14 +5648,14 @@
     "id": "chunk_0290",
     "token_count": 98,
     "keywords": [
-      "type hints",
+      "type-hints",
       "docstrings",
-      "context managers",
+      "context-managers",
       "logging",
-      "progress bars",
-      "metrics tracking",
-      "memory optimization",
-      "datasets"
+      "progress-bars",
+      "metrics-tracking",
+      "memory-optimization",
+      "algorithmic-choices"
     ]
   },
   {
@@ -5798,14 +5838,14 @@
     "id": "chunk_0301",
     "token_count": 232,
     "keywords": [
-      "code-refactoring",
-      "pep-8-compliance",
+      "code_refactoring",
+      "pep_8_compliance",
       "readability",
-      "functionality-preservation",
-      "incremental-changes",
-      "llm-instructions",
-      "context7",
-      "sonnet-4"
+      "pythonic",
+      "incremental_changes",
+      "llm_instructions",
+      "code_optimization",
+      "functionality_preservation"
     ]
   },
   {
@@ -5847,14 +5887,14 @@
     "id": "chunk_0304",
     "token_count": 61,
     "keywords": [
-      "code critique",
-      "technical issues",
-      "global state",
+      "code-critique",
+      "global-state",
+      "tensor-operations",
+      "boundary-conditions",
+      "device-handling",
       "encapsulation",
-      "tensor operations",
       "documentation",
-      "boundary conditions",
-      "device handling"
+      "training-functions"
     ]
   },
   {
@@ -5906,12 +5946,12 @@
     "keywords": [
       "data",
       "loading",
+      "function",
+      "parameters",
       "filename",
       "times",
       "operator",
-      "device",
-      "function",
-      "parameters"
+      "device"
     ]
   },
   {
@@ -5997,8 +6037,9 @@
       "python",
       "computational methods",
       "function improvements",
-      "task 7",
-      "priority 3"
+      "numerical analysis",
+      "code implementation",
+      "algorithmic enhancements"
     ]
   },
   {
@@ -6151,11 +6192,11 @@
       "validation",
       "reproducibility",
       "modularity",
+      "compatibility",
       "python",
       "testing",
       "debugging",
-      "research",
-      "utilities"
+      "maintainability"
     ]
   },
   {
@@ -6166,10 +6207,13 @@
     "id": "chunk_0322",
     "token_count": 29,
     "keywords": [
-      "software engineering",
-      "architecture design",
+      "software-engineering",
+      "architecture-design",
       "python",
-      "coding methods"
+      "coding-methods",
+      "secure-coding",
+      "robust-coding",
+      "expert-assistant"
     ]
   },
   {
@@ -6205,7 +6249,7 @@
       "pep8",
       "functionality",
       "best_practices",
-      "variable_names"
+      "nsno.py"
     ]
   },
   {
@@ -6229,10 +6273,13 @@
     "id": "chunk_0326",
     "token_count": 29,
     "keywords": [
-      "software engineering",
-      "architecture design",
+      "software-engineering",
+      "architecture-design",
       "python",
-      "coding methods"
+      "coding-methods",
+      "secure-coding",
+      "robust-coding",
+      "expert-assistant"
     ]
   },
   {
@@ -6355,8 +6402,8 @@
       "enums",
       "config",
       "pathlib",
-      "optimizer",
-      "functional_adam"
+      "adam_optimizer",
+      "model_saving"
     ]
   },
   {
@@ -6377,6 +6424,7 @@
       "logger",
       "metrics",
       "nsno.py",
+      "models.py",
       "input validation",
       "error handling",
       "dtype logic",
@@ -6436,11 +6484,9 @@
       "validation",
       "documentation",
       "code review",
-      "parameter usage",
-      "config class",
-      "option values",
+      "parameter management",
       "activation functions",
-      "model_type",
+      "model types",
       "paths"
     ]
   },
@@ -6490,14 +6536,14 @@
     "id": "chunk_0340",
     "token_count": 390,
     "keywords": [
-      "paper revision",
-      "reviewer comments",
+      "paper_revision",
+      "reviewer_comments",
       "gans",
-      "image-to-image translation",
-      "deep neural networks",
-      "pattern propagation factor",
-      "training samples",
-      "response letter"
+      "image_to_image_translation",
+      "neural_networks",
+      "training_samples",
+      "publication_guidelines",
+      "response_letter"
     ]
   },
   {
@@ -6667,8 +6713,8 @@
       "m",
       "lhs",
       "meteorological",
-      "fig.1",
-      "clarity"
+      "trilinear",
+      "fig.1"
     ]
   },
   {
@@ -6807,7 +6853,13 @@
       "pinn",
       "neural operators",
       "u-net",
-      "variational u-net"
+      "variational u-net",
+      "pdes",
+      "loss function",
+      "mse",
+      "gradient descent",
+      "architecture",
+      "simulator"
     ]
   },
   {
@@ -6839,10 +6891,10 @@
       "ngf",
       "qf",
       "channels",
-      "code",
       "error",
       "ini",
       "config",
+      "model",
       "2025-08-04"
     ]
   },
@@ -6922,7 +6974,7 @@
     "token_count": 15,
     "keywords": [
       "double convolution",
-      "input block",
+      "input layer",
       "boolean flag",
       "model architecture",
       "neural networks",
@@ -7022,8 +7074,8 @@
       "mnist",
       "training",
       "configuration",
-      "datasets",
-      "methods"
+      "parameters",
+      "dataset"
     ]
   },
   {
@@ -7118,7 +7170,12 @@
     "keywords": [
       "lr scheduler",
       "gamma",
-      "decay factor"
+      "decay factor",
+      "learning rate",
+      "hyperparameter",
+      "optimization",
+      "exponential decay",
+      "machine learning"
     ]
   },
   {
@@ -7133,7 +7190,7 @@
       "cosine_annealing",
       "hyperparameter_tuning",
       "initial_lr",
-      "start_lr"
+      "optimization"
     ]
   },
   {
@@ -7146,12 +7203,9 @@
     "keywords": [
       "cosine annealing",
       "learning rate",
-      "end_lr",
       "hyperparameter tuning",
-      "optimization",
-      "deep learning",
-      "neural networks",
-      "training"
+      "end_lr",
+      "0.00001"
     ]
   },
   {
@@ -7234,7 +7288,11 @@
       "random_seed",
       "reproducibility",
       "initialization",
-      "seed_value"
+      "control",
+      "experiment",
+      "baseline",
+      "consistency",
+      "comparison"
     ]
   },
   {
@@ -7263,14 +7321,14 @@
     "id": "chunk_0385",
     "token_count": 694,
     "keywords": [
+      "8/5/25",
       "numpy",
-      "npz",
-      "data_analysis",
+      ".npz",
+      "ftest_qc_01_fgrf_23_k20",
+      "2d arrays",
       "statistics",
       "visualization",
-      "8/5/25",
-      "array",
-      "scalar"
+      "complex128"
     ]
   },
   {
@@ -7286,9 +7344,9 @@
       "python",
       "neural_ops",
       "configuration",
-      "datasets",
-      "errors",
-      "results"
+      "dataset",
+      "error",
+      "tensor"
     ]
   },
   {
@@ -7307,7 +7365,7 @@
       "neural_ops",
       "nsno.py",
       "data_loaders",
-      "tensordataset"
+      "pinn"
     ]
   },
   {
@@ -7318,15 +7376,16 @@
     "id": "chunk_0388",
     "token_count": 999,
     "keywords": [
+      "8/6/25",
       "cuda",
+      "python",
       "typeerror",
       "opf",
       "shm",
       "guided waves",
       "saws",
-      "neural operators",
-      "fno",
       "deeponet",
+      "fno",
       "wave pdes"
     ]
   },
@@ -7429,11 +7488,8 @@
     "token_count": 67,
     "keywords": [
       "lamb wave damage detection",
-      "fourier neural operator",
-      "neural operator methods",
-      "assessment",
-      "suitability",
-      "application"
+      "fourier neural operator (fno)",
+      "neural operator methods"
     ]
   },
   {
@@ -7489,6 +7545,7 @@
       "fea-generated data",
       "experimental measurements",
       "physics-informed loss functions",
+      "dispersion relations",
       "lamb wave physics",
       "ndt implementation",
       "gemini 2.5 flash"
@@ -7509,7 +7566,6 @@
       "neural operators",
       "fno",
       "coda-no",
-      "fnogno",
       "8/12/25"
     ]
   },
@@ -7528,10 +7584,16 @@
       "uqno",
       "fourier derivatives",
       "pdes",
-      "neurips 2023",
+      "trainer",
+      "datasets",
+      "losses",
+      "uncertainty quantification",
+      "conformal prediction",
+      "spectral convolution",
+      "finite-difference",
       "icml 2024",
+      "neurips 2023",
       "tmlr 2022",
-      "tmlr 2024",
       "wandb"
     ]
   },
@@ -7562,16 +7624,20 @@
     "id": "chunk_0401",
     "token_count": 304,
     "keywords": [
-      "fno",
-      "shm-minc",
-      "data-preprocessing",
-      "gpu-setup",
+      "8/18/25",
+      "gpu",
       "cuda",
-      "trainer",
-      "input-tensors",
-      "signal-translation",
-      "time-steps",
-      "stepwise-approach"
+      "fno",
+      "tfno",
+      "uno",
+      "no",
+      "shm",
+      "minc",
+      "data",
+      "input",
+      "tensor",
+      "signal",
+      "time-step"
     ]
   },
   {
@@ -7611,15 +7677,8 @@
       "voltage readings",
       "400-microsecond acquisition",
       "baseline signals",
-      "waveform modes",
-      "plate boundaries",
-      "300khz sine wave toneburst",
-      "hanning window",
-      "guided waves",
-      "damage localization",
-      "experimental data",
-      "scientific machine learning",
-      "physics-guided neural"
+      "reflections",
+      "plate boundaries"
     ]
   },
   {
@@ -7710,7 +7769,7 @@
       "fnos",
       "contact load",
       "defect location",
-      "response signals"
+      "signal complexity"
     ]
   },
   {
@@ -7737,12 +7796,12 @@
     "keywords": [
       "neural operators",
       "wave propagation",
+      "structural health monitoring",
       "pzt sensors",
       "lamb waves",
       "inverse problem",
       "fno variables",
-      "contact loads",
-      "structural health monitoring"
+      "contact loads"
     ]
   },
   {
@@ -7852,8 +7911,8 @@
       "generalization",
       "pdes",
       "data-driven methods",
-      "solution functions",
-      "physics-informed learning"
+      "physics-informed learning",
+      "solution functions"
     ]
   },
   {
@@ -7906,14 +7965,14 @@
     "id": "chunk_0419",
     "token_count": 95,
     "keywords": [
+      "neural operators",
       "physics-based problems",
       "generalization",
-      "neural operators",
       "pdes",
       "transferability",
       "wave propagation",
       "diffusion",
-      "basis functions"
+      "boundary conditions"
     ]
   },
   {
@@ -8152,12 +8211,12 @@
     "keywords": [
       "pdes",
       "neural basis",
-      "deep learning",
       "spectral methods",
       "rbf",
       "pod",
-      "variational methods",
-      "kernel methods"
+      "pikfnns",
+      "vpinns",
+      "deep learning"
     ]
   },
   {
@@ -8197,22 +8256,16 @@
     "id": "chunk_0433",
     "token_count": 777,
     "keywords": [
+      "pdes",
+      "neural networks",
       "arxiv",
       "sciencedirect",
       "nature",
       "wikipedia",
-      "neural networks",
-      "pdes",
-      "spectral methods",
-      "radial basis functions",
-      "physics-informed",
-      "variational methods",
-      "kansa method",
-      "helmholtz problems",
-      "modal basis functions",
+      "apa",
       "2019-2025",
-      "aims journal",
-      "scientific reports"
+      "kansa method",
+      "radial basis functions"
     ]
   },
   {
@@ -8224,14 +8277,13 @@
     "token_count": 204,
     "keywords": [
       "fourier neural operator",
+      "fno",
       "time-dependent relationships",
       "source signal",
       "response field",
       "time lag",
-      "learning temporal connections",
-      "fno",
-      "neural networks",
-      "signal processing"
+      "learning",
+      "temporal connections"
     ]
   },
   {
@@ -8368,7 +8420,13 @@
     "keywords": [
       "temporal dynamics",
       "input tensor",
-      "practical example"
+      "practical example",
+      "datasets",
+      "methods",
+      "metrics",
+      "results",
+      "dates",
+      "external tools"
     ]
   },
   {
@@ -8469,8 +8527,7 @@
       "methods",
       "metrics",
       "results",
-      "8/19/25",
-      "external tools"
+      "8/19/25"
     ]
   },
   {
@@ -8600,14 +8657,14 @@
     "id": "chunk_0453",
     "token_count": 94,
     "keywords": [
-      "explicit handling",
       "time lag",
       "training efficiency",
       "physics consistency",
       "wave propagation",
       "fno",
       "temporal relationships",
-      "model accuracy"
+      "model accuracy",
+      "generalization"
     ]
   },
   {
@@ -8801,7 +8858,7 @@
       "forward pass",
       "update rule",
       "learning rate",
-      "inverse problem"
+      "gradient-based optimization"
     ]
   },
   {
@@ -8920,7 +8977,7 @@
       "size estimation",
       "post-processing",
       "significant deviations",
-      "regions"
+      "load characteristics"
     ]
   },
   {
@@ -8973,13 +9030,13 @@
     "token_count": 53,
     "keywords": [
       "data augmentation",
-      "robustness",
-      "inverse problem",
       "fno",
-      "diverse scenarios",
+      "robustness",
       "synthetic data",
-      "simulations",
-      "experimental data"
+      "experimental data",
+      "contact load",
+      "diverse scenarios",
+      "inverse problem"
     ]
   },
   {
@@ -9037,10 +9094,10 @@
       "sensor data",
       "optimization",
       "contact load",
-      "workflow",
-      "iterative optimization",
-      "plate assumption",
-      "data analysis"
+      "iterative methods",
+      "uniform plate",
+      "source excitation",
+      "inference"
     ]
   },
   {
@@ -9052,15 +9109,14 @@
     "id": "chunk_0476",
     "token_count": 354,
     "keywords": [
+      "fno",
       "time signal",
       "positional embedding",
-      "fourier neural operator",
       "sensor location",
-      "wave propagation",
       "fft",
+      "wave propagation",
       "optimization framework",
-      "regularization",
-      "validation"
+      "regularization"
     ]
   },
   {
@@ -9096,8 +9152,8 @@
       "spatial context",
       "temporal dynamics",
       "fno",
-      "wave propagation",
       "positional embeddings",
+      "wave propagation",
       "gpu training",
       "1d time signal"
     ]
@@ -9114,11 +9170,11 @@
     "keywords": [
       "positional embedding",
       "temporal complexity",
-      "fft representation",
+      "fft",
       "fno",
+      "generalization",
       "sensor data",
       "wave propagation",
-      "generalization",
       "regularization",
       "augmentation"
     ]
@@ -9181,7 +9237,7 @@
       "sensor data",
       "concatenation",
       "time signal",
-      "transformer models"
+      "embedding dimensions"
     ]
   },
   {
@@ -9196,13 +9252,14 @@
     "keywords": [
       "fno",
       "fourier transform",
+      "wave propagation",
       "temporal-spatial data",
       "positional embeddings",
-      "wave propagation",
-      "sensor data",
       "input layer",
       "fourier layers",
-      "output layer"
+      "output layer",
+      "response tensor",
+      "medium properties"
     ]
   },
   {
@@ -9222,7 +9279,7 @@
       "prediction",
       "observation",
       "tensor",
-      "comparison"
+      "spatial-temporal"
     ]
   },
   {
@@ -9319,13 +9376,15 @@
     "token_count": 155,
     "keywords": [
       "fno",
-      "training",
-      "validation",
       "fft",
       "positional embeddings",
       "wave equation",
       "physics-based regularization",
-      "generalization"
+      "validation",
+      "generalization",
+      "source tensor",
+      "response tensor",
+      "medium properties"
     ]
   },
   {
@@ -9375,15 +9434,14 @@
     "id": "chunk_0492",
     "token_count": 19,
     "keywords": [
-      "no",
       "shm",
+      "no",
       "gaps",
+      "analysis",
       "datasets",
       "methods",
       "metrics",
-      "results",
-      "dates",
-      "external tools"
+      "results"
     ]
   },
   {
@@ -9397,11 +9455,13 @@
       "feynman method",
       "missing pieces",
       "problem-solving",
+      "gaps",
       "state-of-the-art",
       "vision",
-      "gaps",
       "invention",
-      "discovery"
+      "discovery",
+      "plug-in",
+      "hard problem"
     ]
   },
   {
@@ -9454,7 +9514,7 @@
       "neural architectures",
       "helmholtz equation",
       "wave propagation",
-      "neural operators",
+      "neural operator frameworks",
       "generalization",
       "computational limitations",
       "domain-specific strategies"
@@ -9509,8 +9569,7 @@
       "state-of-the-art",
       "research",
       "engineering tasks",
-      "gap analysis",
-      "perspectives",
+      "gaps",
       "methods",
       "difficulty",
       "likelihood"
@@ -9525,13 +9584,12 @@
     "token_count": 49,
     "keywords": [
       "bibtex",
+      "aux",
       "texstudio",
-      "aux files",
-      "bibliography",
       "configuration",
+      "multiple bib",
       "troubleshooting",
-      "latex",
-      "multiple bib files"
+      "9/3/25"
     ]
   },
   {
@@ -9545,17 +9603,13 @@
       "fy25",
       "neural networks",
       "physics domains",
+      "fleet transitions",
       "ml methods",
       "meteorology",
       "shm",
-      "neural operator",
+      "neural operators",
       "university of south carolina",
-      "ieee transactions on antennas and propagation",
-      "opnav n2n6e",
-      "onr code 32",
-      "pms-264",
-      "niwc pac",
-      "coalition warfare program"
+      "ieee transactions on antennas and propagation"
     ]
   },
   {
@@ -9634,7 +9688,7 @@
       "400-microsecond acquisition",
       "baseline signals",
       "reflections",
-      "plate boundaries"
+      "boundary conditions"
     ]
   },
   {
@@ -9663,14 +9717,14 @@
     "id": "chunk_0507",
     "token_count": 269,
     "keywords": [
-      "computational model",
       "comsol multiphysics",
-      "lamb waves",
+      "lamb wave dynamics",
       "piezoelectric transducers",
       "strain tensor",
-      "simulation",
+      "time-series data",
       "machine learning",
-      "data generation"
+      "s mode",
+      "a mode"
     ]
   },
   {
@@ -9738,11 +9792,11 @@
       "inverse problems",
       "generalization",
       "environmental factors",
-      "optimization",
+      "optimization-based inversion",
       "bayesian inference",
-      "neural networks",
+      "separate inverse model",
       "pinns",
-      "nio",
+      "neural inverse operators",
       "uncertainty quantification",
       "computational efficiency"
     ]
@@ -9795,10 +9849,10 @@
       "pde inverse problems",
       "github",
       "python",
-      "distutils",
       "pip",
+      "distutils",
       "requirements.txt",
-      "modulenotfounderror"
+      "error"
     ]
   },
   {
@@ -9979,8 +10033,9 @@
       "mydataset",
       "training",
       "validation",
+      "imports",
       "problem",
-      "imports"
+      "grid"
     ]
   },
   {
@@ -10020,7 +10075,7 @@
       "architectural_dictionaries",
       "training_flags",
       "inversion_models",
-      "neural_operators"
+      "neural_networks"
     ]
   },
   {
@@ -10038,10 +10093,9 @@
       "epoch",
       "error",
       "training",
+      "folder",
       "load",
-      "save",
-      "model.pkl",
-      "errors.txt"
+      "save"
     ]
   },
   {
@@ -10097,11 +10151,11 @@
       "validation",
       "early stopping",
       "tensorboard",
-      "loss",
-      "error",
-      "patience",
+      "relative testing error",
+      "patience counter",
+      "model saving",
       "epochs",
-      "model saving"
+      "loss_zero"
     ]
   },
   {
@@ -10121,7 +10175,9 @@
       "testing error",
       "epoch",
       "optimizer",
-      "scheduler"
+      "scheduler",
+      "time per epoch",
+      "workers"
     ]
   },
   {
@@ -10170,12 +10226,11 @@
     "id": "chunk_0533",
     "token_count": 19,
     "keywords": [
+      "10/28/25",
       "chris",
       "options",
       "data",
-      "datasets",
-      "collaboration",
-      "10/28/25"
+      "collaboration"
     ]
   },
   {
@@ -10300,9 +10355,9 @@
       "11/28/25",
       "gen_only.py",
       "torch.compile",
-      "inference",
       "mse",
       "ssim",
+      "inference",
       "timing",
       "uvcgan",
       "vitunetgeneratorconcat"
@@ -10357,7 +10412,7 @@
       "uvcgan",
       "inference",
       "speedup",
-      "torch.compile",
+      "cuda",
       "metrics",
       "test data"
     ]
@@ -10444,13 +10499,13 @@
     "token_count": 794,
     "keywords": [
       "code optimization",
-      "llm suggestions",
       "json parsing error",
-      "runtime error",
+      "llm suggestions",
       "batch processing",
-      "tensor operations",
-      "gpu utilization",
-      "performance metrics"
+      "metrics",
+      "timing",
+      "code changes",
+      "error handling"
     ]
   },
   {
@@ -10518,10 +10573,9 @@
     "keywords": [
       "debug",
       "metrics",
-      "optimization",
       "mse",
       "ssim",
-      "batch processing",
+      "optimization",
       "gpu",
       "timing",
       "genai.mil",
@@ -10543,7 +10597,10 @@
     "keywords": [
       "imports",
       "concurrency",
-      "threadpoolexecutor"
+      "threadpoolexecutor",
+      "external libraries",
+      "code structure",
+      "modularity"
     ]
   },
   {
@@ -10573,13 +10630,13 @@
     "token_count": 72,
     "keywords": [
       "datasets",
-      "file handling",
-      "image processing",
+      "file_handling",
+      "image_processing",
       "loops",
       "numpy",
-      "file paths",
+      "os",
       "reshaping",
-      "data generation"
+      "tofile"
     ]
   },
   {
@@ -10695,14 +10752,15 @@
     "id": "chunk_0562",
     "token_count": 156,
     "keywords": [
+      "test_model",
       "file i/o",
       "futures",
-      "time measurement",
-      "inference speed",
+      "time.time",
+      "metrics",
       "mse",
       "ssim",
-      "non-blocking operations",
-      "device placement"
+      "inference",
+      "device"
     ]
   },
   {
@@ -10748,7 +10806,7 @@
       "model_state_dict",
       "checkpoint",
       "weights",
-      "load_state_dict",
+      "load",
       "generator",
       "gen_model",
       "path"
@@ -10798,13 +10856,13 @@
     "token_count": 660,
     "keywords": [
       "data_processing",
-      "neural_operators",
       "preprocessing",
+      "visualization",
+      "neural_operators",
       "seismic_imaging",
-      "dataset_integration",
-      "code_changes",
+      "dataset_implementation",
       "command_line",
-      "training_validation_testing"
+      "configuration"
     ]
   },
   {
@@ -10935,9 +10993,9 @@
       "tensor-operations",
       "grid-generation",
       "hdf5",
-      "torch",
-      "numpy",
-      "minmax-scaling"
+      "pytorch",
+      "numerical-stability",
+      "shape-manipulation"
     ]
   },
   {
@@ -10970,12 +11028,12 @@
     "keywords": [
       "deep learning",
       "convolutional neural networks",
-      "model architecture",
       "pytorch",
-      "tensor operations",
-      "parameter counting",
+      "model architecture",
       "forward pass",
-      "neural network layers"
+      "parameter counting",
+      "deeponet",
+      "tensor operations"
     ]
   },
   {
@@ -11007,11 +11065,12 @@
       "error",
       "traceback",
       "torch",
-      "conv2d",
+      "neural network",
+      "convolution",
       "channels",
-      "debug",
+      "debugging",
       "val loss",
-      "constant"
+      "constant loss"
     ]
   },
   {
@@ -11049,10 +11108,7 @@
       "helmholtztomography",
       "validation",
       "loss",
-      "inversionnet",
-      "cnio",
-      "snowaveconv1d",
-      "baselines.py"
+      "inversionnet"
     ]
   },
   {
@@ -11176,9 +11232,9 @@
       "errors",
       "architecture",
       "model",
-      "optimizer",
-      "size",
-      "dates"
+      "optimizer_state",
+      "dates",
+      "metrics"
     ]
   },
   {
@@ -11191,11 +11247,12 @@
     "keywords": [
       "nio",
       "minc",
-      "radplot.py",
-      "cuda_visible_devices",
+      "cuda",
       "jax",
       "pytorch",
+      "speedup",
       "gen_only.py",
+      "dataset",
       "vitunetgeneratorconcat"
     ]
   },
@@ -11231,8 +11288,8 @@
       "tensor manipulation",
       "pytorch",
       "chebyshev distance",
-      "linear gradient",
       "label generation",
+      "neural network training",
       "code modification"
     ]
   },
@@ -11287,8 +11344,8 @@
       "prediction shape",
       "ground truth",
       "negative background",
-      "mse",
-      "l1"
+      "gelu activation",
+      "5\u00d75 box"
     ]
   },
   {
@@ -11342,7 +11399,9 @@
       "loss",
       "validation",
       "gpu",
-      "pytorch"
+      "pytorch",
+      "triangular2",
+      "scheduler"
     ]
   },
   {
@@ -11356,11 +11415,11 @@
       "2/16/26",
       "epochs",
       "batch",
-      "loss",
-      "gpu",
-      "pytorch",
-      "training",
-      "validation"
+      "train loss",
+      "val loss",
+      "gpu mem",
+      "lr",
+      "patience"
     ]
   },
   {
@@ -11371,13 +11430,13 @@
     "id": "chunk_0599",
     "token_count": 1128,
     "keywords": [
-      "learning_rate",
       "cycliclr",
-      "training_loss",
-      "validation_loss",
-      "gpu_memory",
-      "epoch_training",
-      "tensor_operations",
+      "training",
+      "validation",
+      "loss",
+      "learning_rate",
+      "epochs",
+      "gpu",
       "pytorch"
     ]
   },
@@ -11396,7 +11455,8 @@
       "validation_loss",
       "gpu_memory",
       "batch_size",
-      "tensor_shape",
+      "prediction_metrics",
+      "sample_analysis",
       "pos_weight"
     ]
   },
@@ -11430,13 +11490,14 @@
     "keywords": [
       "training",
       "loss",
+      "epochs",
       "learning_rate",
       "gpu_memory",
-      "epochs",
       "validation_loss",
       "batch_size",
       "prediction_metrics",
-      "sample_overlap"
+      "sample_overlap",
+      "pixel_distance"
     ]
   },
   {
@@ -11486,11 +11547,13 @@
     "token_count": 25,
     "keywords": [
       "2/19/26",
-      "tar",
       "nio/folder",
       "bb",
+      "ford",
+      "tar",
       "scp",
-      "ford"
+      "datasets",
+      "external tools"
     ]
   },
   {
@@ -11621,13 +11684,13 @@
     "token_count": 364,
     "keywords": [
       "experimentation",
-      "hyperparameters",
-      "model performance",
-      "visualization",
-      "loss functions",
-      "training metrics",
+      "hyperparameter tuning",
+      "model evaluation",
       "results analysis",
-      "neural networks"
+      "learning rate",
+      "weight decay",
+      "dice loss",
+      "bcewithlogitsloss"
     ]
   },
   {
@@ -11644,7 +11707,7 @@
       "tensorboard",
       "early stopping",
       "cuda",
-      "h5",
+      "gpu",
       "20240301"
     ]
   },
@@ -11693,8 +11756,8 @@
     "keywords": [
       "claude code",
       "hyperparameter optimization",
-      "gpu",
       "debugging",
+      "gpu",
       "code generation",
       "experiment monitoring",
       "ford",
@@ -11796,12 +11859,14 @@
     "keywords": [
       "pzt sensors",
       "lamb waves",
+      "guided waves",
       "inverse problem",
       "neural inverse operators",
       "contact loads",
       "signal attenuation",
+      "tensor modification",
       "waveform modes",
-      "tensor modification"
+      "boundary reflections"
     ]
   },
   {
@@ -11866,10 +11931,10 @@
     "id": "chunk_0626",
     "token_count": 50,
     "keywords": [
-      "claude code",
       "scientific research",
       "nio",
-      "optimized prompt",
+      "claude code",
+      "prompt optimization",
       "agentic file exploration",
       "iterative coding",
       "multi-step reasoning",
@@ -11923,8 +11988,8 @@
       "neural inverse operator",
       "nio",
       "thin metal plates",
-      "arxiv",
-      "2023"
+      "guided waves",
+      "arxiv"
     ]
   },
   {
@@ -11959,12 +12024,12 @@
     "keywords": [
       "data_format",
       "input_output",
-      "sensor_data",
-      "spatial_matrix",
       "fno_mapping",
-      "source_term",
-      "received_field",
-      "medium_property"
+      "sensor_data",
+      "damage_localization",
+      "spatial_matrix",
+      "medium_properties",
+      "guided_wave"
     ]
   },
   {
@@ -11996,14 +12061,13 @@
     "id": "chunk_0633",
     "token_count": 15,
     "keywords": [
-      "guided_lamb_wave",
-      "damage_localization",
-      "plan_mode",
-      "execution_steps",
+      "guided lamb wave",
+      "damage localization",
+      "plan mode",
+      "execution steps",
       "nio",
-      "system_prompt",
-      "code_system",
-      "phase_1"
+      "system prompt",
+      "claude code"
     ]
   },
   {
@@ -12040,13 +12104,15 @@
       "nio architecture",
       "fno",
       "1d convolution",
-      "u-net",
+      "temporal attention",
+      "segmentation decoder",
       "focal loss",
       "dice loss",
       "iou",
-      "multi-objective optimization",
-      "time-series",
-      "segmentation"
+      "lov\u00e1sz-softmax",
+      "physics-informed priors",
+      "time-of-flight",
+      "sensor geometry"
     ]
   },
   {
@@ -12164,7 +12230,7 @@
       "nio",
       "research_plan",
       "scientific_experiment",
-      "cuda"
+      "data/lambwave/lambwave.h5"
     ]
   },
   {
@@ -12236,14 +12302,14 @@
     "keywords": [
       "3/12/26",
       "minc",
-      "nio",
       "segmentation",
       "regression",
       "iou",
       "bce",
       "fno",
       "deeponet",
-      "class imbalance"
+      "class imbalance",
+      "normalization"
     ]
   },
   {
@@ -12258,13 +12324,12 @@
       "gaussian heatmaps",
       "iou",
       "mse",
-      "nio",
-      "multi-scale regression",
-      "64\u00d764 resolution",
       "bce",
       "lov\u00e1sz hinge",
+      "64\u00d764 resolution",
+      "sigma",
       "soft labels",
-      "sigma parameter"
+      "nio architecture"
     ]
   },
   {
@@ -12301,10 +12366,10 @@
       "tensorboard",
       "bce loss",
       "iou",
+      "soft labels",
       "center of mass",
-      "backward compatibility",
       "mincsearch",
-      "runnio"
+      "backward compatibility"
     ]
   },
   {
@@ -12316,13 +12381,12 @@
     "token_count": 215,
     "keywords": [
       "capra api",
-      "authentication token",
-      "https endpoint",
-      "certificate export",
+      "authentication",
+      "https",
       "environment variables",
-      "3/13/26",
-      "dod certificates",
-      "navy api"
+      "certificates",
+      "dod",
+      "3/13/26"
     ]
   },
   {
@@ -12472,10 +12536,9 @@
       "hdf5",
       "gpu",
       "data augmentation",
+      "simulation",
       "neural operators",
-      "lamb wave data",
-      "mde",
-      "generalization"
+      "lamb wave data"
     ]
   },
   {
@@ -12504,12 +12567,14 @@
     "id": "chunk_0659",
     "token_count": 27,
     "keywords": [
-      "claude.md",
-      "guidance",
       "claude code",
-      "repository",
-      "code",
-      "tools"
+      "repository guidance",
+      "ai assistance",
+      "code collaboration",
+      "development tools",
+      "version control",
+      "programming",
+      "automation"
     ]
   },
   {
@@ -12601,8 +12666,7 @@
       "models",
       "commands",
       "parameters",
-      "examples",
-      "file_path"
+      "examples"
     ]
   },
   {
@@ -12618,11 +12682,13 @@
       "cuda",
       "python",
       "tensorboard",
+      "hyperparameter search",
       "plotting",
       "error evaluation",
-      "h5 datasets",
-      "nio model",
-      "hyperparameter search"
+      "h5",
+      "nio",
+      "model selection",
+      "workflow"
     ]
   },
   {
@@ -12655,12 +12721,12 @@
     "keywords": [
       "training",
       "validation",
-      "model",
-      "checkpoint",
-      "error",
-      "log",
+      "model checkpoint",
+      "error log",
       "hyperparameters",
-      "tensorboard"
+      "tensorboard",
+      "medical imaging",
+      "minc"
     ]
   },
   {
@@ -12675,13 +12741,11 @@
       "minc",
       "medical imaging",
       "adam optimizer",
-      "learning rate",
       "cyclic lr scheduler",
       "mse",
       "dice loss",
       "normalization",
-      "hyperparameters",
-      "runnio.py"
+      "hyperparameters"
     ]
   },
   {
@@ -12730,15 +12794,17 @@
     "id": "chunk_0671",
     "token_count": 1940,
     "keywords": [
+      "minc",
       "data_utils",
       "augmentation",
       "splits",
       "verification",
-      "minc",
+      "nio",
       "deeponet",
       "fno",
-      "nio",
-      "spatial_cv",
+      "branch_nets",
+      "trunk_nets",
+      "spectral_conv",
       "parameter_count"
     ]
   },
@@ -12834,8 +12900,7 @@
       "debugging timeline",
       "2026-03-15",
       "2026-03-16",
-      "h1 debugging",
-      "entry 3"
+      "h1 debugging"
     ]
   },
   {
@@ -12854,10 +12919,10 @@
       "cosine_warmup",
       "early stopping",
       "training loss",
+      "epoch 31",
       "2026-03-15",
       "2026-03-16",
-      "debugging",
-      "learning rate"
+      "96 mm"
     ]
   },
   {
@@ -12873,12 +12938,14 @@
     "keywords": [
       "deeponet",
       "vanishing gradients",
-      "gradient norms",
       "layernorm",
       "linearaggregation",
+      "gradient norms",
       "mde",
       "2026-03-15",
-      "2026-03-16"
+      "2026-03-16",
+      "fno",
+      "signal attenuation"
     ]
   },
   {
@@ -12936,23 +13003,22 @@
     "id": "chunk_0681",
     "token_count": 355,
     "keywords": [
-      "3/16/26",
-      "h1 debugging",
       "training failure",
-      "target format",
+      "debugging",
       "loss weighting",
+      "target format",
       "bce",
       "lov\u00e1sz-hinge",
       "mse",
       "pos_weight",
       "normalization",
       "batch_size",
-      "lr",
-      "mde",
+      "learning rate",
       "gaussian heatmap",
       "binary mask",
-      "cnn",
-      "gradient cancellation"
+      "mde",
+      "gradient cancellation",
+      "weighted_centroid"
     ]
   },
   {
@@ -12970,11 +13036,12 @@
       "bce",
       "logits",
       "trainerconfig",
-      "h1",
-      "2026-03-15",
-      "2026-03-16",
       "signal reshape",
-      "min_sources"
+      "n_sources",
+      "in_channels",
+      "min_sources",
+      "2026-03-15",
+      "2026-03-16"
     ]
   },
   {
@@ -13012,10 +13079,9 @@
       "lov\u00e1sz-hinge loss",
       "iou optimization",
       "128\u00d7128 resolution",
-      "ablation study",
-      "pos_weight=12",
-      "binary mask targets",
-      "2026-03-15\u20132026-03-16"
+      "2026-03-15\u20132026-03-16",
+      "minc physics",
+      "neural network generalization"
     ]
   },
   {
@@ -13070,9 +13136,9 @@
       "onecyclelr",
       "mde",
       "rmse",
-      "ablation",
       "checkpoints",
-      "lab_notebook.md"
+      "ablations",
+      "h1 experiments"
     ]
   },
   {
@@ -13178,14 +13244,16 @@
     "id": "chunk_0693",
     "token_count": 215,
     "keywords": [
-      "d4 symmetry augmentation",
+      "d4 augmentation",
       "minc sensors",
       "mde",
       "rmse",
       "capture rate",
-      "sensor layout asymmetry",
-      "wave arrival time encoding",
-      "data augmentation failure"
+      "sensor asymmetry",
+      "wave arrival time",
+      "data augmentation",
+      "performance metrics",
+      "failure analysis"
     ]
   },
   {
@@ -13203,8 +13271,8 @@
       "rmse",
       "variance",
       "sensor redundancy",
-      "learning rate",
       "gradient estimates",
+      "learning rate",
       "minc"
     ]
   },
@@ -13245,7 +13313,7 @@
       "mlp",
       "mde",
       "metrics",
-      "verdict"
+      "performance"
     ]
   },
   {
@@ -13315,10 +13383,10 @@
       "location prediction",
       "n_fno=0",
       "direct prediction",
-      "no layers",
+      "neural networks",
+      "spatial data",
       "model architecture",
-      "prediction method",
-      "neural network"
+      "performance evaluation"
     ]
   },
   {
@@ -13395,7 +13463,7 @@
       "mde",
       "minc baseline",
       "mlp",
-      "lr",
+      "learning rate",
       "epochs",
       "randomization"
     ]
@@ -13433,14 +13501,12 @@
       "h1 verdict",
       "fundamentally limited",
       "weak feature extraction",
-      "1d cnn",
-      "symmetry exploitation",
-      "physics encoding",
+      "no symmetry exploitation",
+      "no physics encoding",
       "ablations",
       "augmentation",
       "output formulation",
-      "bottleneck",
-      "training"
+      "bottleneck architectural"
     ]
   },
   {
@@ -13593,7 +13659,9 @@
       "time-of-flight",
       "cross-correlation",
       "fno",
-      "mlp regression"
+      "mlp regression",
+      "localization",
+      "physics-informed features"
     ]
   },
   {
@@ -13663,17 +13731,10 @@
       "mionet",
       "gnot",
       "upt",
-      "phaseno",
-      "minc",
-      "lamb-wave",
       "pytorch",
-      "jax",
-      "fourier-mionet",
-      "hna",
-      "perceiver io",
-      "pde benchmarks",
-      "icml 2023",
-      "neurips 2024"
+      "multi-input",
+      "spatial field decoding",
+      "cross-attention"
     ]
   },
   {
@@ -13685,16 +13746,16 @@
     "id": "chunk_0719",
     "token_count": 487,
     "keywords": [
-      "minc",
-      "nio",
-      "cross-sensor fusion",
-      "time-of-flight",
-      "1d cnn",
+      "architectural-information",
+      "cross-sensor-fusion",
+      "time-of-flight-features",
+      "graph-neural-networks",
+      "1d-cnn",
       "transformer",
-      "graph neural network",
-      "localization",
-      "regression head",
-      "unit tests"
+      "nio-framework",
+      "minc-baseline",
+      "regression-head",
+      "unit-tests"
     ]
   },
   {
@@ -13727,8 +13788,9 @@
       "minc",
       "replication",
       "code",
-      "github",
-      "usnavalresearchlaboratory"
+      "neural networks",
+      "machine learning",
+      "research"
     ]
   },
   {
@@ -13739,14 +13801,14 @@
     "id": "chunk_0722",
     "token_count": 214,
     "keywords": [
-      "minc",
-      "github",
-      "code review",
-      "python",
-      "project structure",
-      "requirements",
-      "unit tests",
-      "claude code"
+      "code_review",
+      "repository_cloning",
+      "step-by-step_instructions",
+      "unit_tests",
+      "project_structure",
+      "dependencies",
+      "pytorch",
+      "data_processing"
     ]
   },
   {
@@ -13779,11 +13841,11 @@
       "pytorch",
       "julia",
       "configuration",
-      "yaml",
       "data",
       "model",
       "training",
-      "symmetry"
+      "symmetry",
+      "yaml"
     ]
   },
   {
@@ -13817,10 +13879,7 @@
       "pipeline",
       "tests",
       "configuration",
-      "phase 2",
-      "datasets",
-      "methods",
-      "metrics"
+      "phase 2"
     ]
   },
   {
@@ -14047,9 +14106,9 @@
       "symmetry-breaking",
       "unit_tests",
       "group_theory",
-      "wang_et_al",
       "conv1d",
-      "learnable_parameters"
+      "learnable_parameters",
+      "wang_et_al"
     ]
   },
   {
@@ -14307,7 +14366,7 @@
       "data_synthesis",
       "optional_implementation",
       "wave_propagation",
-      "experimental_data"
+      "experimental_data_alternative"
     ]
   },
   {
@@ -14360,8 +14419,9 @@
       "minc",
       "replication",
       "code",
-      "github",
-      "usnavalresearchlaboratory"
+      "neural networks",
+      "machine learning",
+      "research"
     ]
   },
   {
@@ -14521,10 +14581,11 @@
     "id": "chunk_0763",
     "token_count": 16,
     "keywords": [
+      "example data filenames",
       "signal data",
-      "filenames",
       "datasets",
-      "examples"
+      "filenames",
+      "data examples"
     ]
   },
   {
@@ -14612,12 +14673,12 @@
     "keywords": [
       "instructions",
       "preprocessing",
-      "baseline subtraction",
-      "time domain",
-      "frequency domain",
-      "julia code",
-      "code changes",
-      "correctness review"
+      "baseline_subtraction",
+      "time_domain",
+      "frequency_domain",
+      "code_fix",
+      "julia",
+      "equivalence"
     ]
   },
   {
@@ -14690,7 +14751,10 @@
       "gaussian heatmaps",
       "soft-argmax",
       "mse",
-      "grid resolution"
+      "256\u00d7256 grid",
+      "mid-march",
+      "2-3 days",
+      "3-5 days"
     ]
   },
   {
@@ -14741,7 +14805,8 @@
       "epochs",
       "seed",
       "within_lambda",
-      "results"
+      "within_2lambda",
+      "mm"
     ]
   },
   {
@@ -14772,14 +14837,14 @@
     "keywords": [
       "pytorch",
       "minc",
-      "damage detection",
+      "damage localization",
       "metal plates",
       "mean distance error",
       "mde",
       "neural networks",
       "github",
       "aip",
-      "localization"
+      "1000 epochs"
     ]
   },
   {
@@ -14817,8 +14882,7 @@
       "loss function",
       "test-time averaging",
       "sender-receiver matrix",
-      "cross-talk signals",
-      "contact load position"
+      "cross-talk signals"
     ]
   },
   {
@@ -14852,12 +14916,12 @@
       "julia",
       "mde",
       "equivariance",
-      "d4 group",
+      "d4",
       "localization",
-      "parameter count",
-      "output head",
-      "train_loss",
-      "epoch"
+      "parameter-count",
+      "architecture-parity",
+      "tests",
+      "results"
     ]
   },
   {
@@ -14935,7 +14999,7 @@
       "changes",
       "results",
       "7 mm",
-      "suggestions"
+      "retries"
     ]
   },
   {
@@ -14948,14 +15012,14 @@
     "keywords": [
       "pytorch",
       "minc",
-      "damage detection",
+      "damage localization",
       "metal plates",
       "mean distance error",
       "mde",
       "neural networks",
       "github",
       "aip",
-      "localization"
+      "1000 epochs"
     ]
   },
   {
@@ -14995,8 +15059,7 @@
       "test-time averaging",
       "julia",
       "equivariance",
-      "preprocessing",
-      "coordinate normalization"
+      "preprocessing"
     ]
   },
   {
@@ -15048,12 +15111,10 @@
       "minc",
       "mde",
       "preprocessing",
-      "parity",
+      "data_parity",
+      "model_diagnostics",
       "localization",
-      "model",
-      "parameters",
-      "diagnostics",
-      "replication"
+      "replication_status"
     ]
   },
   {
@@ -15147,7 +15208,9 @@
       "layernorm",
       "localization",
       "group theory",
-      "representation matrices"
+      "representation matrices",
+      "kaiming normalization",
+      "sender/receiver flattening"
     ]
   },
   {
@@ -15177,13 +15240,13 @@
     "token_count": 60,
     "keywords": [
       "check",
-      "subtask",
       "julia",
-      "code",
       "minc",
-      "investigation",
+      "subtask",
       "completion",
-      "implementation"
+      "investigation",
+      "code",
+      "reference"
     ]
   },
   {
@@ -15238,8 +15301,7 @@
       "claude code",
       "localized",
       "datasets",
-      "methods",
-      "metrics"
+      "methods"
     ]
   },
   {
@@ -15252,12 +15314,14 @@
     "keywords": [
       "pytorch",
       "minc",
-      "metal plates",
       "damage localization",
+      "metal plates",
       "mean distance error",
-      "replication",
+      "mde",
       "neural networks",
-      "github"
+      "github",
+      "aip",
+      "1000 epochs"
     ]
   },
   {
@@ -15290,14 +15354,12 @@
     "keywords": [
       "julia",
       "mde",
-      "head",
-      "time",
-      "sender",
-      "receiver",
-      "d4",
       "layernorm",
       "dropout",
-      "overfit"
+      "lr schedule",
+      "initialization",
+      "test-time averaging",
+      "physical action"
     ]
   },
   {
@@ -15399,13 +15461,13 @@
     "token_count": 80,
     "keywords": [
       "check",
-      "subtask",
       "julia",
-      "code",
       "minc",
+      "subtask",
       "investigation",
       "completion",
-      "cleanup"
+      "cleanup",
+      "files"
     ]
   },
   {
@@ -15423,9 +15485,7 @@
       "logging",
       "validation",
       "averaging",
-      "baseline",
-      "mask",
-      "prediction"
+      "masking"
     ]
   },
   {
@@ -15493,13 +15553,13 @@
     "token_count": 80,
     "keywords": [
       "check",
-      "subtask",
       "julia",
-      "code",
       "minc",
+      "subtask",
       "investigation",
       "completion",
-      "cleanup"
+      "cleanup",
+      "files"
     ]
   },
   {
@@ -15592,10 +15652,10 @@
       "code",
       "reference",
       "minc",
+      "external",
+      "tools",
       "datasets",
-      "methods",
-      "metrics",
-      "results"
+      "methods"
     ]
   },
   {
@@ -15695,16 +15755,16 @@
     "id": "chunk_0826",
     "token_count": 523,
     "keywords": [
+      "instructions",
       "paperorchestra",
       "latex",
-      "automated reports",
-      "mvp development",
-      "llm-based coding",
-      "task allocation",
-      "model selection",
-      "token efficiency",
+      "mvp",
+      "sw development",
+      "llm",
       "claude code",
-      "open-source compatibility"
+      "token frugal",
+      "model selection",
+      "prompts"
     ]
   },
   {
@@ -15760,9 +15820,9 @@
       "mean distance error",
       "mde",
       "minc",
-      "usnavalresearchlaboratory",
-      "6 mm",
-      "2.58 \u00b1 0.12 mm"
+      "neural networks",
+      "symmetry constraints",
+      "usnavalresearchlaboratory"
     ]
   },
   {
@@ -15814,9 +15874,9 @@
       "pytorch",
       "julia",
       "mean distance error",
+      "data preprocessing",
       "hdf5",
       "csv",
-      "data preprocessing",
       "equivariance",
       "overfitting",
       "seed noise",
@@ -15831,7 +15891,7 @@
     "id": "chunk_0833",
     "token_count": 1212,
     "keywords": [
-      "data preprocessing",
+      "data-preprocessing",
       "hdf5",
       "pytorch",
       "julia",
@@ -15854,11 +15914,9 @@
       "check",
       "subtask",
       "completion",
-      "cleanup",
-      "files",
       "investigation",
-      "response",
-      "implementation"
+      "cleanup",
+      "files"
     ]
   },
   {
@@ -15907,11 +15965,9 @@
       "check",
       "subtask",
       "completion",
-      "cleanup",
-      "files",
       "investigation",
-      "response",
-      "implementation"
+      "cleanup",
+      "files"
     ]
   },
   {
@@ -15943,11 +15999,10 @@
       "integration test",
       "argparse",
       "synthetic data",
-      "mixed precision",
-      "mde",
-      "rmse",
-      "capture rate",
-      "pytest"
+      "metrics",
+      "results.json",
+      "pytest",
+      "regression"
     ]
   },
   {
@@ -15976,13 +16031,13 @@
     "id": "chunk_0841",
     "token_count": 21,
     "keywords": [
-      "distributed",
-      "training",
-      "optuna",
-      "hyperparameter",
+      "distributed_training",
       "multi-gpu",
-      "pytest",
-      "test"
+      "optuna",
+      "hyperparameter_search",
+      "integration_test",
+      "test_distributed",
+      "pytest"
     ]
   },
   {
@@ -16155,8 +16210,10 @@
       "clip",
       "sharpness-aware minimization",
       "mixup",
+      "physics domains",
+      "pdes",
       "generalization",
-      "physics domains"
+      "discretization-invariance"
     ]
   },
   {
@@ -16180,9 +16237,7 @@
       "structural health monitoring",
       "neural inverse operators",
       "pytorch",
-      "julia",
-      "multi-objective loss",
-      "mde",
+      "multi-objective loss functions",
       "ieee transactions on antennas and propagation"
     ]
   },
@@ -16268,15 +16323,12 @@
       "no_hybrid_minc",
       "vision statement",
       "v2 build plan",
-      "fno refinement",
-      "128\u00d7128 grids",
-      "335k parameters",
+      "fno decoder",
+      "cross-correlation mlp",
       "12-channel cnn",
       "graph-attention encoder",
-      "cross-correlation mlp",
-      "deeponet",
-      "refactoring",
-      "pytest"
+      "128\u00d7128 grids",
+      "335k parameters"
     ]
   },
   {
@@ -16325,9 +16377,9 @@
       "real_data",
       "error_fix",
       "data_subset",
-      "full_dataset",
-      "tier1_parameters",
-      "neural_ops"
+      "limited_range",
+      "best_results",
+      "c7_40mm_cl-20240301.h5"
     ]
   },
   {
@@ -16356,14 +16408,14 @@
     "id": "chunk_0860",
     "token_count": 84,
     "keywords": [
-      "hyperparameter_tuning",
+      "hyperparameter",
       "epochs",
       "subtasks",
       "minc",
-      "datasets",
-      "methods",
-      "metrics",
-      "results"
+      "coarse search",
+      "version 4",
+      "inclusive",
+      "md file"
     ]
   },
   {
@@ -16410,10 +16462,12 @@
     "keywords": [
       "model_architecture",
       "hyperparameters",
+      "neural_networks",
       "dropout",
       "channels",
       "cnn",
-      "equivariant_model"
+      "equivariant_model",
+      "internal_blocks"
     ]
   },
   {
@@ -16498,14 +16552,12 @@
     "id": "chunk_0868",
     "token_count": 28,
     "keywords": [
+      "minc_hyperparam_cc_subtasks_v5",
       "batch_size",
       "partial",
-      "batch_processing",
-      "hyperparameters",
       "training",
-      "minc",
-      "cc_subtasks",
-      "v5"
+      "hyperparameters",
+      "batch_processing"
     ]
   },
   {
@@ -16518,7 +16570,8 @@
     "token_count": 5,
     "keywords": [
       "minc_hyperparam_cc_subtasks_v5",
-      "data processing hyperparameters"
+      "data_processing",
+      "hyperparameters"
     ]
   },
   {
@@ -16556,9 +16609,7 @@
       "knn",
       "sigma",
       "iterations",
-      "neighbors",
-      "rejection",
-      "max-abs"
+      "neighbors"
     ]
   },
   {
@@ -16576,8 +16627,6 @@
       "baseline_subtraction",
       "diagonal_zeroing",
       "boolean_parameters",
-      "preprocessing",
-      "feature_engineering",
       "minc_hyperparam_cc_subtasks_v5"
     ]
   },
@@ -16612,7 +16661,6 @@
       "configuration",
       "at3",
       "grid_length",
-      "p",
       "sigma",
       "ratio",
       "class_ratio"
@@ -16633,7 +16681,8 @@
       "random seeds",
       "experiment configuration",
       "seeds",
-      "multi-seed experiments"
+      "n_seeds",
+      "seed"
     ]
   },
   {
@@ -16861,14 +16910,14 @@
     "id": "chunk_0888",
     "token_count": 471,
     "keywords": [
-      "datasets",
-      "minc",
-      "cuda",
+      "c11_20mm_cl_day_run_20240408",
+      "c6_40mm_cl_20240102",
+      "c12_20mm_cl_night_run_20240408",
       "mde",
-      "experimental results",
-      "2024",
-      "neural_ops",
-      "screen"
+      "cuda_visible_devices",
+      "screen",
+      "minc",
+      "neural_ops"
     ]
   },
   {
@@ -16935,8 +16984,15 @@
       "hyperparameters",
       "exact",
       "approx",
+      "ordinary",
       "hp opt",
-      "ford datasets"
+      "ford datasets",
+      "eta_peak",
+      "eta_end",
+      "epochs",
+      "ramp",
+      "wd",
+      "bs"
     ]
   },
   {
@@ -16969,14 +17025,14 @@
     "id": "chunk_0894",
     "token_count": 41,
     "keywords": [
-      "\"datasets",
+      "\"keywords",
+      "datasets",
       "methods",
       "metrics",
       "results",
       "dates",
-      "external tools",
-      "keywords",
-      "one line\""
+      "tools",
+      "one-line\""
     ]
   },
   {
@@ -16987,11 +17043,11 @@
     "id": "chunk_0895",
     "token_count": 390,
     "keywords": [
-      "dataset_combinations",
-      "hdf5_paths",
-      "parallel_runs",
-      "gpu_allocation",
-      "results_directory"
+      "datasets",
+      "combinations",
+      "parallel processing",
+      "gpu allocation",
+      "results directory"
     ]
   },
   {
@@ -17059,7 +17115,7 @@
     "keywords": [
       "progress",
       "messages",
-      "jobs",
+      "job",
       "success",
       "failure",
       "summary"
@@ -17077,8 +17133,7 @@
       "hyperparameter",
       "gpu",
       "search",
-      "metrics",
-      "results"
+      "metrics"
     ]
   },
   {
@@ -17169,12 +17224,14 @@
     "id": "chunk_0906",
     "token_count": 34,
     "keywords": [
-      "model_training",
+      "model",
       "hyperparameters",
-      "trial_scheduling",
+      "trials",
+      "scheduling",
       "logging",
-      "code_modification",
-      "experimental_design"
+      "code",
+      "training",
+      "constraints"
     ]
   },
   {
@@ -17373,11 +17430,13 @@
       "nsno",
       "underwater acoustic propagation",
       "helmholtz problem",
+      "coefficient field",
+      "wavefield",
       "ssp",
       "pressure field",
       "tl",
-      "wavefield",
-      "coefficient field"
+      "adaptations",
+      "use case"
     ]
   },
   {
@@ -17476,14 +17535,14 @@
     "id": "chunk_0921",
     "token_count": 97,
     "keywords": [
-      "output specification",
-      "complex pressure field",
-      "tl",
-      "single frequency",
-      "broadband",
-      "arbitrary source position",
+      "underwater acoustics",
+      "propagation emulation",
       "network output",
-      "underwater acoustic propagation"
+      "tl",
+      "complex pressure field",
+      "broadband",
+      "single frequency",
+      "arbitrary source position"
     ]
   },
   {
@@ -17580,14 +17639,14 @@
     "id": "chunk_0926",
     "token_count": 166,
     "keywords": [
-      "neumann series",
-      "helmholtz equations",
       "nsno",
-      "unet",
+      "helmholtz equations",
       "acoustic propagation",
+      "unet",
       "generalization",
       "physics simulation",
-      "literature search"
+      "literature search",
+      "code repository"
     ]
   },
   {
@@ -17678,8 +17737,8 @@
       "sound speed profiles",
       "transmission loss",
       "normalization",
-      "arxiv",
-      "github"
+      "2023",
+      "2024"
     ]
   },
   {
@@ -17697,8 +17756,8 @@
       "neural networks",
       "generalization",
       "implementation plan",
-      "token frugal",
-      "llm models",
+      "token efficiency",
+      "model selection",
       "ray tracing"
     ]
   },
@@ -17743,7 +17802,7 @@
       "token-frugal",
       "secure",
       "reliable",
-      "multiple llms",
+      "llms",
       "rigorous technical assessment",
       "implementation plan",
       "facts"
@@ -17853,9 +17912,9 @@
       "scientific-reasoning",
       "technical-facts",
       "verification",
+      "limitations",
       "live-facts",
       "source-search",
-      "limitations",
       "tool-availability"
     ]
   },
@@ -17888,10 +17947,10 @@
       "nsno",
       "acoustic propagation",
       "2d ssp",
-      "tl",
+      "2d tl",
       "complex pressure field",
-      "helmholtz equation",
-      "supervised learning",
+      "helmholtz setting",
+      "supervised tl-emulation",
       "absorbing bottom"
     ]
   },
@@ -17908,9 +17967,11 @@
       "acoustic tl",
       "complex pressure emulation",
       "high-frequency wavefield",
-      "anisotropy",
+      "long range-depth anisotropy",
       "source depth",
+      "frequency",
       "bathymetry",
+      "boundary effects",
       "tl dynamic range",
       "neumann-series prior",
       "uvcgan_v2",
@@ -18205,7 +18266,7 @@
       "ideas",
       "inputs",
       "median",
-      "plan"
+      "strength"
     ]
   },
   {
@@ -18216,9 +18277,12 @@
     "id": "chunk_0959",
     "token_count": 30,
     "keywords": [
-      "acoustic emulator assessment",
-      "chatgpt helmholtz architecture search",
-      "implementation plan"
+      "acoustic emulator",
+      "chatgpt",
+      "helmholtz",
+      "architecture search",
+      "implementation plan",
+      "v2"
     ]
   },
   {
@@ -18253,8 +18317,8 @@
       "hankel-fno",
       "uvcgan_v2",
       "nsno",
-      "claude.md",
       "activation-functions",
+      "claude.md",
       "token-frugal-llm",
       "subdirectory-structure"
     ]
@@ -18271,7 +18335,7 @@
       "amplitude mismatch",
       "baseline subtraction",
       "rms amplitude",
-      "contact-load-induced signal",
+      "contact load",
       "c7",
       "c8",
       "january 2024",
@@ -18287,14 +18351,14 @@
     "id": "chunk_0963",
     "token_count": 81,
     "keywords": [
-      "datasets",
       "preprocessing",
       "strat-b",
-      "dataset class",
+      "dataset",
       "baseline subtraction",
       "z-scoring",
-      "implementation instructions",
-      "code change"
+      "implementation",
+      "code change",
+      "external tools"
     ]
   },
   {
@@ -18387,9 +18451,13 @@
       "multi-head training",
       "git clone",
       "neuraloperator",
-      "devstral-small-2:24b",
-      "devstral-2:123b",
-      "gpt-oss:120"
+      "devstral-small-2",
+      "devstral-2",
+      "gpt-oss",
+      "gemma4",
+      "ollama",
+      "claude",
+      "q&a"
     ]
   },
   {
@@ -18438,13 +18506,15 @@
     "token_count": 148,
     "keywords": [
       "manifest",
+      "scaffolding",
       "phase-tracker",
-      "experiment",
       "ollama",
       "claude",
       "devstral",
       "nemotron",
-      "test-results"
+      "experiment",
+      "tests",
+      "results"
     ]
   },
   {
@@ -18498,7 +18568,7 @@
       "errors",
       "inspection",
       "datasets",
-      "tools"
+      "missing_files"
     ]
   },
   {
@@ -18596,11 +18666,11 @@
       "llm",
       "token allocation",
       "pricing models",
-      "model classes",
-      "open-source",
-      "local models",
+      "model capabilities",
       "context windows",
-      "performance metrics"
+      "cost comparison",
+      "local models",
+      "cloud models"
     ]
   },
   {
@@ -18653,9 +18723,13 @@
       "gpus",
       "seeds",
       "h5",
-      "paths",
-      "dates",
-      "verification"
+      "data_root",
+      "c6",
+      "c7",
+      "c8",
+      "c11",
+      "c12",
+      "2024"
     ]
   },
   {
@@ -18696,7 +18770,7 @@
       "bathymetry",
       "tl",
       "pml",
-      "5/11/26"
+      "data_audit"
     ]
   },
   {
@@ -18770,9 +18844,9 @@
       "python3.6",
       "hpc",
       "wheat",
-      "error",
-      "installation",
-      "dependency"
+      "jean",
+      "mauku",
+      "installation error"
     ]
   },
   {
@@ -18855,13 +18929,10 @@
     "token_count": 11,
     "keywords": [
       "sbatch",
-      "time limit",
+      "time allocation",
       "job scheduling",
       "hpc",
-      "slurm",
-      "resource allocation",
-      "computational time",
-      "cluster management"
+      "cluster computing"
     ]
   },
   {
@@ -18879,7 +18950,7 @@
       "hpc",
       "slurm",
       "resource management",
-      "computing cluster"
+      "computing"
     ]
   },
   {
@@ -18910,12 +18981,7 @@
     "keywords": [
       "sbatch",
       "ntasks",
-      "hpc",
-      "job scheduling",
-      "resource allocation",
-      "parallel computing",
-      "workload management",
-      "cluster computing"
+      "parallelization"
     ]
   },
   {
@@ -19049,10 +19115,10 @@
       "api keys",
       "security",
       "environment variables",
-      "export commands",
-      "token management",
-      "data access",
-      "external tools"
+      "data handling",
+      "external tools",
+      "configuration",
+      "credentials"
     ]
   },
   {
@@ -19102,10 +19168,10 @@
       "anthropic_base_url",
       "api",
       "chat/completions",
-      "genai.mil",
-      "v1",
       "external tools",
+      "urls",
       "configuration",
+      "export",
       "environment variables"
     ]
   },
@@ -19117,12 +19183,12 @@
     "id": "chunk_1008",
     "token_count": 40,
     "keywords": [
-      "authentication",
-      "api",
-      "token",
+      "anthropic_auth_token",
+      "api_keys",
       "security",
+      "authentication",
       "export",
-      "environment",
+      "environment_variables",
       "configuration",
       "credentials"
     ]
@@ -19136,13 +19202,13 @@
     "token_count": 23,
     "keywords": [
       "anthropic_base_url",
-      "google cloud",
-      "api",
+      "google api",
+      "generativelanguage",
       "v1beta",
       "openai",
-      "generativelanguage",
-      "url",
-      "export"
+      "url configuration",
+      "export command",
+      "environment variables"
     ]
   },
   {
@@ -19153,14 +19219,14 @@
     "id": "chunk_1010",
     "token_count": 115,
     "keywords": [
-      "environment-variables",
       "ollama",
-      "model-configuration",
-      "path-configuration",
-      "export-commands",
-      "token-authentication",
-      "llm-provider",
-      "context-length"
+      "gpt-oss",
+      "export",
+      "environment",
+      "path",
+      "models",
+      "context_length",
+      "llm_provider"
     ]
   },
   {

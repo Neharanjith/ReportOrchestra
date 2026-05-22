@@ -1,5 +1,7 @@
+import os
 from unittest.mock import patch, MagicMock
 import pytest
+import src.tools.semantic_scholar as sem
 from src.tools.semantic_scholar import _request_with_retry
 
 def test_retry_on_429(capsys):
@@ -31,3 +33,28 @@ def test_max_retries_exhausted():
         with patch("src.tools.semantic_scholar.time.sleep"):
             with pytest.raises(__import__('requests').exceptions.HTTPError):
                 _request_with_retry("GET", "http://test.com")
+
+def test_auth_header_sent_when_s2_api_key_set():
+    """x-api-key header is included in every request when S2_API_KEY is set."""
+    mock_resp = MagicMock(status_code=200, json=lambda: {"data": []},
+                          raise_for_status=MagicMock())
+    with patch.dict(os.environ, {"S2_API_KEY": "test-key-123"}):
+        with patch("src.tools.semantic_scholar.requests.request",
+                   return_value=mock_resp) as mock_req:
+            with patch("src.tools.semantic_scholar.time.sleep"):
+                sem.search("neural networks")
+    headers_sent = mock_req.call_args[1].get("headers", {})
+    assert headers_sent.get("x-api-key") == "test-key-123"
+
+def test_no_auth_header_when_s2_api_key_absent():
+    """No x-api-key header is sent when S2_API_KEY is not in the environment."""
+    mock_resp = MagicMock(status_code=200, json=lambda: {"data": []},
+                          raise_for_status=MagicMock())
+    env_without_key = {k: v for k, v in os.environ.items() if k != "S2_API_KEY"}
+    with patch.dict(os.environ, env_without_key, clear=True):
+        with patch("src.tools.semantic_scholar.requests.request",
+                   return_value=mock_resp) as mock_req:
+            with patch("src.tools.semantic_scholar.time.sleep"):
+                sem.search("neural networks")
+    headers_sent = mock_req.call_args[1].get("headers", {})
+    assert "x-api-key" not in headers_sent

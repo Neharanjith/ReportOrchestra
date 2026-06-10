@@ -501,7 +501,7 @@ Supports:
 - asksage: Claude models via AskSage's Anthropic-compatible API
 """
 from __future__ import annotations
-import yaml, requests, os
+import yaml, requests, os, sys, time
 from pathlib import Path
 from functools import lru_cache
 
@@ -550,19 +550,21 @@ def _call_ollama(model, system, user, temperature, max_tokens):
 
 def _call_asksage(model, system, user, temperature, max_tokens):
     """Call Claude models via AskSage's Anthropic-compatible endpoint.
-    
+
     AskSage provides an Anthropic Messages API compatible endpoint at:
     https://api.genai.army.mil/server/anthropic/v1/messages
-    
+
     Authentication: Bearer token via ASKSAGE_API_KEY environment variable.
     Certificate: DoD cert bundle via ASKSAGE_CERT_PATH environment variable.
+    
+    Includes retry logic for transient server errors (502, 503, 504).
     """
     cfg = load_config()
     base_url = cfg.get("asksage", {}).get("base_url", 
                 "https://api.genai.army.mil/server/anthropic")
     api_key = os.environ.get("ASKSAGE_API_KEY", "")
     cert_path = os.environ.get("ASKSAGE_CERT_PATH", "")
-    
+
     if not api_key:
         raise ValueError("ASKSAGE_API_KEY environment variable not set")
     if not cert_path:
@@ -570,7 +572,7 @@ def _call_asksage(model, system, user, temperature, max_tokens):
                          "(path to DoD certificate bundle)")
     if not Path(cert_path).exists():
         raise ValueError(f"Certificate file not found: {cert_path}")
-    
+
     url = f"{base_url}/v1/messages"
     headers = {
         "Authorization": f"Bearer {api_key}",
@@ -583,14 +585,31 @@ def _call_asksage(model, system, user, temperature, max_tokens):
         "system": system,
         "messages": [{"role": "user", "content": user}],
     }
-    r = requests.post(url, headers=headers, json=payload, 
-                      verify=cert_path, timeout=600)
+    
+    # Retry logic for transient server errors
+    max_retries = 3
+    for attempt in range(max_retries):
+        r = requests.post(url, headers=headers, json=payload, 
+                          verify=cert_path, timeout=600)
+        
+        if r.status_code in (502, 503, 504):
+            if attempt < max_retries - 1:
+                wait_time = 2 ** (attempt + 1)
+                print(f"  [asksage] Server error ({r.status_code}), "
+                      f"retrying in {wait_time}s... "
+                      f"(attempt {attempt + 1}/{max_retries})",
+                      file=sys.stderr, flush=True)
+                time.sleep(wait_time)
+                continue
+        
+        r.raise_for_status()
+        resp = r.json()
+        content = resp.get("content", [])
+        return "".join(block.get("text", "") for block in content 
+                       if block.get("type") == "text")
+    
+    # If we exhausted retries, raise the last error
     r.raise_for_status()
-    resp = r.json()
-    # Extract text from Anthropic-style response
-    content = resp.get("content", [])
-    return "".join(block.get("text", "") for block in content 
-                   if block.get("type") == "text")
 ```
 
 NOTE: Two environment variables must be set for paid Claude model 
@@ -1632,17 +1651,17 @@ def _request_with_retry(method: str, url: str, **kwargs) -> requests.Response:
         _throttle()
         try:
             r = requests.request(method, url, **kwargs)
-            if r.status_code == 429:
+            if r.status_code in (429, 502, 503, 504):
                 if attempt < MAX_RETRIES:
                     wait_time = BACKOFF_BASE * (2 ** attempt)
-                    print(f"  [semantic_scholar] Rate limited (429), "
+                    print(f"  [semantic_scholar] Server returned {r.status_code}, "
                           f"retrying in {wait_time}s... "
                           f"(attempt {attempt + 1}/{MAX_RETRIES})",
                           file=sys.stderr, flush=True)
                     time.sleep(wait_time)
                     continue
                 else:
-                    print(f"  [semantic_scholar] Rate limited (429), "
+                    print(f"  [semantic_scholar] Server returned {r.status_code}, "
                           f"max retries ({MAX_RETRIES}) exhausted.",
                           file=sys.stderr, flush=True)
             r.raise_for_status()
@@ -1777,7 +1796,7 @@ def test_retry_on_429(capsys):
             r = _request_with_retry("GET", "http://test.com")
     assert r.status_code == 200
     captured = capsys.readouterr()
-    assert "Rate limited (429)" in captured.err
+    assert "Server returned 429" in captured.err
     assert "retrying" in captured.err
 
 def test_max_retries_exhausted():
@@ -2334,6 +2353,10 @@ a fixed rubric. Output JSON only — no prose, no fences.
 Score each axis 1–5 (5 = best). Be strict; default to 3 unless the
 report clearly excels.
 
+IMPORTANT: In your JSON output, you MUST escape all backslashes as \\
+(double backslash). For example, write \\cite{} not \cite{}, and
+\\section{} not \section{}. This is required for valid JSON.
+
 Schema:
 {
   "objective_clarity":           {"score": 0, "rationale": "..."},
@@ -2405,7 +2428,7 @@ DO THIS:
 ```python
 """Score-driven refinement loop."""
 from __future__ import annotations
-import json
+import json, re
 from pathlib import Path
 from src.tools.llm_client import call_llm
 
@@ -2418,7 +2441,7 @@ AXES = ["objective_clarity", "technical_progress_evidence",
 def review(latex_src: str) -> dict:
     system = (PROMPTS / "07_reviewer.txt").read_text()
     text = call_llm("refinement_reviewer", system, latex_src,
-                    temperature=0.0, max_tokens=2000)
+                    temperature=0.0, max_tokens=4000)
     return _strip_and_load(text)
 
 def revise(latex_src: str, review_json: dict) -> str:
@@ -2467,7 +2490,11 @@ def _strip_and_load(text: str) -> dict:
         text = text.split("\n", 1)[1]
         if text.endswith("```"):
             text = text[:-3]
-    return json.loads(text.strip())
+    text = text.strip()
+    # Fix invalid JSON escape sequences: replace backslashes not followed
+    # by valid JSON escape characters with escaped backslashes
+    text = re.sub(r'\\(?!["\\/bfnrtu])', r'\\\\', text)
+    return json.loads(text)
 ```
 
 2. Create tests/test_refinement_offline.py:

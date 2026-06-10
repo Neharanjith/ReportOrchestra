@@ -4,6 +4,10 @@ a fixed rubric. Output JSON only — no prose, no fences.
 Score each axis 1–5 (5 = best). Be strict; default to 3 unless the
 report clearly excels.
 
+IMPORTANT: In your JSON output, you MUST escape all backslashes as \\
+(double backslash). For example, write \\cite{} not \cite{}, and
+\\section{} not \section{}. This is required for valid JSON.
+
 Schema:
 {
   "objective_clarity":           {"score": 0, "rationale": "..."},

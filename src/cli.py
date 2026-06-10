@@ -111,6 +111,20 @@ def full_run(inputs_dir="inputs", out_dir="outputs") -> int:
                    executive_summary="",   # populate from inputs if available
                    out_path=out_tex)
 
+
+    # ---------- TEMPORARY MOVE DEPENDENCIES TO OUTPUTS ------------------------
+    # Copy LaTeX dependencies from inputs to outputs
+    import shutil
+    inputs_path = Path(inputs_dir)
+    outputs_path = Path(out_dir)
+    for ext in ["*.cls", "*.sty", "*.bst"]:
+        for f in inputs_path.glob(ext):
+            shutil.copy(f, outputs_path / f.name)
+    logo_file = inputs_path / "NRL_logo_1C.pdf"
+    if logo_file.exists():
+        shutil.copy(logo_file, outputs_path / logo_file.name)
+    # ---------- END TEMPORARY DEPENCDENCY MOVE --------------------------------
+
     print("[7/7] refine ...")
     refined, _ = refine_loop(tex,
                              max_iter=cfg["refinement"]["max_iterations"])

@@ -19,7 +19,7 @@ def test_retry_on_429(capsys):
             r = _request_with_retry("GET", "http://test.com")
     assert r.status_code == 200
     captured = capsys.readouterr()
-    assert "Rate limited (429)" in captured.err
+    assert "Server returned 429" in captured.err
     assert "retrying" in captured.err
 
 def test_max_retries_exhausted():

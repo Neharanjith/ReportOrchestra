@@ -1,6 +1,6 @@
 """Score-driven refinement loop."""
 from __future__ import annotations
-import json
+import json, re
 from pathlib import Path
 from src.tools.llm_client import call_llm
 
@@ -12,8 +12,15 @@ AXES = ["objective_clarity", "technical_progress_evidence",
 
 def review(latex_src: str) -> dict:
     system = (PROMPTS / "07_reviewer.txt").read_text()
+    # ------ REMOVE DEBUGGING ----------------------------
+    print(f"LATEX LENGTH: {len(latex_src)}")
+    print(f"LATEX PREVIEW:\n{latex_src[:1000]}")  # Show first 1000 chars
+    # ------ END REMOVE DEBUGGING ------------------------
     text = call_llm("refinement_reviewer", system, latex_src,
-                    temperature=0.0, max_tokens=2000)
+                    temperature=0.0, max_tokens=4000)
+    # ------ REMOVE DEBUGGING ----------------------------
+    print(f"REVIEWER RAW RESPONSE:\n{text[:3000]}")  # Debug
+    # ------ END REMOVE DEBUGGING ------------------------
     return _strip_and_load(text)
 
 def revise(latex_src: str, review_json: dict) -> str:
@@ -62,4 +69,8 @@ def _strip_and_load(text: str) -> dict:
         text = text.split("\n", 1)[1]
         if text.endswith("```"):
             text = text[:-3]
-    return json.loads(text.strip())
+    text = text.strip()
+    # Fix invalid JSON escape sequences: replace backslashes not followed
+    # by valid JSON escape characters with escaped backslashes
+    text = re.sub(r'\\(?!["\\/bfnrtu])', r'\\\\', text)
+    return json.loads(text)

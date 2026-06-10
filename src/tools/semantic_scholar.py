@@ -39,17 +39,17 @@ def _request_with_retry(method: str, url: str, **kwargs) -> requests.Response:
         _throttle()
         try:
             r = requests.request(method, url, **kwargs)
-            if r.status_code == 429:
+            if r.status_code in (429, 502, 503, 504):
                 if attempt < MAX_RETRIES:
                     wait_time = BACKOFF_BASE * (2 ** attempt)
-                    print(f"  [semantic_scholar] Rate limited (429), "
+                    print(f"  [semantic_scholar] Server returned {r.status_code}, "
                           f"retrying in {wait_time}s... "
                           f"(attempt {attempt + 1}/{MAX_RETRIES})",
                           file=sys.stderr, flush=True)
                     time.sleep(wait_time)
                     continue
                 else:
-                    print(f"  [semantic_scholar] Rate limited (429), "
+                    print(f"  [semantic_scholar] Server returned {r.status_code}, "
                           f"max retries ({MAX_RETRIES}) exhausted.",
                           file=sys.stderr, flush=True)
             r.raise_for_status()

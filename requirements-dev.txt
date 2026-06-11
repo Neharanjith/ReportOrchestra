@@ -1,0 +1,8 @@
+# Development dependencies (includes all runtime + test dependencies)
+-r requirements.txt
+
+# Testing
+pytest>=8.0
+
+# Optional: AskSage integration for Claude models via Army GenAI
+asksageclient>=1.42

@@ -82,6 +82,21 @@ Citation Requirements:
     State-of-the-Art over a specific cited paper UNLESS that paper is
     explicitly evaluated against in project_experimental_log. Frame other
     recent papers strictly as concurrent, orthogonal, or conceptual work.
+
+Structured Comparison Table:
+  - You are provided with a `comparison_table` that contains structured data
+    (method_type, task, dataset, metrics, key_result, limitation) for every
+    paper in collected_papers.
+  - USE THIS TABLE to write comparative, mechanism-level prose. Instead of
+    "Several methods have been proposed [A, B, C]", write:
+    "Transformer-based methods [A] achieved 28.4 BLEU on WMT 2014, while
+    convolutional approaches [B] reached 26.7 BLEU on the same benchmark."
+  - Reference specific numbers, datasets, and limitations from the table.
+    This is what distinguishes a deep review from a shallow list.
+  - For each logical group in Related Work, compare at least two papers on
+    the same metric and dataset where possible.
+  - When a paper's limitation is known from the table, state it explicitly
+    and frame your approach as addressing that gap.
   - You need to return the full code for the new template.tex, where the two
     empty sections (Introduction and Related Work) are now filled in, while
     all the other code (packages, styles, and other sections) are identical

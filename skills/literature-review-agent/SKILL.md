@@ -301,6 +301,38 @@ required. The pipeline is now:
 dedupe_by_id → validate_pool --fix → cross_verify --inplace → bibtex_format → sync_keys
 ```
 
+### 4.5. Extract structured comparison table
+
+Before drafting, transform each abstract into a structured row so the
+writer can do concrete comparisons instead of generic summaries.
+
+Load `references/comparison-extraction-prompt.md` as a system prompt and
+run one LLM call per paper in `citation_pool.json`. For each paper, send
+the title and abstract, and collect the extracted JSON. Combine all rows
+into `workspace/comparison_table.json`.
+
+Schema for each row:
+
+```json
+{
+  "key": "vaswani2017attention",
+  "title": "Attention Is All You Need",
+  "method_type": "Transformer",
+  "task": "machine translation",
+  "dataset": "WMT 2014 English-German",
+  "metrics": {"BLEU": 28.4, "perplexity": 4.3},
+  "key_result": "Achieved new SOTA with 8 attention heads and 6-layer encoder-decoder",
+  "limitation": "Quadratic attention cost limits sequence length; no positional encoding inductive bias beyond sinusoids",
+  "comparison_relevance": "Most directly comparable baseline — same task, same metric"
+}
+```
+
+After extraction, also run a **grouping pass**: one LLM call with the full
+table, asking it to assign each paper to a logical subsection (e.g.,
+"FNO-based methods", "PINN approaches", "Hybrid models") and identify
+which papers are the strongest comparators for each group. Append the
+grouping to `workspace/comparison_table.json`.
+
 ### 5. Draft Introduction + Related Work
 
 This is where you actually write text. Load the
@@ -318,6 +350,7 @@ Substitute the template placeholders:
 | `paper_count` | `len(citation_pool.papers)` |
 | `min_cite_paper_count` | from `citation_pool.json` |
 | `cutoff_date` | the date you derived in Step 0 |
+| `comparison_table` | full content of `workspace/comparison_table.json` |
 
 **Also prepend the Anti-Leakage Prompt** from
 `../paper-orchestra/references/anti-leakage-prompt.md`.

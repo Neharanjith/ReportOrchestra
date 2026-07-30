@@ -66,6 +66,7 @@ except ImportError:
 DEFAULT_BATCH_BYTES = 40000
 MAX_FILE_BYTES = 200 * 1024
 CHECKPOINT_SUFFIX = ".checkpoint"
+DEFAULT_FOUNDATION_MAX_BYTES = 100 * 1024  # bundle cap; drops oldest-first when exceeded
 
 REQUIRED_TOP_KEYS = {"experiments"}
 EXPERIMENT_REQUIRED = {"experiment_id", "confidence"}
@@ -98,9 +99,8 @@ def load_manifest(discovered_path: str) -> dict:
         return json.load(f)
 
 
-def build_batches(manifest: dict, batch_bytes: int) -> list[list[dict]]:
-    """Group manifest files into batches under batch_bytes budget."""
-    files = manifest.get("files", [])
+def build_batches(files: list[dict], batch_bytes: int) -> list[list[dict]]:
+    """Group files into batches under batch_bytes budget."""
     batches: list[list[dict]] = []
     current_batch: list[dict] = []
     current_size = 0
@@ -119,12 +119,121 @@ def build_batches(manifest: dict, batch_bytes: int) -> list[list[dict]]:
     return batches
 
 
-def print_batches(manifest: dict, batch_bytes: int):
-    files = manifest.get("files", [])
-    batches = build_batches(manifest, batch_bytes)
+def _mtime_sort_key(entry: dict) -> str:
+    # ISO 8601 strings sort lexicographically = chronologically. Negate by using
+    # reverse=True downstream. Empty string sorts oldest, which is correct for
+    # entries missing mtime.
+    return entry.get("modified_iso", "")
 
-    print(f"Total batches: {len(batches)}")
-    print(f"Total files  : {len(files)}")
+
+def partition_and_rank(manifest: dict, *, budget_files: int, budget_bytes: int,
+                       ) -> tuple[list[dict], list[dict], dict]:
+    """Split manifest files into foundation vs experimental buckets.
+
+    Foundation is returned in mtime-desc order (newest first) so that the
+    foundation-bundle writer can trim oldest-first if it hits a byte cap.
+
+    Experimental is returned in mtime-desc order and truncated by budget_files
+    (files kept) and budget_bytes (cumulative bytes kept). A value of 0 for
+    either budget means unlimited.
+
+    Files whose 'class' field is missing (older manifest format) are treated as
+    experimental so the pipeline stays backwards-compatible.
+    """
+    files = manifest.get("files", [])
+    foundation: list[dict] = []
+    experimental: list[dict] = []
+    for e in files:
+        (foundation if e.get("class") == "foundation" else experimental).append(e)
+
+    foundation.sort(key=_mtime_sort_key, reverse=True)
+    experimental.sort(key=_mtime_sort_key, reverse=True)
+
+    kept_experimental: list[dict] = []
+    running_bytes = 0
+    dropped_files = 0
+    dropped_bytes = 0
+    oldest_kept_mtime = ""
+
+    for e in experimental:
+        size = min(e.get("size_bytes", 0), MAX_FILE_BYTES)
+        if budget_files and len(kept_experimental) >= budget_files:
+            dropped_files += 1
+            dropped_bytes += size
+            continue
+        if budget_bytes and running_bytes + size > budget_bytes and kept_experimental:
+            dropped_files += 1
+            dropped_bytes += size
+            continue
+        kept_experimental.append(e)
+        running_bytes += size
+        oldest_kept_mtime = e.get("modified_iso", "") or oldest_kept_mtime
+
+    summary = {
+        "foundation_count": len(foundation),
+        "experimental_total": len(experimental),
+        "experimental_kept": len(kept_experimental),
+        "experimental_dropped": dropped_files,
+        "experimental_dropped_bytes": dropped_bytes,
+        "oldest_kept_mtime": oldest_kept_mtime,
+    }
+    return foundation, kept_experimental, summary
+
+
+def write_foundation_bundle(foundation: list[dict], out_path: str,
+                            max_bytes: int) -> dict:
+    """Concatenate foundation file contents with `## <path>` headers.
+
+    `foundation` is expected to already be sorted newest-first, so a byte-cap
+    excess drops the oldest files (from the tail). Returns a small summary
+    dict for the caller to print.
+    """
+    kept: list[str] = []
+    written_files = 0
+    total_bytes = 0
+    dropped_files = 0
+
+    for entry in foundation:
+        p = Path(entry["path"])
+        try:
+            text = p.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        header = f"## {entry['path']}\n\n"
+        chunk = header + text.rstrip() + "\n\n"
+        chunk_bytes = len(chunk.encode("utf-8"))
+        if max_bytes and total_bytes + chunk_bytes > max_bytes and kept:
+            dropped_files += 1
+            continue
+        kept.append(chunk)
+        written_files += 1
+        total_bytes += chunk_bytes
+
+    out = Path(out_path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    with out.open("w", encoding="utf-8") as f:
+        f.write("# Foundation bundle\n\n")
+        f.write("Project framing documents. Injected as `<foundation>` context "
+                "in the Phase 3 synthesis call.\n\n")
+        f.writelines(kept)
+
+    return {
+        "written_files": written_files,
+        "dropped_files": dropped_files,
+        "total_bytes": total_bytes,
+        "out_path": out_path,
+    }
+
+
+def print_batches(manifest: dict, batch_bytes: int):
+    foundation, experimental, summary = partition_and_rank(
+        manifest, budget_files=0, budget_bytes=0
+    )
+    batches = build_batches(experimental, batch_bytes)
+
+    print(f"Foundation files (bypass extraction): {summary['foundation_count']}")
+    print(f"Experimental files                 : {summary['experimental_total']}")
+    print(f"Experimental batches               : {len(batches)}")
     print()
     for i, batch in enumerate(batches, 1):
         total = sum(min(e["size_bytes"], MAX_FILE_BYTES) for e in batch)
@@ -133,6 +242,11 @@ def print_batches(manifest: dict, batch_bytes: int):
             trunc = " [TRUNCATED]" if entry.get("truncated") else ""
             print(f"  [{entry['priority']:6}] [{entry['agent']:12}] {entry['path']}{trunc}")
         print()
+
+    if foundation:
+        print("--- Foundation files (context-only, not batched) ---")
+        for entry in foundation:
+            print(f"  [{entry.get('agent', 'general'):12}] {entry['path']}")
 
 
 # ---------------------------------------------------------------------------
@@ -283,11 +397,46 @@ def process_extraction(
     resume: bool,
     filter_relevance: bool,
     relevance_threshold: int,
+    budget_files: int = 0,
+    budget_bytes: int = 0,
+    foundation_bundle_path: str | None = None,
+    foundation_max_bytes: int = DEFAULT_FOUNDATION_MAX_BYTES,
 ):
     manifest = load_manifest(discovered_path)
     manifest_dir = Path(discovered_path).resolve().parent
-    batches = build_batches(manifest, batch_bytes)
+
+    foundation, experimental, part_summary = partition_and_rank(
+        manifest, budget_files=budget_files, budget_bytes=budget_bytes
+    )
+    batches = build_batches(experimental, batch_bytes)
     total_batches = len(batches)
+
+    print(f"Foundation files (bypass extraction): {part_summary['foundation_count']}")
+    print(f"Experimental files kept            : {part_summary['experimental_kept']}"
+          f" (of {part_summary['experimental_total']})")
+    if part_summary["experimental_dropped"]:
+        cap_reason = []
+        if budget_files:
+            cap_reason.append(f"--budget-files={budget_files}")
+        if budget_bytes:
+            cap_reason.append(f"--budget-bytes={budget_bytes}")
+        print(f"[freshness] dropped {part_summary['experimental_dropped']} experimental "
+              f"files ({part_summary['experimental_dropped_bytes'] // 1024} KB) older than "
+              f"{part_summary['oldest_kept_mtime'] or 'n/a'} "
+              f"[{', '.join(cap_reason) or 'no budget set'}]")
+
+    if foundation_bundle_path:
+        bundle_summary = write_foundation_bundle(
+            foundation, foundation_bundle_path, foundation_max_bytes
+        )
+        dropped = bundle_summary["dropped_files"]
+        cap_note = f", {dropped} dropped by cap" if dropped else ""
+        print(f"Foundation bundle written: {bundle_summary['out_path']} "
+              f"({bundle_summary['written_files']} files, "
+              f"{bundle_summary['total_bytes'] // 1024} KB{cap_note})")
+    elif foundation:
+        print(f"[hint] {len(foundation)} foundation files found. Pass "
+              "--emit-foundation-bundle <path> to write the synthesis context bundle.")
 
     chk_path = checkpoint_path(out_path)
     checkpoint = load_checkpoint(chk_path) if resume else {"completed_batches": [], "experiments": []}
@@ -528,6 +677,18 @@ def main():
                         help="Disable relevance pre-filtering")
     parser.add_argument("--relevance-threshold", type=int, default=RELEVANCE_THRESHOLD,
                         help=f"Minimum relevance score to process a batch (default: {RELEVANCE_THRESHOLD})")
+    parser.add_argument("--budget-files", type=int, default=0,
+                        help="Max experimental files to keep (newest first). "
+                             "0 = unlimited. Foundation files are exempt.")
+    parser.add_argument("--budget-bytes", type=int, default=0,
+                        help="Max cumulative experimental bytes to keep (newest first). "
+                             "0 = unlimited. Foundation files are exempt.")
+    parser.add_argument("--emit-foundation-bundle", default=None,
+                        help="Write foundation files (README/method/notes/etc.) to this "
+                             "path as a single markdown bundle for Phase 3 synthesis.")
+    parser.add_argument("--foundation-max-bytes", type=int, default=DEFAULT_FOUNDATION_MAX_BYTES,
+                        help=f"Foundation bundle byte cap; oldest files dropped first "
+                             f"(default: {DEFAULT_FOUNDATION_MAX_BYTES}).")
     args = parser.parse_args()
 
     if args.process:
@@ -542,6 +703,10 @@ def main():
             resume=args.resume,
             filter_relevance=not args.no_filter,
             relevance_threshold=args.relevance_threshold,
+            budget_files=args.budget_files,
+            budget_bytes=args.budget_bytes,
+            foundation_bundle_path=args.emit_foundation_bundle,
+            foundation_max_bytes=args.foundation_max_bytes,
         )
         sys.exit(0)
 
@@ -551,6 +716,27 @@ def main():
             sys.exit(1)
         manifest = load_manifest(args.discovered)
         print_batches(manifest, args.batch_bytes)
+        sys.exit(0)
+
+    if args.emit_foundation_bundle:
+        # Bundle-only mode: write the foundation context bundle without running
+        # extraction. Useful when the user wants Phase 3 context ready before
+        # Phase 2 finishes (or when Phase 2 was done manually).
+        if not args.discovered:
+            print("[ERROR] --emit-foundation-bundle requires --discovered", file=sys.stderr)
+            sys.exit(1)
+        manifest = load_manifest(args.discovered)
+        foundation, _experimental, summary = partition_and_rank(
+            manifest, budget_files=0, budget_bytes=0
+        )
+        result = write_foundation_bundle(
+            foundation, args.emit_foundation_bundle, args.foundation_max_bytes
+        )
+        dropped = result["dropped_files"]
+        cap_note = f", {dropped} dropped by cap" if dropped else ""
+        print(f"Foundation bundle written: {result['out_path']} "
+              f"({result['written_files']} files, "
+              f"{result['total_bytes'] // 1024} KB{cap_note})")
         sys.exit(0)
 
     if args.validate_only:

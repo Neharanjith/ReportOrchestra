@@ -128,6 +128,28 @@ SKIP_NAMES = {
 
 MAX_FILE_BYTES = 200 * 1024  # 200 KB
 
+# Foundation vs experimental classification. Foundation files (README, method
+# notes, architecture, top-level docs) bypass the extraction relevance filter
+# and freshness ranking downstream and get bundled verbatim as context for the
+# Phase 3 synthesis call. Everything else is experimental. Ambiguous files
+# default to experimental so the filters can still keep or drop them safely.
+FOUNDATION_EXACT_NAMES = {
+    "claude.md", ".cursorrules", "agents.md",
+}
+FOUNDATION_STEM_PREFIXES = (
+    "readme", "architecture", "method", "design",
+    "goal", "problem", "hypothesis", "idea", "proposal",
+    "plan", "notes",
+)
+FOUNDATION_PATH_COMPONENTS = {"docs", "doc", "documentation"}
+# Path components that force a file to experimental regardless of filename.
+# Agent-cache runtime output ("notes.md" in an agent's memory dir is a log,
+# not project framing) and explicit results/logs directories.
+EXPERIMENTAL_PATH_COMPONENTS = {
+    "memory", "chat", "sessions", "workers", "task-outputs", "todos",
+    "runs", "experiments", "logs", "metrics", "results", "ablation",
+}
+
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -149,7 +171,41 @@ def modified_after(path: Path, since: datetime | None) -> bool:
     return mtime >= since
 
 
-def file_entry(path: Path, agent: str, priority: str, since: datetime | None) -> dict | None:
+def classify(path: Path, search_root: Path | None = None) -> str:
+    """Return 'foundation' (project framing) or 'experimental' (results/logs)."""
+    parts_lower = [part.lower() for part in path.parts]
+
+    # Agent-cache and results dirs override filename rules — a "notes.md" inside
+    # .claude/.../memory/ is agent runtime output, not project framing.
+    if any(part in EXPERIMENTAL_PATH_COMPONENTS for part in parts_lower):
+        return "experimental"
+
+    name_lower = path.name.lower()
+    if name_lower in FOUNDATION_EXACT_NAMES:
+        return "foundation"
+
+    stem_lower = path.stem.lower()
+    if any(stem_lower.startswith(prefix) for prefix in FOUNDATION_STEM_PREFIXES):
+        return "foundation"
+
+    if any(part in FOUNDATION_PATH_COMPONENTS for part in parts_lower):
+        return "foundation"
+
+    # A top-level .md at a search root is almost always framing (README, NOTES,
+    # PLAN, …) even when the filename doesn't match the prefix list.
+    if search_root is not None and path.suffix.lower() == ".md":
+        try:
+            rel = path.relative_to(search_root)
+            if len(rel.parts) == 1:
+                return "foundation"
+        except ValueError:
+            pass
+
+    return "experimental"
+
+
+def file_entry(path: Path, agent: str, priority: str, since: datetime | None,
+               search_root: Path | None = None) -> dict | None:
     """Build a manifest entry for a single file, or return None to skip."""
     if path.name in SKIP_NAMES:
         return None
@@ -170,6 +226,7 @@ def file_entry(path: Path, agent: str, priority: str, since: datetime | None) ->
         "path": str(path),
         "agent": agent,
         "priority": priority,
+        "class": classify(path, search_root),
         "size_bytes": size,
         "modified_iso": datetime.fromtimestamp(mtime, tz=timezone.utc).isoformat(),
         "truncated": size > MAX_FILE_BYTES,
@@ -177,7 +234,8 @@ def file_entry(path: Path, agent: str, priority: str, since: datetime | None) ->
 
 
 def scan_dir_glob(base: Path, pattern: str, agent: str,
-                  priority: str, depth: int, since: datetime | None) -> list[dict]:
+                  priority: str, depth: int, since: datetime | None,
+                  search_root: Path | None = None) -> list[dict]:
     """Glob-expand a pattern relative to base, respecting depth and skip rules."""
     results = []
     try:
@@ -189,7 +247,7 @@ def scan_dir_glob(base: Path, pattern: str, agent: str,
             # Skip known junk directories anywhere in the path
             if any(part in SKIP_DIRS for part in rel.parts):
                 continue
-            entry = file_entry(path, agent, priority, since)
+            entry = file_entry(path, agent, priority, since, search_root)
             if entry:
                 results.append(entry)
     except (PermissionError, OSError):
@@ -198,11 +256,12 @@ def scan_dir_glob(base: Path, pattern: str, agent: str,
 
 
 def scan_root_files(base: Path, names: list[str], agent: str,
-                    since: datetime | None) -> list[dict]:
+                    since: datetime | None,
+                    search_root: Path | None = None) -> list[dict]:
     results = []
     for name in names:
         path = base / name
-        entry = file_entry(path, agent, "HIGH", since)
+        entry = file_entry(path, agent, "HIGH", since, search_root)
         if entry:
             results.append(entry)
     return results
@@ -218,7 +277,7 @@ def scan_general(base: Path, depth: int, since: datetime | None) -> list[dict]:
                     continue
                 if any(part in SKIP_DIRS for part in rel.parts):
                     continue
-                entry = file_entry(path, "general", priority, since)
+                entry = file_entry(path, "general", priority, since, base)
                 if entry:
                     results.append(entry)
         except (PermissionError, OSError):
@@ -333,7 +392,7 @@ def main():
                         p in pattern for p in spec.get("priority_dirs", [])
                     ) else "MEDIUM"
                     entries = scan_dir_glob(base, pattern, agent, priority,
-                                            args.depth, since_dt)
+                                            args.depth, since_dt, root)
                     for e in entries:
                         e["project"] = infer_project(Path(e["path"]), root, agent)
                     all_entries.extend(entries)
@@ -350,7 +409,7 @@ def main():
                 break
 
             # Root-level files (e.g. CLAUDE.md, .cursorrules)
-            entries = scan_root_files(root, spec["root_files"], agent, since_dt)
+            entries = scan_root_files(root, spec["root_files"], agent, since_dt, root)
             for e in entries:
                 e["project"] = infer_project(Path(e["path"]), root, agent)
             all_entries.extend(entries)
@@ -409,6 +468,10 @@ def main():
         "total_files": len(deduped),
         "total_size_bytes": sum(e["size_bytes"] for e in deduped),
         "by_agent": agent_counts,
+        "by_class": {
+            "foundation": sum(1 for e in deduped if e.get("class") == "foundation"),
+            "experimental": sum(1 for e in deduped if e.get("class") == "experimental"),
+        },
         "by_project": {p: len(paths) for p, paths in by_project.items()},
         "files": deduped,
     }
@@ -451,6 +514,11 @@ def main():
     for prio in ("HIGH", "MEDIUM", "LOW"):
         n = sum(1 for e in deduped if e["priority"] == prio)
         print(f"  {prio:8s} {n:4d} files")
+    print()
+    print("By class:")
+    for cls in ("foundation", "experimental"):
+        n = sum(1 for e in deduped if e.get("class") == cls)
+        print(f"  {cls:12s} {n:4d} files")
     truncated = [e for e in deduped if e.get("truncated")]
     if truncated:
         print(f"\n[WARN] {len(truncated)} file(s) exceed 200 KB and will be truncated:")

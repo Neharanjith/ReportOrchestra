@@ -99,6 +99,32 @@ show it to the user immediately.
 **If no logs are found at all:** stop and ask the user to specify
 `--search-roots` or point you at a directory that contains agent cache folders.
 
+### File classification (automatic, no flags)
+
+Every discovered file is tagged as **`foundation`** or **`experimental`** in
+the manifest (`entry["class"]`) and summarized at the bottom of the discovery
+printout under `By class:`:
+
+- **Foundation** — project framing docs. Filename matches `README`,
+  `ARCHITECTURE`, `METHOD`, `DESIGN`, `PROBLEM`, `HYPOTHESIS`, `IDEA`,
+  `PROPOSAL`, `PLAN`, `NOTES`, `CLAUDE.md`, `.cursorrules`, `AGENTS.md`;
+  file lives under `docs/`; or is a top-level `.md` at a search root.
+- **Experimental** — everything else (agent-cache memory, chat/session dumps,
+  run logs, metrics, ablations, `.ipynb`, `.jsonl`, etc.). Ambiguous files
+  default to experimental.
+
+Why the split: foundation docs are project *context* (they don't go stale the
+way experiment logs do). Phase 2 bypasses them from relevance filtering *and*
+freshness ranking, and Phase 3 injects their contents as `<foundation>`
+context in the synthesis prompt. Experimental files still pass through the
+relevance filter and any freshness budget.
+
+If the printed `By class:` counts look wrong (a critical framing doc landed in
+experimental, or a stale run log got tagged foundation), sanity-check that
+before proceeding — the classification is filename-based and can be tuned in
+`FOUNDATION_STEM_PREFIXES` / `FOUNDATION_PATH_COMPONENTS` at the top of
+`discover_logs.py`.
+
 ---
 
 ## Phase 1.5 — Project Selection (mandatory)
@@ -157,16 +183,32 @@ python skills/agent-research-aggregator/scripts/extract_experiments.py \
 ```
 
 This reads `discovered_logs.json`, groups files into ~40 KB batches, and calls
-the LLM on each batch **in parallel** (up to `--max-workers` at once). Three
-key improvements for large folders:
+the LLM on each batch **in parallel** (up to `--max-workers` at once). Key
+improvements for large folders:
 
 1. **Parallel extraction** — multiple batches processed concurrently, not one at
    a time (set `--max-workers` to match your LLM provider's concurrency limit).
 2. **Relevance pre-filtering** — each batch is scored against experiment-related
-   keywords before any LLM call. Low-scoring batches (READMEs, config files,
-   install logs) are skipped automatically. Disable with `--no-filter`.
-3. **Resumable** — if processing crashes, rerun with `--resume` to pick up where
-   you left off instead of restarting from batch 1.
+   keywords before any LLM call. Low-scoring batches (config files, install
+   logs) are skipped automatically. Disable with `--no-filter`.
+3. **Foundation bypass** — files tagged `foundation` in Phase 1 (READMEs,
+   method notes, top-level docs) are never batched or sent to the LLM. They
+   are handed to Phase 3 as context via `--emit-foundation-bundle`.
+4. **Freshness ranking** — experimental files are sorted newest-first before
+   batching. Combined with `--budget-files N` (or `--budget-bytes N`), only
+   the newest N experimental files are extracted; older ones are dropped
+   with a printed summary. No hard date required.
+5. **Resumable** — if processing crashes, rerun with `--resume` to pick up
+   where you left off instead of restarting from batch 1.
+
+**Extraction flags for large / stale folders:**
+
+| Flag | Default | Description |
+|---|---|---|
+| `--budget-files N` | 0 (unlimited) | Cap on experimental files extracted (newest first) |
+| `--budget-bytes N` | 0 (unlimited) | Cap on cumulative experimental bytes |
+| `--emit-foundation-bundle <path>` | none | Write foundation context bundle for Phase 3 |
+| `--foundation-max-bytes N` | 102400 | Byte cap on foundation bundle (drops oldest first) |
 
 **LLM configuration** (via environment variables):
 
@@ -176,6 +218,17 @@ key improvements for large folders:
 | `EXTRACTION_BASE_URL` or `LLM_BASE_URL` | `http://localhost:11434/v1` | OpenAI-compatible API endpoint |
 | `EXTRACTION_API_KEY` or `LLM_API_KEY` | `no-key-required` | API key |
 | `LLM_TIMEOUT` | `180` | Per-call timeout in seconds |
+
+**Recipe for a large / stale folder** (skip old cruft without picking a date):
+
+```bash
+python skills/agent-research-aggregator/scripts/extract_experiments.py \
+    --discovered workspace/ara/discovered_logs.json \
+    --process --out workspace/ara/raw_experiments.json \
+    --max-workers 4 \
+    --budget-files 200 \
+    --emit-foundation-bundle workspace/ara/foundation_bundle.md
+```
 
 After automated extraction, validate the output:
 
@@ -217,10 +270,20 @@ a single coherent research narrative. This is ONE LLM call.
 
 **User message:**
 ```
+<foundation>
+{contents of workspace/ara/foundation_bundle.md — if produced by Phase 2 via
+--emit-foundation-bundle. Omit the block entirely if no bundle exists.}
+</foundation>
+
 <raw_experiments>
 {contents of workspace/ara/raw_experiments.json}
 </raw_experiments>
 ```
+
+The `<foundation>` block gives the synthesizer project framing (problem
+statement, method, architecture) so the narrative is grounded in the actual
+project — but it must NOT be used as a source of numeric results or table
+rows. See `references/synthesis-prompt.md` for the exact rules.
 
 The LLM must return a `synthesis.json` with keys:
 - `research_question` — the overarching question being investigated

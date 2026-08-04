@@ -181,6 +181,65 @@ the outline matched the actual literature).
 running and the host cannot issue another call concurrently. See
 `references/outline-reconciliation.md` for full skip conditions.
 
+### 3.7. Reasoning (Step 3.7 — one LLM call per section, SCIENTIFIC_PAPER mode only)
+
+Load `skills/reasoning-agent/SKILL.md` and follow it.
+
+**Mode gating.** Determine the document mode with the shared helper:
+
+```bash
+python skills/paper-orchestra/scripts/document_mode.py \
+    --workspace workspace/
+# prints SCIENTIFIC_PAPER or TECHNICAL_REPORT
+```
+
+- **SCIENTIFIC_PAPER (default)** — `authors_note.md` is absent, empty, or
+  does not explicitly request a technical/implementation report. Run this
+  step.
+- **TECHNICAL_REPORT** — `authors_note.md` explicitly requests a "technical
+  report", "technical paper", "implementation-centered paper", or an
+  equivalent engineering-focused document. **Skip this step entirely.** Do
+  not create `workspace/reasoning/`. The Section Writing Agent must not
+  receive any reasoning input in this mode.
+
+`document_mode.py` is the single source of truth. Do not add a second,
+redundant configuration flag; the mode is already determined by
+`authors_note.md` in Steps 1, 4, and 5.
+
+**What it does.** For each section in the (reconciled) outline, the Reasoning
+Agent decides which claims the section is entitled to make given only the
+section-scoped evidence: relevant experimental results, project excerpts,
+verified literature, figures, and tables. It does NOT write paper prose. It
+produces a structured JSON reasoning plan.
+
+**Inputs per section.** Assemble only section-relevant evidence — do not
+dump the whole workspace. Each item carries a stable evidence_id (`EXP-`,
+`NOTE-`, `CITE-`, `FIG-`, `TAB-`). Write the evidence-id whitelist for
+this section to `workspace/reasoning/<slug>.evidence.json` so the validator
+can enforce the whitelist deterministically.
+
+**Output.** One file per section under
+`workspace/reasoning/<section_slug>.json`. Sanitize the section name into a
+lowercase slug (e.g. "Introduction" → `introduction.json`, "Related Work" →
+`related_work.json`).
+
+**Validate every plan with the deterministic gate:**
+
+```bash
+python skills/reasoning-agent/scripts/validate_reasoning.py \
+    --plan            workspace/reasoning/<slug>.json \
+    --evidence-bundle workspace/reasoning/<slug>.evidence.json
+```
+
+Exit codes: `0` = valid; `1` = re-prompt the agent with the report and
+retry (max 3 retries per section); `2` = unrecoverable (fail loudly).
+
+The validator checks JSON Schema conformance, evidence-id whitelist
+membership, that every `allowed_in_draft: true` claim has ≥1 evidence_id,
+that `confidence` uses only `low`/`moderate`/`high`, and that all required
+fields are present. **The model is never allowed to validate its own
+invented evidence — the whitelist is the file the orchestrator wrote.**
+
 ### 4. Section Writing (Step 4 — ONE single multimodal LLM call)
 
 Load `skills/section-writing-agent/SKILL.md` and follow it. This is **one
@@ -196,6 +255,9 @@ single call** in the paper (App. B: "Section Writing Agent (1 call)") — do
   constraints, including title and anonymity requirements)
 - `research_brief.md` (if it exists — read §1–§3 for accumulated pipeline context)
 - The actual figure image files from `workspace/figures/` (multimodal input)
+- `workspace/reasoning/*.json` — **SCIENTIFIC_PAPER mode only.** The per-section
+  reasoning plans produced by Step 3.7. In TECHNICAL_REPORT mode this input is
+  not created and must not be passed.
 
 Output: `workspace/drafts/paper.tex` (a complete LaTeX document).
 
@@ -270,6 +332,12 @@ workspace/
 │   ├── <figure_id>.png
 │   └── captions.json
 ├── refs.bib                         # Step 3 output
+├── reasoning/                       # Step 3.7 output (SCIENTIFIC_PAPER mode only)
+│   ├── introduction.json
+│   ├── introduction.evidence.json   # evidence-id whitelist for the validator
+│   ├── methodology.json
+│   ├── results.json
+│   └── discussion.json
 ├── drafts/                          # Step 3 + Step 4 output
 │   ├── intro_relwork.tex
 │   └── paper.tex
@@ -294,8 +362,12 @@ Budget breakdown:
 | Outline | 1 |
 | Plotting | ~20–30 |
 | Literature Review | ~20–30 |
+| Reasoning (SCIENTIFIC_PAPER only) | 1 per section (~4–6) |
 | Section Writing | 1 |
 | Content Refinement | ~5–7 |
+
+In TECHNICAL_REPORT mode the Reasoning step is skipped and total call count
+drops by the reasoning call count.
 
 ## Host integration
 
@@ -310,6 +382,7 @@ Code, Cursor, Antigravity, Cline, Aider, OpenCode).
 - `references/paper-summary.md` — 1-page distillation of arXiv:2604.05018
 - `references/host-integration.md` — per-host invocation guide
 - `references/outline-reconciliation.md` — **NEW** Step 3.5 outline reconciliation protocol (AutoSci-inspired)
+- `../reasoning-agent/SKILL.md` — **NEW** Step 3.7 reasoning stage (SCIENTIFIC_PAPER mode only; skipped for TECHNICAL_REPORT)
 - `scripts/init_workspace.py` — scaffold workspace dir tree
 - `scripts/validate_inputs.py` — verify (I, E, T, G) before running
 - `scripts/anti_leakage_check.py` — grep draft for leaked author names/emails/affils

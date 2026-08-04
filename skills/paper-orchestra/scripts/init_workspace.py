@@ -72,6 +72,7 @@ WORKSPACE_DIRS = [
     "inputs/figures",
     "figures",
     "drafts",
+    "reasoning",      # Step 3.7 per-section reasoning plans (SCIENTIFIC_PAPER mode only)
     "refinement",
     "final",
     "cache",          # S2 verification cache (s2_cache.json written here)

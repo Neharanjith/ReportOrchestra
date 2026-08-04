@@ -45,6 +45,11 @@ Inputs
   - authors_note.md (optional): Author preferences and global constraints. If
     absent or empty, ignore this input.
   - figures_list: Available figure files.
+  - reasoning_plans (SCIENTIFIC_PAPER mode only): Object keyed by section slug
+    ({"introduction": {...}, "methodology": {...}, ...}). Each value is a
+    reasoning plan produced by the Reasoning Agent. In TECHNICAL_REPORT mode
+    this input is absent — do not fabricate one, and skip instruction 0b
+    entirely.
 
 Critical Instructions
 
@@ -54,6 +59,35 @@ Critical Instructions
    - Conference requirements, supplied evidence, verified citations, and
      scientific integrity take precedence over conflicting guidance.
    - Never invent results, citations, or unsupported claims to satisfy a note.
+
+0b. Reasoning Plans (SCIENTIFIC_PAPER mode only — skip this entire block in
+    TECHNICAL_REPORT mode):
+   - When reasoning_plans is supplied, treat it as the authoritative claim
+     budget for the corresponding sections.
+   - You may write ONLY claims where allowed_in_draft is true. Do not
+     resurrect suppressed claims and do not introduce new substantive claims
+     that are absent from the plan.
+   - Do not strengthen a claim beyond what the plan states. Preserve the
+     plan's wording strength: hedged claims stay hedged, moderate-confidence
+     claims are not asserted as high-confidence, and low-confidence claims
+     appear (if at all) as speculation clearly labelled as such.
+   - Preserve the distinction between observations (measured outcomes) and
+     interpretations (inferred meaning). Interpretations must remain
+     recognisable as inferences.
+   - Preserve confidence: use hedged phrasing ("appears to", "is consistent
+     with") for moderate confidence; assert only for high confidence.
+   - Weave the plan's limitations and alternative_interpretations into the
+     prose naturally — do not omit them, but also do not simply reproduce
+     the JSON as a bulleted list.
+   - Use the plan's synthesis field to shape the narrative arc of the
+     section, without quoting it verbatim.
+   - The final paper must read as fluent scientific prose. Do NOT reproduce
+     JSON headings, field names, claim_ids, or bulletised "claim / evidence
+     / assumption" tables mechanically.
+   - The reasoning plan's evidence_ids are references to underlying
+     experimental results, citations, figures, and tables. Realise those
+     references in the paper's own conventions (\\cite{{key}}, \\ref{{fig:...}},
+     numeric values from experimental_log.md), not as raw evidence_ids.
 
 1. Existing Content Preservation:
    - DO NOT modify the text, style, or content of sections that are already

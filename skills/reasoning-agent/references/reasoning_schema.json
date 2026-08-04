@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "reasoning_plan.schema.json",
+  "title": "Reasoning Plan",
+  "description": "Per-section output of the Reasoning Agent. One file per section under workspace/reasoning/.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["section_name", "section_goal", "claims", "section_limitations", "synthesis"],
+  "properties": {
+    "section_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "section_goal": {
+      "type": "string",
+      "minLength": 1
+    },
+    "claims": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/claim" }
+    },
+    "section_limitations": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "synthesis": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "$defs": {
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim_id",
+        "claim",
+        "evidence_ids",
+        "reasoning",
+        "assumptions",
+        "alternative_interpretations",
+        "limitations",
+        "unresolved_questions",
+        "confidence",
+        "allowed_in_draft"
+      ],
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "pattern": "^C[0-9]+$"
+        },
+        "claim": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^(EXP|NOTE|CITE|FIG|TAB)-[A-Za-z0-9_\\-]+$"
+          }
+        },
+        "reasoning": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assumptions": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "alternative_interpretations": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "limitations": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "unresolved_questions": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["low", "moderate", "high"]
+        },
+        "allowed_in_draft": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

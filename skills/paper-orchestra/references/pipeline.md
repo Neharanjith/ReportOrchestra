@@ -40,6 +40,19 @@ Reference for the orchestrator. Source: arXiv:2604.05018, §4 and Fig. 1.
                        └────────────┬─────────────────┘
                                     ▼
                   ┌──────────────────────────────────────────────────┐
+                  │  Step 3.7: Reasoning Agent (1 call/section)       │
+                  │  SCIENTIFIC_PAPER mode only — SKIPPED for         │
+                  │  TECHNICAL_REPORT (from authors_note.md).         │
+                  │  Per section: structured JSON plan of the claims  │
+                  │  the section is entitled to make, with evidence,  │
+                  │  assumptions, alternatives, limits, confidence.   │
+                  │  Deterministic validation of evidence-id whitelist│
+                  │  and allowed_in_draft rules; retry up to 3x.      │
+                  │  → reasoning/<section_slug>.json                  │
+                  └────────────────────┬─────────────────────────────┘
+                                       │
+                                       ▼
+                  ┌──────────────────────────────────────────────────┐
                   │  Step 4: Section Writing Agent      (1 LLM call) │
                   │  ONE single multimodal call:                      │
                   │  - extracts numeric values from E                 │

@@ -21,6 +21,9 @@ workspace/
 │   └── captions.json                    # {figure_id: caption_text, ...}
 ├── refs.bib                             # Step 3 output
 ├── citation_pool.json                   # Step 3 output (verified S2 metadata)
+├── reasoning/                           # Step 3.7 output (SCIENTIFIC_PAPER mode only)
+│   ├── <section_slug>.json              # per-section reasoning plan
+│   └── <section_slug>.evidence.json     # evidence-id whitelist for the validator
 ├── drafts/
 │   ├── intro_relwork.tex                # Step 3 output
 │   └── paper.tex                        # Step 4 output (then mutated by Step 5)

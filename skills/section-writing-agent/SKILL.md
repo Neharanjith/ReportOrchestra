@@ -32,6 +32,15 @@ global coherence across sections.
 - `workspace/figures/` — the actual PNG files from Step 2 (used as
   multimodal vision input!)
 - `workspace/figures/captions.json` — caption text per figure_id
+- `workspace/reasoning/*.json` — **SCIENTIFIC_PAPER mode only.** The
+  per-section reasoning plans produced by Step 3.7. In TECHNICAL_REPORT
+  mode this directory is not created and must not be passed. See
+  `../reasoning-agent/references/reasoning-schema.md` for the schema; the
+  key fields for the writer are `claims[*].claim`,
+  `claims[*].evidence_ids`, `claims[*].confidence`, `claims[*].limitations`,
+  `claims[*].alternative_interpretations`, `claims[*].allowed_in_draft`, and
+  `synthesis`. Only claims with `allowed_in_draft: true` may be written; the
+  writer must not strengthen a claim beyond the reasoning plan.
 - `workspace/tex_profile.json` — TeX package availability flags (written by
   `check_tex_packages.py` at Step 0). **Read this before generating any
   LaTeX.** It tells you which packages are installed so you select the right
@@ -92,6 +101,11 @@ The user message contains:
 - `authors_note.md` — full content when present and non-empty
 - `figures_list` — array of `{figure_id, filename, caption}` from
   `captions.json` and the file listing
+- `reasoning_plans` — object keyed by section slug, mapping to the JSON
+  content of `workspace/reasoning/<slug>.json`. **Only in SCIENTIFIC_PAPER
+  mode.** In TECHNICAL_REPORT mode this key is omitted from the call
+  entirely — do not send an empty object, and do not add the reasoning
+  instructions to the prompt.
 - **The actual figure PNGs** as multimodal image inputs, so your LLM can
   visually inspect them and write accurate descriptions / refer to them
   correctly in the prose.

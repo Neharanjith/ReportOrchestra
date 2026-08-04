@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+
+workspace_*/
+spatial/
+spatial_v3/
+
+inputs/notes/
+*.pdf
